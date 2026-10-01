@@ -643,6 +643,24 @@
           broadcastState();
           checkAllLivingPlayersHaveChosen();
         }
+      } else if (msg.type === 'REQUEST_REPLAY') {
+        Object.values(gameState.players).forEach(p => {
+          p.isReady = false;
+          p.isAlive = true;
+          p.chosenDoor = null;
+          p.deathFloor = null;
+        });
+        gameState.floor = 1;
+        gameState.status = 'lobby';
+        broadcastState();
+
+        // Les bots se préparent après un court délai
+        setTimeout(() => {
+          Object.values(gameState.players).forEach(p => {
+            if (p.isBot) p.isReady = true;
+          });
+          broadcastState();
+        }, 1200);
       }
     }
 
@@ -922,9 +940,11 @@
       const allReady = playerList.length >= 1 && playerList.every(p => p.isReady);
       if (isHost && allReady) {
         btnStart.disabled = false;
+        btnStart.innerText = "Commencer";
         btnStart.className = "flex-1 py-3 rounded-xl border border-zinc-600 bg-zinc-900 hover:bg-zinc-800 text-bone text-xs uppercase tracking-widest font-bold cursor-pointer transition-all";
       } else {
         btnStart.disabled = true;
+        btnStart.innerText = allReady ? "Commencer" : "En attente...";
         btnStart.className = "flex-1 py-3 rounded-xl border border-zinc-900 bg-void text-zinc-700 text-xs uppercase tracking-widest font-bold cursor-not-allowed transition-all";
       }
     }
@@ -1100,9 +1120,9 @@
       gameState.code = 'SOLO';
 
       gameState.players = {
-        [myId]: { id: myId, name: myName, isBot: false, isReady: true, isAlive: true, chosenDoor: null, deathFloor: null },
-        'bot_1': { id: 'bot_1', name: 'Le Muet', isBot: true, isReady: true, isAlive: true, chosenDoor: null, deathFloor: null },
-        'bot_2': { id: 'bot_2', name: 'L’Égaré', isBot: true, isReady: true, isAlive: true, chosenDoor: null, deathFloor: null }
+        [myId]: { id: myId, name: myName, isBot: false, isReady: false, isAlive: true, chosenDoor: null, deathFloor: null },
+        'bot_1': { id: 'bot_1', name: 'Le Muet', isBot: true, isReady: false, isAlive: true, chosenDoor: null, deathFloor: null },
+        'bot_2': { id: 'bot_2', name: 'L’Égaré', isBot: true, isReady: false, isAlive: true, chosenDoor: null, deathFloor: null }
       };
 
       document.getElementById('badge-room-code').innerText = 'SOLO';
@@ -1111,6 +1131,13 @@
 
       showScreen('screen-lobby');
       renderLobbyUI(gameState.players[myId]);
+
+      // Les âmes compagnes se préparent après un temps de latence
+      setTimeout(() => {
+        if (gameState.players['bot_1']) gameState.players['bot_1'].isReady = true;
+        if (gameState.players['bot_2']) gameState.players['bot_2'].isReady = true;
+        broadcastState();
+      }, 1000);
     });
 
     // Add Bot in lobby
@@ -1124,7 +1151,7 @@
         id: botId,
         name: name,
         isBot: true,
-        isReady: true,
+        isReady: false,
         isAlive: true,
         chosenDoor: null,
         deathFloor: null
@@ -1132,6 +1159,14 @@
 
       broadcastState();
       showToast(`${name} s'avance.`);
+
+      // Le bot se prépare après un bref instant
+      setTimeout(() => {
+        if (gameState.players[botId]) {
+          gameState.players[botId].isReady = true;
+          broadcastState();
+        }
+      }, 900);
     });
 
     // Create room
@@ -1193,19 +1228,7 @@
 
     // Replay
     document.getElementById('btn-replay').addEventListener('click', () => {
-      if (!isHost) {
-        showToast("Seul l'hôte décide.");
-        return;
-      }
-      Object.values(gameState.players).forEach(p => {
-        p.isReady = p.isBot ? true : false;
-        p.isAlive = true;
-        p.chosenDoor = null;
-        p.deathFloor = null;
-      });
-      gameState.floor = 1;
-      gameState.status = 'lobby';
-      broadcastState();
+      sendToHost({ type: 'REQUEST_REPLAY' });
     });
 
     window.onload = function() {
