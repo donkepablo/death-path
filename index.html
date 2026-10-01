@@ -494,40 +494,40 @@
     </section>
 
     <!-- SCREEN: SUSPENSE / RELIC DISTRIBUTION ORACLE -->
-  <section id="screen-suspense" class="screen-view entering hidden w-full max-w-md flex-col items-center justify-center text-center gap-7 my-auto py-10">
-    <div class="space-y-2">
-      <span class="text-[9px] tracking-[0.35em] uppercase text-zinc-600 font-mono">
-        Entre les mondes
-      </span>
-      <h2 class="font-cinzel text-2xl sm:text-3xl font-black tracking-[0.25em] text-bone uppercase">
-        L'Épreuve du Néant
-      </h2>
-    </div>
-  
-    <!-- Réceptacle occulte fixe (sans aucune rotation) -->
-    <div class="relative flex items-center justify-center my-4 w-44 h-44">
-      <div id="suspense-orb-pulse" class="absolute inset-0 rounded-2xl border border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl pulse-ritual shadow-[0_0_40px_rgba(0,0,0,0.95)] transition-all duration-1000"></div>
-      <div class="absolute inset-3 rounded-xl border border-zinc-900/90 pointer-events-none"></div>
-  
-      <!-- Icône centrale -->
-      <div id="suspense-icon-container" class="relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-90">
-        <i id="suspense-icon" class="fa-solid fa-eye-slash text-3xl sm:text-4xl text-zinc-700 transition-all duration-700"></i>
+    <section id="screen-suspense" class="screen-view entering hidden w-full max-w-md flex-col items-center justify-center text-center gap-7 my-auto py-10">
+      <div class="space-y-2">
+        <span class="text-[9px] tracking-[0.35em] uppercase text-zinc-600 font-mono">
+          Entre les mondes
+        </span>
+        <h2 class="font-cinzel text-2xl sm:text-3xl font-black tracking-[0.25em] text-bone uppercase">
+          L'Épreuve du Néant
+        </h2>
       </div>
-    </div>
-  
-    <!-- Texte de l'oracle -->
-    <div class="space-y-3 max-w-xs">
-      <p id="suspense-oracle-text" class="text-xs sm:text-sm font-mono text-zinc-400 tracking-wider min-h-[48px] flex items-center justify-center leading-relaxed transition-all duration-700">
-        Le néant scrute la profondeur de ton âme...
-      </p>
-      <div id="suspense-verdict-tag" class="hidden text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border"></div>
-    </div>
-  
-    <button id="btn-suspense-continue" type="button" class="hidden opacity-0 transition-opacity duration-1000 mt-2 px-6 py-3 rounded-xl border border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-bone text-xs uppercase tracking-[0.2em] font-bold active:scale-95">
-      Contempler le Destin
-    </button>
-  </section>
-    
+
+      <!-- Réceptacle occulte fixe (sans rotation) -->
+      <div class="relative flex items-center justify-center my-4 w-44 h-44">
+        <div id="suspense-orb-pulse" class="absolute inset-0 rounded-2xl border border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl pulse-ritual shadow-[0_0_40px_rgba(0,0,0,0.95)] transition-all duration-1000"></div>
+        <div class="absolute inset-3 rounded-xl border border-zinc-900/90 pointer-events-none"></div>
+
+        <!-- Icône centrale -->
+        <div id="suspense-icon-container" class="relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-90">
+          <i id="suspense-icon" class="fa-solid fa-eye-slash text-3xl sm:text-4xl text-zinc-700 transition-all duration-700"></i>
+        </div>
+      </div>
+
+      <!-- Texte de l'oracle -->
+      <div class="space-y-3 max-w-xs">
+        <p id="suspense-oracle-text" class="text-xs sm:text-sm font-mono text-zinc-400 tracking-wider min-h-[48px] flex items-center justify-center leading-relaxed transition-all duration-700">
+          Le néant scrute la profondeur de ton âme...
+        </p>
+        <div id="suspense-verdict-tag" class="hidden text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border"></div>
+      </div>
+
+      <button id="btn-suspense-continue" type="button" class="hidden opacity-0 transition-opacity duration-1000 mt-2 px-6 py-3 rounded-xl border border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-bone text-xs uppercase tracking-[0.2em] font-bold active:scale-95">
+        Contempler le Destin
+      </button>
+    </section>
+
     <!-- SCREEN: GAME OVER / ROUND SUMMARY -->
     <section id="screen-gameover" class="screen-view entering hidden w-full max-w-md flex-col items-center gap-3 sm:gap-5 py-4 sm:py-6 text-center my-auto">
       <div class="space-y-1.5 sm:space-y-2">
@@ -607,7 +607,7 @@
               <span>Cœur de Sursis</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              Attribué d'office au meilleur joueur à chaque nouvelle manche (dès la manche 2). Ne se cumule pas (max 1). Si la porte de la mort est franchie, le cœur se brise mais l'âme survit.
+              Attribué d'office à l'âme qui a parcouru le plus de chemin (dès la manche 2). Ne se cumule pas (max 1). Si plusieurs joueurs perdent en même temps au plus haut niveau, le cœur n'est pas accordé. Il absorbe une mort fatale.
             </p>
           </div>
 
@@ -617,7 +617,7 @@
               <span>Miroir d’Augure</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              Attribué au dernier joueur dès la moitié du tournoi. Il révèle en secret une porte sûre pour ce palier.
+              Attribué dès la moitié du tournoi à un seul des premiers perdants (tirage au sort en cas d'égalité au score le plus bas). Il révèle en secret une porte sûre pour ce palier.
             </p>
           </div>
 
@@ -627,7 +627,7 @@
               <span>Malédiction</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              Cible un adversaire vivant : son sablier s'écroule immédiatement et il n'a plus que 3 secondes pour fixer sa porte.
+              1 chance sur 3 d'être obtenue. Cible un adversaire vivant : son sablier s'écroule immédiatement et il n'a plus que 3 secondes pour fixer sa porte.
             </p>
           </div>
 
@@ -637,7 +637,7 @@
               <span>Chaîne des Damnés</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              Lie le destin du joueur à un rival. Si l'erreur fatale est commise par le joueur, c'est le rival qui est dévorée par l'abysse.
+              1 chance sur 3 d'être obtenue. Lie le destin du joueur à un rival. Si l'erreur fatale est commise par le porteur, le rival est sacrifié à sa place.
             </p>
           </div>
 
@@ -647,8 +647,7 @@
               <span>Voile d’Ombre</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              Masque totalement la présence et le choix du joueur en direct. Aucun rival ne saura quelle porte a été prise avant l'ouverture finale. 
-              <em class="text-zinc-400">(Actif uniquement si la Révélation est activée)</em>.
+              1 chance sur 3 d'être obtenue. Masque totalement la présence et le choix du joueur en direct jusqu'à l'ouverture finale. <em class="text-zinc-400">(Actif si la Révélation est activée)</em>.
             </p>
           </div>
 
@@ -658,7 +657,7 @@
               <span>Fétiche d’Échange</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              Échange secrètement et instantanément la porte choisie du joueur avec celle d'un rival.
+              1 chance sur 3 d'être obtenue. Échange secrètement et instantanément la porte choisie avec celle d'un rival.
             </p>
           </div>
         </div>
@@ -844,7 +843,6 @@
     let pendingRelicUsage = null;
     let activeSafeDoorHint = null;
 
-    // Track suspense sequence states
     let localSuspenseCompletedForRound = 0;
     let suspenseAnimationTimeout = null;
 
@@ -1084,6 +1082,7 @@
       }
     }
 
+    /* DISTRIBUTION DES RELIQUES CONFORME AUX NOUVELLES RÈGLES */
     function distributeBetweenRoundsRelics() {
       if (!gameState.itemsEnabled) {
         gameState.lastRoundRewards = {};
@@ -1100,32 +1099,34 @@
       const highestScore = sortedByScore[0].score || 0;
       const lowestScore = sortedByScore[sortedByScore.length - 1].score || 0;
 
-      // 1. Heart of Survival to highest score (from round 2, max 1)
+      // 1. Cœur de Sursis : uniquement à l'unique meilleur joueur (si égalité, pas de cœur accordé)
       if (upcomingRound >= 2 && gameState.allowedItems.includes('heart')) {
         const leaders = sortedByScore.filter(p => (p.score || 0) === highestScore);
-        leaders.forEach(leader => {
+        if (leaders.length === 1) {
+          const leader = leaders[0];
           leader.items = leader.items || [];
           if (!leader.items.includes('heart')) {
             leader.items.push('heart');
-            rewardsLog[leader.id].push({ item: 'heart', reason: 'Maître du Sanctuaire (Meilleur score)' });
+            rewardsLog[leader.id].push({ item: 'heart', reason: 'Maître du Sanctuaire (Seul survivant au sommet)' });
           }
-        });
+        }
       }
 
-      // 2. Mirror of Augury to last place from halfway point
+      // 2. Miroir d’Augure : accordé dès la moitié du tournoi à UN SEUL des premiers perdants (tirage au sort parmi les ex-æquo au plus bas score)
       const halfRounds = Math.ceil(gameState.totalRounds / 2);
       if (upcomingRound >= halfRounds && gameState.allowedItems.includes('mirror')) {
         const lastPlayers = sortedByScore.filter(p => (p.score || 0) === lowestScore);
-        lastPlayers.forEach(lastP => {
-          lastP.items = lastP.items || [];
-          if (!lastP.items.includes('mirror')) {
-            lastP.items.push('mirror');
-            rewardsLog[lastP.id].push({ item: 'mirror', reason: 'Lueur du Trépas (Dernier au score)' });
+        if (lastPlayers.length > 0) {
+          const luckyLoser = lastPlayers[Math.floor(Math.random() * lastPlayers.length)];
+          luckyLoser.items = luckyLoser.items || [];
+          if (!luckyLoser.items.includes('mirror')) {
+            luckyLoser.items.push('mirror');
+            rewardsLog[luckyLoser.id].push({ item: 'mirror', reason: 'Lueur du Trépas (Tiré au sort parmi les premiers tombés)' });
           }
-        });
+        }
       }
 
-      // 3. Random relics (1 in 3 chance)
+      // 3. Reste des items (curse, chain, veil, swap) : chaque joueur a une chance sur trois (1/3) d'en obtenir un
       const randomPool = ['curse', 'chain', 'veil', 'swap'].filter(k => 
         gameState.allowedItems.includes(k) && (k !== 'veil' || gameState.revealPicksLive)
       );
@@ -1133,10 +1134,11 @@
       if (randomPool.length > 0) {
         players.forEach(p => {
           p.items = p.items || [];
-          if (Math.random() < 0.33) {
+          // 1 chance sur 3 exacte
+          if (Math.random() < (1 / 3)) {
             const picked = randomPool[Math.floor(Math.random() * randomPool.length)];
             p.items.push(picked);
-            rewardsLog[p.id].push({ item: picked, reason: 'Pacte du Néant (Tirage aléatoire)' });
+            rewardsLog[p.id].push({ item: picked, reason: 'Pacte du Néant (1 chance sur 3)' });
           }
         });
       }
@@ -1423,7 +1425,6 @@
             bot.chosenDoor = Math.floor(Math.random() * 3) + 1;
             broadcastState();
 
-            // ~45% de chance de feinter et de switcher dans les 2 à 3 dernières secondes
             const totalDuration = gameState.choiceDuration || 20;
             if (Math.random() < 0.45 && totalDuration >= 7) {
               const switchDelay = Math.max(1000, ((totalDuration - (Math.random() * 2 + 1.2)) * 1000) - initialDelay);
@@ -1440,101 +1441,99 @@
       });
     }
 
-    /* =========================================================
-       SUSPENSE RITUAL / INTER-ROUND RELIC REVELATION LOGIC
-       ========================================================= */
-function triggerSuspenseRitual() {
-  showScreen('screen-suspense');
+    /* RITUEL DE SUSPENSE INTER-MANCHES SANS ROTATION ET DURANT 10 SECONDES */
+    function triggerSuspenseRitual() {
+      showScreen('screen-suspense');
 
-  audio.setTension(true);
-  audio.heartbeat(false);
+      audio.setTension(true);
+      audio.heartbeat(false);
 
-  const oracleText = document.getElementById('suspense-oracle-text');
-  const icon = document.getElementById('suspense-icon');
-  const iconContainer = document.getElementById('suspense-icon-container');
-  const verdictTag = document.getElementById('suspense-verdict-tag');
-  const continueBtn = document.getElementById('btn-suspense-continue');
-  const orbPulse = document.getElementById('suspense-orb-pulse');
+      const oracleText = document.getElementById('suspense-oracle-text');
+      const icon = document.getElementById('suspense-icon');
+      const iconContainer = document.getElementById('suspense-icon-container');
+      const verdictTag = document.getElementById('suspense-verdict-tag');
+      const continueBtn = document.getElementById('btn-suspense-continue');
+      const orbPulse = document.getElementById('suspense-orb-pulse');
 
-  if (!oracleText || !icon || !iconContainer || !verdictTag || !continueBtn) return;
+      if (!oracleText || !icon || !iconContainer || !verdictTag || !continueBtn) return;
 
-  // État initial (0s)
-  oracleText.innerText = "Le néant scrute la profondeur de ton âme...";
-  oracleText.className = "text-xs sm:text-sm font-mono text-zinc-500 tracking-wider min-h-[48px] flex items-center justify-center leading-relaxed transition-all duration-700";
-  icon.className = "fa-solid fa-eye-slash text-3xl sm:text-4xl text-zinc-800 transition-all duration-700";
-  iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-90";
-  verdictTag.className = "hidden";
-  continueBtn.classList.add('hidden', 'opacity-0');
-  continueBtn.classList.remove('opacity-100');
-  if (orbPulse) {
-    orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl pulse-ritual shadow-[0_0_40px_rgba(0,0,0,0.95)] transition-all duration-1000";
-  }
+      // État initial (0s)
+      oracleText.innerText = "Le néant scrute la profondeur de ton âme...";
+      oracleText.className = "text-xs sm:text-sm font-mono text-zinc-500 tracking-wider min-h-[48px] flex items-center justify-center leading-relaxed transition-all duration-700";
+      icon.className = "fa-solid fa-eye-slash text-3xl sm:text-4xl text-zinc-800 transition-all duration-700";
+      iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-90";
+      verdictTag.className = "hidden";
+      continueBtn.classList.add('hidden', 'opacity-0');
+      continueBtn.classList.remove('opacity-100');
+      if (orbPulse) {
+        orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl pulse-ritual shadow-[0_0_40px_rgba(0,0,0,0.95)] transition-all duration-1000";
+      }
 
-  clearTimeout(suspenseAnimationTimeout);
+      clearTimeout(suspenseAnimationTimeout);
 
-  // Étape 1 : 3,0 secondes — Approfondissement du mystère
-  suspenseAnimationTimeout = setTimeout(() => {
-    audio.heartbeat(false);
-    oracleText.innerText = "Les voix anciennes délibèrent dans le silence...";
-    oracleText.classList.remove('text-zinc-500');
-    oracleText.classList.add('text-zinc-300');
-    icon.className = "fa-solid fa-hand-holding text-3xl sm:text-4xl text-zinc-700 transition-all duration-700";
-
-    // Étape 2 : 6,5 secondes — Tension maximale
-    suspenseAnimationTimeout = setTimeout(() => {
-      audio.heartbeat(true);
-      oracleText.innerText = "Le gouffre tranche. Ton offrande se dessine...";
-      oracleText.classList.remove('text-zinc-300');
-      oracleText.classList.add('text-bone');
-      icon.className = "fa-solid fa-circle text-2xl text-zinc-600 transition-all duration-700 opacity-60";
-
-      // Étape 3 : 10,0 secondes totales (3,5s de plus) — Révélation
+      // Étape 1 : 3,0 secondes
       suspenseAnimationTimeout = setTimeout(() => {
-        audio.heartbeat(true);
-        audio.setTension(false);
+        audio.heartbeat(false);
+        oracleText.innerText = "Les voix anciennes délibèrent dans le silence...";
+        oracleText.classList.remove('text-zinc-500');
+        oracleText.classList.add('text-zinc-300');
+        icon.className = "fa-solid fa-hand-holding text-3xl sm:text-4xl text-zinc-700 transition-all duration-700";
 
-        const myRewards = (gameState.lastRoundRewards && gameState.lastRoundRewards[myId]) || [];
-        const hasRelic = myRewards.length > 0;
+        // Étape 2 : 6,5 secondes
+        suspenseAnimationTimeout = setTimeout(() => {
+          audio.heartbeat(true);
+          oracleText.innerText = "Le gouffre tranche. Ton offrande se dessine...";
+          oracleText.classList.remove('text-zinc-300');
+          oracleText.classList.add('text-bone');
+          icon.className = "fa-solid fa-circle text-2xl text-zinc-600 transition-all duration-700 opacity-60";
 
-        if (hasRelic) {
-          const firstRelic = myRewards[0];
-          const def = RELIC_DEFINITIONS[firstRelic.item];
-          const relicName = def ? def.name : firstRelic.item;
-          const relicIcon = def ? def.icon : 'fa-solid fa-wand-magic-sparkles text-zinc-200';
+          // Étape 3 : 10,0 secondes totales (Révélation)
+          suspenseAnimationTimeout = setTimeout(() => {
+            audio.heartbeat(true);
+            audio.setTension(false);
 
-          oracleText.innerHTML = `L'abysse t'accorde une faveur :<br><strong class="text-bone font-cinzel text-base tracking-widest mt-1 block uppercase">${relicName}</strong>`;
-          icon.className = `${relicIcon} text-4xl sm:text-5xl transition-all duration-700 animate-pulse`;
-          iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-125";
-          
-          verdictTag.innerText = "Relique Accordée";
-          verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-400 bg-zinc-900/90 text-bone shadow-[0_0_20px_rgba(255,255,255,0.2)]";
+            const myRewards = (gameState.lastRoundRewards && gameState.lastRoundRewards[myId]) || [];
+            const hasRelic = myRewards.length > 0;
 
-          if (orbPulse) {
-            orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-600 bg-zinc-900/60 backdrop-blur-xl shadow-[0_0_60px_rgba(255,255,255,0.15)] transition-all duration-1000";
-          }
-        } else {
-          oracleText.innerHTML = `Le néant s'est détourné.<br><span class="text-zinc-500 text-xs italic mt-0.5 block">Aucune relique ne t'est accordée pour ce palier.</span>`;
-          icon.className = "fa-solid fa-ban text-4xl text-zinc-700 transition-all duration-700";
-          iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-100 opacity-50";
-          
-          verdictTag.innerText = "Refus du Silence";
-          verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-900 bg-void text-zinc-600";
+            if (hasRelic) {
+              const firstRelic = myRewards[0];
+              const def = RELIC_DEFINITIONS[firstRelic.item];
+              const relicName = def ? def.name : firstRelic.item;
+              const relicIcon = def ? def.icon : 'fa-solid fa-wand-magic-sparkles text-zinc-200';
 
-          if (orbPulse) {
-            orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-900 bg-void backdrop-blur-xl shadow-[0_0_25px_rgba(0,0,0,0.8)] transition-all duration-1000";
-          }
-        }
+              oracleText.innerHTML = `L'abysse t'accorde une faveur :<br><strong class="text-bone font-cinzel text-base tracking-widest mt-1 block uppercase">${relicName}</strong>`;
+              icon.className = `${relicIcon} text-4xl sm:text-5xl transition-all duration-700 animate-pulse`;
+              iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-125";
+              
+              verdictTag.innerText = "Relique Accordée";
+              verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-400 bg-zinc-900/90 text-bone shadow-[0_0_20px_rgba(255,255,255,0.2)]";
 
-        continueBtn.classList.remove('hidden');
-        requestAnimationFrame(() => {
-          continueBtn.classList.remove('opacity-0');
-          continueBtn.classList.add('opacity-100');
-        });
+              if (orbPulse) {
+                orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-600 bg-zinc-900/60 backdrop-blur-xl shadow-[0_0_60px_rgba(255,255,255,0.15)] transition-all duration-1000";
+              }
+            } else {
+              oracleText.innerHTML = `Le néant s'est détourné.<br><span class="text-zinc-500 text-xs italic mt-0.5 block">Aucune relique ne t'est accordée pour ce palier.</span>`;
+              icon.className = "fa-solid fa-ban text-4xl text-zinc-700 transition-all duration-700";
+              iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-100 opacity-50";
+              
+              verdictTag.innerText = "Refus du Silence";
+              verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-900 bg-void text-zinc-600";
 
-      }, 3500); // 3,0s + 3,5s + 3,5s = 10,0 secondes
-    }, 3500);
-  }, 3000);
-}
+              if (orbPulse) {
+                orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-900 bg-void backdrop-blur-xl shadow-[0_0_25px_rgba(0,0,0,0.8)] transition-all duration-1000";
+              }
+            }
+
+            continueBtn.classList.remove('hidden');
+            requestAnimationFrame(() => {
+              continueBtn.classList.remove('opacity-0');
+              continueBtn.classList.add('opacity-100');
+            });
+
+          }, 3500); // 3,0s + 3,5s + 3,5s = 10,0 secondes
+        }, 3500);
+      }, 3000);
+    }
 
     const btnSuspenseContinue = document.getElementById('btn-suspense-continue');
     if (btnSuspenseContinue) {
@@ -1556,7 +1555,6 @@ function triggerSuspenseRitual() {
       } else if (gameState.status === 'ended') {
         const isInterRound = gameState.currentRound < gameState.totalRounds;
 
-        // If items are enabled and we haven't experienced the suspense ritual for this inter-round
         if (isInterRound && gameState.itemsEnabled && localSuspenseCompletedForRound < gameState.currentRound) {
           triggerSuspenseRitual();
         } else {
@@ -2034,7 +2032,6 @@ function triggerSuspenseRitual() {
         if (subtitle) subtitle.innerText = `Palier ${getRoman(gameState.floor)} atteint`;
         if (roundStatus) roundStatus.innerText = `Manche ${gameState.currentRound} sur ${gameState.totalRounds} terminée`;
 
-        // Manage inter-round readiness buttons
         if (btnNextRoundReady) {
           btnNextRoundReady.classList.remove('hidden');
           if (me && me.isReady) {
