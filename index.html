@@ -327,6 +327,11 @@
       constructor() {
         this.ctx = null;
         this.enabled = true;
+        this.ambientStarted = false;
+        this.masterGain = null;
+        this.ambientGain = null;
+        this.filterNode = null;
+        this.dissonanceGain = null;
       }
 
       init() {
@@ -339,14 +344,101 @@
         if (this.ctx && this.ctx.state === 'suspended') {
           this.ctx.resume();
         }
+        if (this.ctx && !this.ambientStarted && this.enabled) {
+          this.startDarkSoundscape();
+        }
       }
 
       toggle() {
         this.enabled = !this.enabled;
+        if (this.ctx && this.masterGain) {
+          const targetVol = this.enabled ? 1.0 : 0.0001;
+          this.masterGain.gain.setTargetAtTime(targetVol, this.ctx.currentTime, 0.4);
+        }
+        if (this.enabled && !this.ambientStarted) {
+          this.startDarkSoundscape();
+        }
         return this.enabled;
       }
 
-      // Realistic deep cardiac double-pulse (lub-dub)
+      startDarkSoundscape() {
+        if (!this.ctx || this.ambientStarted) return;
+        this.ambientStarted = true;
+
+        const now = this.ctx.currentTime;
+
+        // Master Output Stage
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.gain.setValueAtTime(this.enabled ? 1.0 : 0.0001, now);
+        this.masterGain.connect(this.ctx.destination);
+
+        // Ambient bus with smooth, slow 4-second fade in
+        this.ambientGain = this.ctx.createGain();
+        this.ambientGain.gain.setValueAtTime(0.0001, now);
+        this.ambientGain.gain.exponentialRampToValueAtTime(0.35, now + 4.0);
+        this.ambientGain.connect(this.masterGain);
+
+        // Breathing Low-Pass Filter (simulates the suffocating air of the catacombs)
+        this.filterNode = this.ctx.createBiquadFilter();
+        this.filterNode.type = 'lowpass';
+        this.filterNode.frequency.setValueAtTime(120, now);
+        this.filterNode.Q.setValueAtTime(3.0, now);
+        this.filterNode.connect(this.ambientGain);
+
+        // Slow LFO: creates an ominous breathing undulation (1 cycle every ~14 seconds)
+        const lfo = this.ctx.createOscillator();
+        const lfoGain = this.ctx.createGain();
+        lfo.type = 'sine';
+        lfo.frequency.setValueAtTime(0.07, now);
+        lfoGain.gain.setValueAtTime(45, now); // modulates filter between 75Hz and 165Hz
+        lfo.connect(lfoGain);
+        lfoGain.connect(this.filterNode.frequency);
+        lfo.start(now);
+
+        // Deep subterranean drone: detuned low sub-frequencies (43.65Hz and 44.1Hz)
+        [43.65, 44.15, 65.4].forEach(freq => {
+          const osc = this.ctx.createOscillator();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now);
+          osc.connect(this.filterNode);
+          osc.start(now);
+        });
+
+        // Dissonant micro-harmonic pad (diminished 5th / tritone tension)
+        this.dissonanceGain = this.ctx.createGain();
+        this.dissonanceGain.gain.setValueAtTime(0.025, now);
+
+        const highFilter = this.ctx.createBiquadFilter();
+        highFilter.type = 'bandpass';
+        highFilter.frequency.setValueAtTime(280, now);
+        highFilter.Q.setValueAtTime(4.0, now);
+        highFilter.connect(this.ambientGain);
+        this.dissonanceGain.connect(highFilter);
+
+        // Minor second / tritone cluster (Eerie psychological friction)
+        [130.8, 138.6, 185.0].forEach(f => {
+          const osc = this.ctx.createOscillator();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(f, now);
+          osc.connect(this.dissonanceGain);
+          osc.start(now);
+        });
+      }
+
+      setTension(isHigh) {
+        if (!this.ctx || !this.filterNode) return;
+        const now = this.ctx.currentTime;
+        if (isHigh) {
+          // Open filter and swell the dissonance during veil dissolution
+          this.filterNode.frequency.setTargetAtTime(260, now, 2.5);
+          if (this.dissonanceGain) this.dissonanceGain.gain.setTargetAtTime(0.065, now, 2.0);
+        } else {
+          // Settle back into deep muffled dark silence
+          this.filterNode.frequency.setTargetAtTime(110, now, 3.0);
+          if (this.dissonanceGain) this.dissonanceGain.gain.setTargetAtTime(0.025, now, 3.0);
+        }
+      }
+
       heartbeat(intense = false) {
         if (!this.enabled) return;
         this.init();
@@ -359,33 +451,31 @@
           const gain = this.ctx.createGain();
           const filter = this.ctx.createBiquadFilter();
 
-          // Low-pass filter to keep it muffled, heavy and deep
           filter.type = 'lowpass';
           filter.frequency.setValueAtTime(130, time);
 
           osc.type = 'sine';
           osc.frequency.setValueAtTime(freq, time);
-          osc.frequency.exponentialRampToValueAtTime(30, time + duration);
+          osc.frequency.exponentialRampToValueAtTime(28, time + duration);
 
           gain.gain.setValueAtTime(volume, time);
           gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
 
           osc.connect(filter);
           filter.connect(gain);
-          gain.connect(this.ctx.destination);
+          gain.connect(this.masterGain || this.ctx.destination);
 
           osc.start(time);
           osc.stop(time + duration);
         };
 
-        const baseGain = intense ? 0.45 : 0.28;
-        // Premier battement
-        playPulse(t, 72, baseGain, 0.13);
-        // Deuxième battement plus doux
-        playPulse(t + 0.16, 58, baseGain * 0.72, 0.16);
+        const baseGain = intense ? 0.55 : 0.32;
+        // Premier battement lourd
+        playPulse(t, 72, baseGain, 0.14);
+        // Deuxième battement décalé
+        playPulse(t + 0.16, 56, baseGain * 0.75, 0.17);
       }
 
-      // All weird noises disabled
       doorCreak() {}
       deathTone() {}
       survivalTone() {}
@@ -706,7 +796,8 @@
       gameState.status = 'revealing';
       broadcastState();
 
-      // Deep double thud as the dissolution begins
+      // Deep double thud as the dissolution begins and music swells
+      audio.setTension(true);
       audio.heartbeat(true);
 
       // Mid-dissolve heartbeat shock
@@ -729,6 +820,7 @@
 
       // Long, slow 7.5-second resolution so tension lingers heavily
       setTimeout(() => {
+        audio.setTension(false);
         if (gameState.status !== 'revealing') return;
 
         const trap = gameState.trapDoor;
