@@ -51,7 +51,6 @@
       touch-action: manipulation;
     }
 
-    /* Prevent mobile keyboard auto-zoom by keeping base size at 16px on mobile */
     input[type="text"] {
       font-size: 16px !important;
     }
@@ -61,7 +60,6 @@
       }
     }
     
-    /* Screen slow dissolves */
     .screen-view {
       transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1), transform 1.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -78,7 +76,6 @@
       pointer-events: auto;
     }
 
-    /* Monolithic Obelisks / Portals */
     .monolith-card {
       transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
@@ -93,7 +90,6 @@
       max-height: 48vh;
     }
 
-    /* Slow creeping dissolve of the veil */
     .monolith-veil {
       transition: opacity 3.6s cubic-bezier(0.33, 1, 0.68, 1), filter 3.6s ease, transform 4.2s ease;
       background: radial-gradient(circle at 50% 30%, #1c1c1c 0%, #080808 85%);
@@ -124,7 +120,10 @@
       animation: heartbeat 2.6s infinite ease-in-out;
     }
 
-    /* Custom dark slider styling */
+    .pulse-ritual {
+      animation: ritualPulse 1.8s infinite ease-in-out;
+    }
+
     input[type=range].dark-slider {
       -webkit-appearance: none;
       appearance: none;
@@ -164,6 +163,11 @@
       45% { opacity: 1; transform: scale(1.015); }
       55% { opacity: 0.8; transform: scale(0.995); }
       65% { opacity: 0.95; transform: scale(1.01); }
+    }
+
+    @keyframes ritualPulse {
+      0%, 100% { transform: scale(1); opacity: 0.4; }
+      50% { transform: scale(1.12); opacity: 0.9; }
     }
   </style>
 </head>
@@ -489,6 +493,45 @@
       </div>
     </section>
 
+    <!-- SCREEN: SUSPENSE / RELIC DISTRIBUTION ORACLE (INTER-MANCHE) -->
+    <section id="screen-suspense" class="screen-view entering hidden w-full max-w-md flex-col items-center justify-center text-center gap-6 my-auto py-10">
+      <div class="space-y-2">
+        <span class="text-[9px] sm:text-[10px] tracking-[0.35em] uppercase text-zinc-600 font-mono">
+          Entre les mondes
+        </span>
+        <h2 class="font-cinzel text-2xl sm:text-3xl font-black tracking-[0.25em] text-bone uppercase">
+          L'Épreuve du Néant
+        </h2>
+      </div>
+
+      <!-- Central Relic Orb / Totem of suspense -->
+      <div class="relative flex items-center justify-center my-4 w-44 h-44">
+        <div id="suspense-orb-pulse" class="absolute inset-0 rounded-full border border-zinc-800 bg-zinc-950/60 backdrop-blur-xl pulse-ritual shadow-[0_0_50px_rgba(0,0,0,0.9)]"></div>
+        
+        <!-- Spinning occult rings -->
+        <div class="absolute inset-2 rounded-full border border-dashed border-zinc-800/80 animate-spin" style="animation-duration: 22s;"></div>
+        <div class="absolute inset-6 rounded-full border border-zinc-900 animate-spin" style="animation-duration: 12s; animation-direction: reverse;"></div>
+
+        <!-- Center Icon container (Initially obscure, then reveals) -->
+        <div id="suspense-icon-container" class="relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-90">
+          <i id="suspense-icon" class="fa-solid fa-eye-slash text-3xl sm:text-4xl text-zinc-700"></i>
+        </div>
+      </div>
+
+      <!-- Live suspense status text -->
+      <div class="space-y-2 max-w-xs">
+        <p id="suspense-oracle-text" class="text-xs sm:text-sm font-mono text-zinc-400 tracking-wider min-h-[44px] flex items-center justify-center">
+          Le néant scrute la profondeur de ton âme...
+        </p>
+        <div id="suspense-verdict-tag" class="hidden text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border"></div>
+      </div>
+
+      <!-- Action: Continuer vers le bilan de manche -->
+      <button id="btn-suspense-continue" type="button" class="hidden opacity-0 transition-opacity duration-1000 mt-2 px-6 py-3 rounded-xl border border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-bone text-xs uppercase tracking-[0.2em] font-bold active:scale-95">
+        Contempler le Destin
+      </button>
+    </section>
+
     <!-- SCREEN: GAME OVER / ROUND SUMMARY -->
     <section id="screen-gameover" class="screen-view entering hidden w-full max-w-md flex-col items-center gap-3 sm:gap-5 py-4 sm:py-6 text-center my-auto">
       <div class="space-y-1.5 sm:space-y-2">
@@ -520,6 +563,7 @@
         <div id="gameover-all-relics-summary" class="pt-1 border-t border-zinc-900/80 space-y-1 text-[10px] text-zinc-500 font-mono"></div>
       </div>
 
+      <!-- Leaderboard & Presence Status -->
       <div class="w-full bg-ash/40 border border-zinc-900 rounded-2xl p-3 sm:p-4 space-y-2">
         <div class="flex justify-between text-[9px] sm:text-[10px] text-zinc-600 uppercase tracking-widest px-2 pb-1 border-b border-zinc-900">
           <span>Présence</span>
@@ -528,10 +572,19 @@
         <div id="gameover-leaderboard" class="space-y-1.5 max-h-40 overflow-y-auto pr-0.5"></div>
       </div>
 
+      <!-- Inter-round Ready & Next Round Control -->
       <div class="w-full flex flex-col gap-2">
-        <button id="btn-next-round" class="hidden w-full py-3.5 bg-zinc-200 active:scale-[0.98] hover:bg-white text-black text-xs tracking-[0.2em] uppercase font-bold rounded-xl transition-all">
-          Manche Suivante
+        <!-- Button: Player toggles readiness for the next round -->
+        <button id="btn-next-round-ready" class="hidden w-full py-3.5 border border-zinc-700 bg-zinc-900 active:scale-[0.98] text-xs uppercase tracking-[0.2em] text-zinc-300 font-bold rounded-xl transition-all">
+          Se Préparer pour la Suite
         </button>
+
+        <!-- Button: Host triggers next round once everyone is ready -->
+        <button id="btn-next-round" class="hidden w-full py-3.5 bg-void border border-zinc-900 text-zinc-600 text-xs tracking-[0.2em] uppercase font-bold rounded-xl cursor-not-allowed transition-all">
+          En attente des âmes...
+        </button>
+
+        <!-- Button: Replay tournament when whole match ends -->
         <button id="btn-replay" class="w-full py-3.5 bg-zinc-900 active:scale-[0.98] hover:bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs tracking-[0.2em] uppercase font-bold rounded-xl transition-all">
           Recommencer la partie
         </button>
@@ -681,7 +734,7 @@
           osc1.start();
           osc2.start();
 
-          // Dissonant tension pad activated during monolith veil dissolutions
+          // Dissonant tension pad activated during monolith veil dissolutions & suspense
           this.tensionGain = this.ctx.createGain();
           this.tensionGain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
 
@@ -794,6 +847,10 @@
 
     let pendingRelicUsage = null;
     let activeSafeDoorHint = null;
+
+    // Track suspense sequence states
+    let localSuspenseCompletedForRound = 0;
+    let suspenseAnimationTimeout = null;
 
     const ALL_RELIC_KEYS = ['heart', 'mirror', 'curse', 'chain', 'veil', 'swap'];
 
@@ -996,6 +1053,7 @@
             p.activeChainTarget = null;
             p.isVeiled = false;
             p.isCursed = false;
+            p.isReady = p.isBot ? true : false;
           });
 
           broadcastState();
@@ -1025,6 +1083,7 @@
         gameState.currentRound = 1;
         gameState.lastRoundRewards = {};
         gameState.status = 'lobby';
+        localSuspenseCompletedForRound = 0;
         broadcastState();
       }
     }
@@ -1334,8 +1393,14 @@
             survivors[0].score = (survivors[0].score || 0) + 2;
           }
           
-          if (gameState.currentRound < gameState.totalRounds) {
+          const isInterRound = gameState.currentRound < gameState.totalRounds;
+
+          if (isInterRound) {
             distributeBetweenRoundsRelics();
+            // Reset player readiness for the next round
+            Object.values(gameState.players).forEach(p => {
+              p.isReady = p.isBot ? true : false;
+            });
           }
 
           gameState.status = 'ended';
@@ -1379,6 +1444,95 @@
       });
     }
 
+    /* =========================================================
+       SUSPENSE RITUAL / INTER-ROUND RELIC REVELATION LOGIC
+       ========================================================= */
+    function triggerSuspenseRitual() {
+      showScreen('screen-suspense');
+
+      audio.setTension(true);
+      audio.heartbeat(true);
+
+      const oracleText = document.getElementById('suspense-oracle-text');
+      const icon = document.getElementById('suspense-icon');
+      const iconContainer = document.getElementById('suspense-icon-container');
+      const verdictTag = document.getElementById('suspense-verdict-tag');
+      const continueBtn = document.getElementById('btn-suspense-continue');
+      const orbPulse = document.getElementById('suspense-orb-pulse');
+
+      if (!oracleText || !icon || !iconContainer || !verdictTag || !continueBtn) return;
+
+      // Reset initial state
+      oracleText.innerText = "Le néant scrute la profondeur de ton être...";
+      oracleText.className = "text-xs sm:text-sm font-mono text-zinc-400 tracking-wider min-h-[44px] flex items-center justify-center transition-all duration-700";
+      icon.className = "fa-solid fa-eye-slash text-3xl sm:text-4xl text-zinc-700 transition-all duration-700";
+      iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-90";
+      verdictTag.className = "hidden";
+      continueBtn.classList.add('hidden', 'opacity-0');
+      continueBtn.classList.remove('opacity-100');
+      if (orbPulse) orbPulse.className = "absolute inset-0 rounded-full border border-zinc-800 bg-zinc-950/60 backdrop-blur-xl pulse-ritual shadow-[0_0_50px_rgba(0,0,0,0.9)]";
+
+      clearTimeout(suspenseAnimationTimeout);
+
+      // Phase 1: Mounting tension (2 seconds)
+      suspenseAnimationTimeout = setTimeout(() => {
+        audio.heartbeat(true);
+        oracleText.innerText = "Les voix anciennes délibèrent de ton sort...";
+        oracleText.classList.add('text-zinc-200');
+        icon.className = "fa-solid fa-spinner text-3xl sm:text-4xl text-zinc-500 animate-spin";
+
+        // Phase 2: Ultimate heartbeat & revelation (4 seconds)
+        suspenseAnimationTimeout = setTimeout(() => {
+          audio.heartbeat(true);
+          audio.setTension(false);
+
+          const myRewards = (gameState.lastRoundRewards && gameState.lastRoundRewards[myId]) || [];
+          const hasRelic = myRewards.length > 0;
+
+          if (hasRelic) {
+            const firstRelic = myRewards[0];
+            const def = RELIC_DEFINITIONS[firstRelic.item];
+            const relicName = def ? def.name : firstRelic.item;
+            const relicIcon = def ? def.icon : 'fa-solid fa-wand-magic-sparkles text-zinc-200';
+
+            oracleText.innerHTML = `L'abysse t'accorde une faveur : <br><strong class="text-bone font-cinzel text-base tracking-widest mt-1 block uppercase">${relicName}</strong>`;
+            icon.className = `${relicIcon} text-4xl sm:text-5xl transition-all duration-700 animate-pulse`;
+            iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-125";
+            
+            verdictTag.innerText = "Relique Accordée";
+            verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-400 bg-zinc-900/90 text-bone shadow-[0_0_20px_rgba(255,255,255,0.2)]";
+
+            if (orbPulse) orbPulse.className = "absolute inset-0 rounded-full border border-zinc-600 bg-zinc-900/50 backdrop-blur-xl shadow-[0_0_60px_rgba(255,255,255,0.15)] transition-all duration-1000";
+          } else {
+            oracleText.innerHTML = `Le néant s'est détourné.<br><span class="text-zinc-500 text-xs italic">Aucune relique ne t'est accordée pour ce palier.</span>`;
+            icon.className = "fa-solid fa-ban text-4xl text-zinc-700 transition-all duration-700";
+            iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-100 opacity-60";
+            
+            verdictTag.innerText = "Refus du Silence";
+            verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-900 bg-void text-zinc-600";
+
+            if (orbPulse) orbPulse.className = "absolute inset-0 rounded-full border border-zinc-900 bg-void backdrop-blur-xl shadow-[0_0_25px_rgba(0,0,0,0.8)] transition-all duration-1000";
+          }
+
+          // Reveal continue button
+          continueBtn.classList.remove('hidden');
+          requestAnimationFrame(() => {
+            continueBtn.classList.remove('opacity-0');
+            continueBtn.classList.add('opacity-100');
+          });
+
+        }, 2200);
+      }, 1800);
+    }
+
+    const btnSuspenseContinue = document.getElementById('btn-suspense-continue');
+    if (btnSuspenseContinue) {
+      btnSuspenseContinue.addEventListener('click', () => {
+        localSuspenseCompletedForRound = gameState.currentRound;
+        renderUI();
+      });
+    }
+
     function renderUI() {
       const me = gameState.players[myId];
 
@@ -1389,8 +1543,15 @@
         showScreen('screen-game');
         renderGameUI(me);
       } else if (gameState.status === 'ended') {
-        showScreen('screen-gameover');
-        renderGameOverUI();
+        const isInterRound = gameState.currentRound < gameState.totalRounds;
+
+        // If items are enabled and we haven't experienced the suspense ritual for this inter-round
+        if (isInterRound && gameState.itemsEnabled && localSuspenseCompletedForRound < gameState.currentRound) {
+          triggerSuspenseRitual();
+        } else {
+          showScreen('screen-gameover');
+          renderGameOverUI();
+        }
       }
     }
 
@@ -1829,22 +1990,29 @@
     }
 
     function renderGameOverUI() {
+      const me = gameState.players[myId];
       const players = Object.values(gameState.players);
       const survivors = players.filter(p => p.isAlive);
       const title = document.getElementById('gameover-title');
       const subtitle = document.getElementById('gameover-subtitle');
       const roundStatus = document.getElementById('gameover-round-status');
+      
+      const btnNextRoundReady = document.getElementById('btn-next-round-ready');
       const btnNextRound = document.getElementById('btn-next-round');
       const btnReplay = document.getElementById('btn-replay');
 
       const isTournamentEnd = gameState.currentRound >= gameState.totalRounds;
       const sorted = [...players].sort((a, b) => (b.score || 0) - (a.score || 0));
 
+      const allPlayersReady = players.length >= 1 && players.every(p => p.isReady);
+
       if (isTournamentEnd) {
         const champion = sorted[0];
         if (title) title.innerText = `${champion ? champion.name : 'Néant'} Triomphe`;
         if (subtitle) subtitle.innerText = `Vainqueur suprême après ${gameState.totalRounds} manche(s)`;
         if (roundStatus) roundStatus.innerText = "Fin de la partie";
+        
+        if (btnNextRoundReady) btnNextRoundReady.classList.add('hidden');
         if (btnNextRound) btnNextRound.classList.add('hidden');
         if (btnReplay) btnReplay.innerText = "Nouvelle Partie";
       } else {
@@ -1854,10 +2022,39 @@
         }
         if (subtitle) subtitle.innerText = `Palier ${getRoman(gameState.floor)} atteint`;
         if (roundStatus) roundStatus.innerText = `Manche ${gameState.currentRound} sur ${gameState.totalRounds} terminée`;
-        if (btnNextRound) {
-          btnNextRound.classList.remove('hidden');
-          btnNextRound.innerText = `Passer à la Manche ${gameState.currentRound + 1}`;
+
+        // Manage inter-round readiness buttons
+        if (btnNextRoundReady) {
+          btnNextRoundReady.classList.remove('hidden');
+          if (me && me.isReady) {
+            btnNextRoundReady.className = "w-full py-3.5 border border-zinc-400 bg-zinc-200 text-black text-xs uppercase tracking-[0.2em] font-black rounded-xl transition-all";
+            btnNextRoundReady.innerText = "Prêt pour la Suite ✓";
+          } else {
+            btnNextRoundReady.className = "w-full py-3.5 border border-zinc-700 bg-zinc-900 active:scale-[0.98] text-xs uppercase tracking-[0.2em] text-zinc-300 hover:text-white font-bold rounded-xl transition-all";
+            btnNextRoundReady.innerText = "Se Préparer pour la Suite";
+          }
         }
+
+        if (btnNextRound) {
+          if (isHost) {
+            btnNextRound.classList.remove('hidden');
+            if (allPlayersReady) {
+              btnNextRound.disabled = false;
+              btnNextRound.innerText = `Lancer Manche ${gameState.currentRound + 1}`;
+              btnNextRound.className = "w-full py-3.5 bg-zinc-200 active:scale-[0.98] hover:bg-white text-black text-xs tracking-[0.2em] uppercase font-bold rounded-xl cursor-pointer shadow-lg transition-all";
+            } else {
+              btnNextRound.disabled = true;
+              btnNextRound.innerText = "En attente des âmes prêtes...";
+              btnNextRound.className = "w-full py-3.5 bg-void border border-zinc-900 text-zinc-600 text-xs tracking-[0.2em] uppercase font-bold rounded-xl cursor-not-allowed transition-all";
+            }
+          } else {
+            btnNextRound.classList.remove('hidden');
+            btnNextRound.disabled = true;
+            btnNextRound.innerText = allPlayersReady ? "En attente du Maître du Sanctuaire..." : "En attente des autres âmes...";
+            btnNextRound.className = "w-full py-3.5 bg-void border border-zinc-900 text-zinc-600 text-xs tracking-[0.2em] uppercase font-bold rounded-xl cursor-not-allowed transition-all";
+          }
+        }
+
         if (btnReplay) btnReplay.innerText = "Réinitialiser la partie";
       }
 
@@ -1926,6 +2123,7 @@
         }
       }
 
+      // Leaderboard display with ready badges
       const leaderboard = document.getElementById('gameover-leaderboard');
       if (leaderboard) {
         leaderboard.innerHTML = '';
@@ -1941,13 +2139,22 @@
             }).join(' ');
           }
 
+          const readyBadge = !isTournamentEnd ? `
+            <span class="text-[9px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wider ${p.isReady ? 'text-zinc-300 border border-zinc-700 bg-zinc-900' : 'text-zinc-600 border border-zinc-950'}">
+              ${p.isReady ? 'Prêt' : 'Attente'}
+            </span>
+          ` : '';
+
           row.innerHTML = `
             <div class="flex items-center gap-2">
               <span class="font-mono text-zinc-600 font-bold">${idx + 1}.</span>
-              <span class="font-bold text-bone">${p.name}</span>
+              <span class="font-bold text-bone">${p.name} ${p.id === myId ? '<span class="text-[9px] text-zinc-500 font-normal">(Toi)</span>' : ''}</span>
               <div class="flex items-center gap-1 ml-1">${relicsIcons}</div>
             </div>
-            <span class="font-mono text-zinc-400 font-bold">${p.score || 0} pts</span>
+            <div class="flex items-center gap-2">
+              ${readyBadge}
+              <span class="font-mono text-zinc-400 font-bold">${p.score || 0} pts</span>
+            </div>
           `;
           leaderboard.appendChild(row);
         });
@@ -2079,6 +2286,7 @@
 
     function leaveRoom() {
       clearInterval(timerInterval);
+      clearTimeout(suspenseAnimationTimeout);
       if (broadcastChannel) {
         try {
           broadcastChannel.postMessage({
@@ -2113,6 +2321,7 @@
         players: {},
         lastRoundRewards: {}
       };
+      localSuspenseCompletedForRound = 0;
       const roomBadge = document.getElementById('room-badge');
       if (roomBadge) {
         roomBadge.classList.add('hidden');
@@ -2125,8 +2334,28 @@
     const leaveBtnEl = document.getElementById('btn-leave-room');
     if (leaveBtnEl) leaveBtnEl.addEventListener('click', leaveRoom);
 
+    // Button to mark readiness between rounds
+    const btnNextRoundReady = document.getElementById('btn-next-round-ready');
+    if (btnNextRoundReady) {
+      btnNextRoundReady.addEventListener('click', () => {
+        audio.init();
+        audio.heartbeat(true);
+        sendToHost({ type: 'TOGGLE_READY', id: myId });
+      });
+    }
+
     const btnNextRound = document.getElementById('btn-next-round');
-    if (btnNextRound) btnNextRound.addEventListener('click', () => sendToHost({ type: 'NEXT_ROUND' }));
+    if (btnNextRound) {
+      btnNextRound.addEventListener('click', () => {
+        if (!isHost) return;
+        const allReady = Object.values(gameState.players).every(p => p.isReady);
+        if (allReady) {
+          sendToHost({ type: 'NEXT_ROUND' });
+        } else {
+          showToast("Toutes les âmes ne sont pas encore prêtes.");
+        }
+      });
+    }
 
     const btnReplay = document.getElementById('btn-replay');
     if (btnReplay) btnReplay.addEventListener('click', () => sendToHost({ type: 'REQUEST_REPLAY' }));
@@ -2167,6 +2396,7 @@
         isHost = true;
         gameState.code = 'SOLO';
         gameState.currentRound = 1;
+        localSuspenseCompletedForRound = 0;
 
         gameState.players = {
           [myId]: { id: myId, name: myName, isBot: false, isReady: false, isAlive: true, score: 0, chosenDoor: null, deathFloor: null, items: [] },
@@ -2220,6 +2450,7 @@
         myName = (userInput && userInput.value.trim()) || `Âme_${Math.floor(Math.random() * 900 + 100)}`;
         isHost = true;
         gameState.currentRound = 1;
+        localSuspenseCompletedForRound = 0;
 
         gameState.players = {
           [myId]: { id: myId, name: myName, isBot: false, isReady: false, isAlive: true, score: 0, chosenDoor: null, deathFloor: null, items: [] }
@@ -2244,6 +2475,7 @@
         const userInput = document.getElementById('input-username');
         myName = (userInput && userInput.value.trim()) || `Âme_${Math.floor(Math.random() * 900 + 100)}`;
         isHost = false;
+        localSuspenseCompletedForRound = 0;
 
         initClientPeer(code);
         showScreen('screen-lobby');
@@ -2272,6 +2504,7 @@
           p.activeChainTarget = null;
           p.isVeiled = false;
           p.isCursed = false;
+          p.isReady = p.isBot ? true : false;
         });
 
         gameState.floor = 1;
