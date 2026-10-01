@@ -601,13 +601,13 @@
         </div>
         
         <div class="p-4 overflow-y-auto space-y-3.5 text-xs font-mono">
-          <div class="p-2.5 rounded-xl border border-zinc-900 bg-void space-y-1">
+         <div class="p-2.5 rounded-xl border border-zinc-900 bg-void space-y-1">
             <div class="text-red-400 font-bold flex items-center gap-1.5">
               <i class="fa-solid fa-heart"></i>
               <span>Cœur de Sursis</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              Attribué d'office à l'âme qui a parcouru le plus de chemin (dès la manche 2). Ne se cumule pas (max 1). Si plusieurs joueurs perdent en même temps au plus haut niveau, le cœur n'est pas accordé. Il absorbe une mort fatale.
+              Attribué d'office à l'âme qui est allée le plus loin dans la manche écoulée (dès la manche 2). Ne se cumule pas (max 1). Si plusieurs joueurs périssent au même palier maximal, le cœur n'est pas accordé. Il absorbe une mort fatale.
             </p>
           </div>
 
@@ -1083,6 +1083,7 @@
     }
 
     /* DISTRIBUTION DES RELIQUES CONFORME AUX NOUVELLES RÈGLES */
+    /* DISTRIBUTION DES RELIQUES CONFORME AUX RÈGLES DE PALIER DE MANCHE */
     function distributeBetweenRoundsRelics() {
       if (!gameState.itemsEnabled) {
         gameState.lastRoundRewards = {};
@@ -1095,19 +1096,33 @@
       const rewardsLog = {};
       players.forEach(p => { rewardsLog[p.id] = []; });
 
+      // Calcul du palier atteint spécifiquement dans CETTE manche pour chaque âme :
+      // - Si le joueur est mort : p.deathFloor
+      // - S'il a survécu jusqu'à la fin de la manche : gameState.floor
+      const roundFloorReached = (p) => {
+        return p.deathFloor !== null && p.deathFloor !== undefined ? p.deathFloor : gameState.floor;
+      };
+
+      const sortedByFloor = [...players].sort((a, b) => roundFloorReached(b) - roundFloorReached(a));
+      const highestFloor = roundFloorReached(sortedByFloor[0]);
+
+      // Tri par score cumulé global pour le miroir (les derniers au classement)
       const sortedByScore = [...players].sort((a, b) => (b.score || 0) - (a.score || 0));
-      const highestScore = sortedByScore[0].score || 0;
       const lowestScore = sortedByScore[sortedByScore.length - 1].score || 0;
 
-      // 1. Cœur de Sursis : uniquement à l'unique meilleur joueur (si égalité, pas de cœur accordé)
+      // 1. Cœur de Sursis : attribué UNIQUEMENT à l'unique joueur ayant atteint le plus haut palier dans la manche.
+      // Si plusieurs joueurs sont morts au même palier maximal (égalité), aucun cœur n'est attribué.
       if (upcomingRound >= 2 && gameState.allowedItems.includes('heart')) {
-        const leaders = sortedByScore.filter(p => (p.score || 0) === highestScore);
-        if (leaders.length === 1) {
-          const leader = leaders[0];
+        const floorLeaders = sortedByFloor.filter(p => roundFloorReached(p) === highestFloor);
+        if (floorLeaders.length === 1) {
+          const leader = floorLeaders[0];
           leader.items = leader.items || [];
           if (!leader.items.includes('heart')) {
             leader.items.push('heart');
-            rewardsLog[leader.id].push({ item: 'heart', reason: 'Maître du Sanctuaire (Seul survivant au sommet)' });
+            rewardsLog[leader.id].push({ 
+              item: 'heart', 
+              reason: `Maître du Palier (Seul à atteindre le Palier ${getRoman(highestFloor)})` 
+            });
           }
         }
       }
@@ -1121,12 +1136,15 @@
           luckyLoser.items = luckyLoser.items || [];
           if (!luckyLoser.items.includes('mirror')) {
             luckyLoser.items.push('mirror');
-            rewardsLog[luckyLoser.id].push({ item: 'mirror', reason: 'Lueur du Trépas (Tiré au sort parmi les premiers tombés)' });
+            rewardsLog[luckyLoser.id].push({ 
+              item: 'mirror', 
+              reason: 'Lueur du Trépas (Tiré au sort parmi les premiers tombés)' 
+            });
           }
         }
       }
 
-      // 3. Reste des items (curse, chain, veil, swap) : chaque joueur a une chance sur trois (1/3) d'en obtenir un
+      // 3. Reste des items (curse, chain, veil, swap) : chaque joueur a strictement 1 chance sur 3 (1/3)
       const randomPool = ['curse', 'chain', 'veil', 'swap'].filter(k => 
         gameState.allowedItems.includes(k) && (k !== 'veil' || gameState.revealPicksLive)
       );
@@ -1134,7 +1152,6 @@
       if (randomPool.length > 0) {
         players.forEach(p => {
           p.items = p.items || [];
-          // 1 chance sur 3 exacte
           if (Math.random() < (1 / 3)) {
             const picked = randomPool[Math.floor(Math.random() * randomPool.length)];
             p.items.push(picked);
