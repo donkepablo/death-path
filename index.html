@@ -193,7 +193,8 @@
 
   <main class="flex-1 max-w-4xl w-full mx-auto px-3 sm:px-4 py-4 sm:py-8 flex flex-col justify-center items-center relative">
 
-    <section id="screen-auth" class="screen-view active w-full max-w-md flex flex-col gap-6 sm:gap-8 my-auto">
+    <!-- SCREEN: AUTH / WELCOME -->
+    <section id="screen-auth" class="screen-view active w-full max-w-md flex flex-col gap-5 sm:gap-7 my-auto">
       <div class="text-center space-y-1.5 sm:space-y-2">
         <h2 class="text-3xl sm:text-5xl font-cinzel font-black tracking-[0.25em] text-white">
           DEATH PATH
@@ -201,7 +202,7 @@
         <p class="text-zinc-600 text-[10px] sm:text-xs tracking-widest uppercase">Trois issues. Un seul néant.</p>
       </div>
 
-      <div class="bg-ash/70 border border-zinc-800/80 rounded-2xl p-4 sm:p-8 backdrop-blur-md space-y-4 sm:space-y-6 shadow-2xl">
+      <div class="bg-ash/70 border border-zinc-800/80 rounded-2xl p-4 sm:p-7 backdrop-blur-md space-y-4 sm:space-y-5 shadow-2xl">
         <div>
           <label class="block text-[10px] tracking-[0.2em] text-zinc-500 uppercase mb-2">Identifiant</label>
           <input id="input-username" type="text" maxlength="12" placeholder="Anonyme" 
@@ -232,14 +233,17 @@
             </button>
           </div>
         </div>
-        <p class="text-[9px] sm:text-[10px] text-zinc-600 text-center tracking-wider">
-          Multi-appareils & réseau local actifs automatiquement
-        </p>
+
+        <button id="btn-open-grimoire" type="button" class="w-full py-2.5 border border-zinc-900 hover:border-zinc-700 bg-void rounded-xl text-zinc-500 hover:text-zinc-300 text-[10px] tracking-[0.2em] uppercase font-mono flex items-center justify-center gap-2 transition-all">
+          <i class="fa-solid fa-book-skull text-xs"></i>
+          <span>Grimoire des Reliques</span>
+        </button>
       </div>
     </section>
 
+    <!-- SCREEN: LOBBY -->
     <section id="screen-lobby" class="screen-view entering hidden w-full max-w-lg flex-col gap-4 sm:gap-6 my-auto">
-      <div class="bg-ash/60 border border-zinc-800/80 rounded-2xl p-4 sm:p-8 backdrop-blur-md space-y-4 sm:space-y-6 shadow-2xl">
+      <div class="bg-ash/60 border border-zinc-800/80 rounded-2xl p-4 sm:p-7 backdrop-blur-md space-y-4 sm:space-y-5 shadow-2xl">
         
         <div class="flex items-center justify-between border-b border-zinc-900 pb-3 sm:pb-4">
           <div>
@@ -264,11 +268,11 @@
 
         <div class="space-y-1.5 sm:space-y-2">
           <div class="text-[9px] sm:text-[10px] tracking-widest text-zinc-600 uppercase">Présences (<span id="lobby-player-count">0</span>)</div>
-          <div id="lobby-players-grid" class="space-y-1.5 max-h-36 sm:max-h-52 overflow-y-auto pr-1"></div>
+          <div id="lobby-players-grid" class="space-y-1.5 max-h-32 sm:max-h-48 overflow-y-auto pr-1"></div>
         </div>
 
-        <!-- Round configuration slider -->
-        <div class="pt-3 sm:pt-4 border-t border-zinc-900 space-y-2.5 sm:space-y-3">
+        <!-- Rounds slider -->
+        <div class="pt-3 border-t border-zinc-900 space-y-2">
           <div class="flex items-center justify-between text-xs">
             <span class="text-[9px] sm:text-[10px] tracking-widest text-zinc-500 uppercase">Nombre de Manches</span>
             <div class="flex items-center gap-1.5 font-cinzel font-bold text-white tracking-widest">
@@ -281,50 +285,18 @@
               class="dark-slider w-full cursor-pointer accent-white transition-all h-6 sm:h-auto" />
           </div>
           
-          <!-- Graduations mathématiquement alignées au pixel près avec le centre du curseur (1 à 10) -->
           <div id="slider-ticks-track" class="relative w-full h-6 select-none">
-            <button type="button" data-val="1" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 0 / 9);">
-              <span class="w-[1px] h-1 bg-zinc-800 group-hover:bg-zinc-500 mb-0.5"></span>
-              <span class="text-[9px] sm:text-[10px] font-mono text-zinc-600 group-hover:text-zinc-300">1</span>
-            </button>
-            <button type="button" data-val="2" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 1 / 9);">
-              <span class="w-[1px] h-1 bg-zinc-800 group-hover:bg-zinc-500 mb-0.5"></span>
-              <span class="text-[9px] sm:text-[10px] font-mono text-zinc-600 group-hover:text-zinc-300">2</span>
-            </button>
-            <button type="button" data-val="3" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 2 / 9);">
-              <span class="w-[1px] h-1 bg-zinc-800 group-hover:bg-zinc-500 mb-0.5"></span>
-              <span class="text-[9px] sm:text-[10px] font-mono text-white font-bold scale-110">3</span>
-            </button>
-            <button type="button" data-val="4" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 3 / 9);">
-              <span class="w-[1px] h-1 bg-zinc-800 group-hover:bg-zinc-500 mb-0.5"></span>
-              <span class="text-[9px] sm:text-[10px] font-mono text-zinc-600 group-hover:text-zinc-300">4</span>
-            </button>
-            <button type="button" data-val="5" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 4 / 9);">
-              <span class="w-[1px] h-1 bg-zinc-800 group-hover:bg-zinc-500 mb-0.5"></span>
-              <span class="text-[9px] sm:text-[10px] font-mono text-zinc-600 group-hover:text-zinc-300">5</span>
-            </button>
-            <button type="button" data-val="6" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 5 / 9);">
-              <span class="w-[1px] h-1 bg-zinc-800 group-hover:bg-zinc-500 mb-0.5"></span>
-              <span class="text-[9px] sm:text-[10px] font-mono text-zinc-600 group-hover:text-zinc-300">6</span>
-            </button>
-            <button type="button" data-val="7" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 6 / 9);">
-              <span class="w-[1px] h-1 bg-zinc-800 group-hover:bg-zinc-500 mb-0.5"></span>
-              <span class="text-[9px] sm:text-[10px] font-mono text-zinc-600 group-hover:text-zinc-300">7</span>
-            </button>
-            <button type="button" data-val="8" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 7 / 9);">
-              <span class="w-[1px] h-1 bg-zinc-800 group-hover:bg-zinc-500 mb-0.5"></span>
-              <span class="text-[9px] sm:text-[10px] font-mono text-zinc-600 group-hover:text-zinc-300">8</span>
-            </button>
-            <button type="button" data-val="9" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 8 / 9);">
-              <span class="w-[1px] h-1 bg-zinc-800 group-hover:bg-zinc-500 mb-0.5"></span>
-              <span class="text-[9px] sm:text-[10px] font-mono text-zinc-600 group-hover:text-zinc-300">9</span>
-            </button>
-            <button type="button" data-val="10" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 9 / 9);">
-              <span class="w-[1px] h-1 bg-zinc-800 group-hover:bg-zinc-500 mb-0.5"></span>
-              <span class="text-[9px] sm:text-[10px] font-mono text-zinc-600 group-hover:text-zinc-300">10</span>
-            </button>
+            <button type="button" data-val="1" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 0 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">1</span></button>
+            <button type="button" data-val="2" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 1 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">2</span></button>
+            <button type="button" data-val="3" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 2 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-white font-bold scale-110">3</span></button>
+            <button type="button" data-val="4" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 3 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">4</span></button>
+            <button type="button" data-val="5" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 4 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">5</span></button>
+            <button type="button" data-val="6" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 5 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">6</span></button>
+            <button type="button" data-val="7" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 6 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">7</span></button>
+            <button type="button" data-val="8" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 7 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">8</span></button>
+            <button type="button" data-val="9" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 8 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">9</span></button>
+            <button type="button" data-val="10" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 9 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">10</span></button>
           </div>
-
           <p id="slider-host-hint" class="hidden text-[9px] text-zinc-600 tracking-wider text-center italic">
             Réglé par l'Hôte du Sanctuaire
           </p>
@@ -350,22 +322,70 @@
           </div>
         </div>
 
-        <!-- Live Picks Toggle -->
+        <!-- Live Picks Illuminated Button -->
         <div class="pt-3 border-t border-zinc-900 flex items-center justify-between text-xs">
           <div class="pr-2">
             <div class="text-[10px] tracking-widest text-zinc-400 uppercase font-bold">Révélation en Direct</div>
             <div class="text-[9px] text-zinc-600">Voir les portes choisies en temps réel</div>
           </div>
-          <button id="btn-toggle-live-picks" type="button" class="w-12 h-6 rounded-full p-0.5 transition-colors duration-300 bg-zinc-800 border border-zinc-700/60 relative focus:outline-none flex-shrink-0">
-            <span id="toggle-live-picks-knob" class="block w-5 h-5 rounded-full bg-zinc-400 shadow-md transform transition-transform duration-300 translate-x-0"></span>
+          <button id="btn-toggle-live-picks" type="button" class="px-3 py-1.5 rounded-xl border text-[10px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 focus:outline-none">
+            <span id="live-picks-indicator" class="w-1.5 h-1.5 rounded-full"></span>
+            <span id="live-picks-text">Secret</span>
           </button>
+        </div>
+
+        <!-- Relics / Items Mode Illuminated Button -->
+        <div class="pt-3 border-t border-zinc-900 space-y-2.5">
+          <div class="flex items-center justify-between text-xs">
+            <div class="pr-2">
+              <div class="text-[10px] tracking-widest text-zinc-300 uppercase font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-wand-magic-sparkles text-zinc-400"></i>
+                <span>Mode Reliques</span>
+              </div>
+              <div class="text-[9px] text-zinc-600">Distribue des items stratégiques</div>
+            </div>
+            <button id="btn-toggle-items-mode" type="button" class="px-3 py-1.5 rounded-xl border text-[10px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 focus:outline-none">
+              <span id="items-mode-indicator" class="w-1.5 h-1.5 rounded-full"></span>
+              <span id="items-mode-text">Actif</span>
+            </button>
+          </div>
+
+          <!-- Relic checkboxes box -->
+          <div id="items-selection-box" class="bg-void/60 border border-zinc-900 rounded-xl p-2.5 space-y-1.5">
+            <div class="text-[9px] tracking-widest text-zinc-500 uppercase font-bold mb-1">Reliques actives dans l'arène :</div>
+            <div class="grid grid-cols-2 gap-1.5 text-[10px] font-mono text-zinc-400">
+              <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
+                <input type="checkbox" data-item="heart" class="item-chk accent-zinc-200 rounded" checked />
+                <span>Cœur de Sursis</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
+                <input type="checkbox" data-item="mirror" class="item-chk accent-zinc-200 rounded" checked />
+                <span>Miroir d’Augure</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
+                <input type="checkbox" data-item="curse" class="item-chk accent-zinc-200 rounded" checked />
+                <span>Malédiction</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
+                <input type="checkbox" data-item="chain" class="item-chk accent-zinc-200 rounded" checked />
+                <span>Chaîne Damnée</span>
+              </label>
+              <label id="label-item-veil" class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200 transition-opacity">
+                <input type="checkbox" data-item="veil" class="item-chk accent-zinc-200 rounded" />
+                <span id="label-item-veil-text">Voile d’Ombre</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
+                <input type="checkbox" data-item="swap" class="item-chk accent-zinc-200 rounded" checked />
+                <span>Fétiche Échange</span>
+              </label>
+            </div>
+          </div>
         </div>
 
         <div class="pt-3 sm:pt-4 flex gap-2.5 sm:gap-3 border-t border-zinc-900">
           <button id="btn-toggle-ready" class="flex-1 py-3.5 sm:py-3 rounded-xl border border-zinc-700 bg-zinc-900 active:scale-[0.98] text-xs uppercase tracking-widest text-zinc-300 font-bold transition-all">
             Prêt
           </button>
-
           <button id="btn-start-game" class="flex-1 py-3.5 sm:py-3 rounded-xl border border-zinc-800 bg-void text-zinc-600 cursor-not-allowed text-xs uppercase tracking-widest font-bold transition-all">
             Commencer
           </button>
@@ -373,14 +393,15 @@
       </div>
     </section>
 
-    <section id="screen-game" class="screen-view entering hidden w-full flex-col items-center gap-3 sm:gap-6 my-auto">
+    <!-- SCREEN: GAMEPLAY -->
+    <section id="screen-game" class="screen-view entering hidden w-full flex-col items-center gap-3 sm:gap-5 my-auto">
       
       <!-- Minimal status header -->
-      <div class="w-full max-w-2xl flex items-center justify-between border-b border-zinc-900 pb-2.5 sm:pb-4">
+      <div class="w-full max-w-2xl flex items-center justify-between border-b border-zinc-900 pb-2.5 sm:pb-3">
         <div class="flex items-baseline gap-1.5 sm:gap-3">
           <span class="text-[9px] sm:text-[10px] text-zinc-600 tracking-[0.25em] uppercase">Palier</span>
           <span id="game-floor-number" class="font-cinzel text-2xl sm:text-3xl font-black text-white">I</span>
-          <span id="game-round-indicator" class="text-[9px] sm:text-[10px] text-zinc-500 tracking-[0.15em] sm:tracking-[0.2em] font-mono ml-1 sm:ml-2 border border-zinc-900 px-1.5 sm:px-2 py-0.5 rounded">M 1/3</span>
+          <span id="game-round-indicator" class="text-[9px] sm:text-[10px] text-zinc-500 tracking-[0.15em] font-mono ml-1 sm:ml-2 border border-zinc-900 px-1.5 py-0.5 rounded">M 1/3</span>
         </div>
 
         <div id="game-status-banner" class="text-[10px] sm:text-xs tracking-[0.15em] sm:tracking-[0.25em] text-zinc-500 uppercase text-center px-1 transition-all duration-1000 truncate max-w-[150px] sm:max-w-none">
@@ -388,16 +409,27 @@
         </div>
 
         <div id="game-timer" class="font-mono text-sm sm:text-base font-bold text-zinc-600 tracking-wider">
-          25s
+          20s
         </div>
+      </div>
+
+      <!-- Curse panic warning badge -->
+      <div id="curse-warning-badge" class="hidden text-[10px] font-mono text-amber-400 bg-amber-950/40 border border-amber-800/80 px-3 py-1 rounded-full animate-bounce">
+        <i class="fa-solid fa-hourglass-start mr-1"></i> MAUDIT : Tu as 3 secondes pour fixer ton choix !
       </div>
 
       <!-- Player tracking tags -->
       <div id="game-participants" class="w-full max-w-2xl flex flex-wrap gap-1.5 sm:gap-2 justify-center min-h-[22px] max-h-16 overflow-y-auto">
       </div>
 
+      <!-- In-Game Relics Inventory Bar -->
+      <div id="game-inventory-bar" class="w-full max-w-2xl hidden flex flex-col items-center gap-1.5 py-1">
+        <span class="text-[8px] tracking-[0.25em] text-zinc-600 uppercase font-mono">Tes Reliques Disponibles</span>
+        <div id="inventory-items-list" class="flex flex-wrap gap-2 justify-center"></div>
+      </div>
+
       <!-- The 3 monolith portals with slow dissolving veils -->
-      <div class="w-full max-w-2xl py-2 sm:py-6">
+      <div class="w-full max-w-2xl py-1 sm:py-4">
         <div class="grid grid-cols-3 gap-2 sm:gap-6">
           
           <!-- MONOLITH 1 -->
@@ -405,12 +437,12 @@
             <div class="monolith-frame w-full aspect-[9/15] sm:aspect-[9/16] bg-black rounded-lg border border-zinc-900 relative overflow-hidden">
               <div class="monolith-content absolute inset-0 bg-void flex flex-col items-center justify-center p-2 sm:p-3 text-center opacity-0">
                 <i class="reveal-icon text-2xl sm:text-4xl mb-2 sm:mb-4 text-zinc-600"></i>
-                <span class="reveal-text font-cinzel text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase text-zinc-500 font-bold"></span>
+                <span class="reveal-text font-cinzel text-[10px] sm:text-xs tracking-[0.2em] uppercase text-zinc-500 font-bold"></span>
               </div>
               <div class="monolith-veil absolute inset-0 rounded-lg p-2 sm:p-3 flex flex-col items-center justify-between border border-zinc-800/50">
                 <span class="font-cinzel text-xs sm:text-sm text-zinc-600 font-bold mt-1 sm:mt-2 tracking-widest">I</span>
                 <div class="w-1 h-1 rounded-full bg-zinc-700/60 pulse-subtle"></div>
-                <span class="text-[7px] sm:text-[8px] tracking-[0.25em] sm:tracking-[0.3em] text-zinc-700 uppercase mb-0.5 sm:mb-1">Passage</span>
+                <span class="text-[7px] sm:text-[8px] tracking-[0.25em] text-zinc-700 uppercase mb-0.5 sm:mb-1">Passage</span>
               </div>
             </div>
             <div class="door-chosen-by flex flex-wrap gap-1 justify-center mt-2 sm:mt-3 min-h-[18px]"></div>
@@ -421,12 +453,12 @@
             <div class="monolith-frame w-full aspect-[9/15] sm:aspect-[9/16] bg-black rounded-lg border border-zinc-900 relative overflow-hidden">
               <div class="monolith-content absolute inset-0 bg-void flex flex-col items-center justify-center p-2 sm:p-3 text-center opacity-0">
                 <i class="reveal-icon text-2xl sm:text-4xl mb-2 sm:mb-4 text-zinc-600"></i>
-                <span class="reveal-text font-cinzel text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase text-zinc-500 font-bold"></span>
+                <span class="reveal-text font-cinzel text-[10px] sm:text-xs tracking-[0.2em] uppercase text-zinc-500 font-bold"></span>
               </div>
               <div class="monolith-veil absolute inset-0 rounded-lg p-2 sm:p-3 flex flex-col items-center justify-between border border-zinc-800/50">
                 <span class="font-cinzel text-xs sm:text-sm text-zinc-600 font-bold mt-1 sm:mt-2 tracking-widest">II</span>
                 <div class="w-1 h-1 rounded-full bg-zinc-700/60 pulse-subtle"></div>
-                <span class="text-[7px] sm:text-[8px] tracking-[0.25em] sm:tracking-[0.3em] text-zinc-700 uppercase mb-0.5 sm:mb-1">Passage</span>
+                <span class="text-[7px] sm:text-[8px] tracking-[0.25em] text-zinc-700 uppercase mb-0.5 sm:mb-1">Passage</span>
               </div>
             </div>
             <div class="door-chosen-by flex flex-wrap gap-1 justify-center mt-2 sm:mt-3 min-h-[18px]"></div>
@@ -437,12 +469,12 @@
             <div class="monolith-frame w-full aspect-[9/15] sm:aspect-[9/16] bg-black rounded-lg border border-zinc-900 relative overflow-hidden">
               <div class="monolith-content absolute inset-0 bg-void flex flex-col items-center justify-center p-2 sm:p-3 text-center opacity-0">
                 <i class="reveal-icon text-2xl sm:text-4xl mb-2 sm:mb-4 text-zinc-600"></i>
-                <span class="reveal-text font-cinzel text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase text-zinc-500 font-bold"></span>
+                <span class="reveal-text font-cinzel text-[10px] sm:text-xs tracking-[0.2em] uppercase text-zinc-500 font-bold"></span>
               </div>
               <div class="monolith-veil absolute inset-0 rounded-lg p-2 sm:p-3 flex flex-col items-center justify-between border border-zinc-800/50">
                 <span class="font-cinzel text-xs sm:text-sm text-zinc-600 font-bold mt-1 sm:mt-2 tracking-widest">III</span>
                 <div class="w-1 h-1 rounded-full bg-zinc-700/60 pulse-subtle"></div>
-                <span class="text-[7px] sm:text-[8px] tracking-[0.25em] sm:tracking-[0.3em] text-zinc-700 uppercase mb-0.5 sm:mb-1">Passage</span>
+                <span class="text-[7px] sm:text-[8px] tracking-[0.25em] text-zinc-700 uppercase mb-0.5 sm:mb-1">Passage</span>
               </div>
             </div>
             <div class="door-chosen-by flex flex-wrap gap-1 justify-center mt-2 sm:mt-3 min-h-[18px]"></div>
@@ -452,22 +484,40 @@
       </div>
 
       <!-- Spectator hint -->
-      <div id="spectator-banner" class="hidden text-zinc-600 text-[9px] sm:text-[10px] tracking-[0.25em] sm:tracking-[0.3em] uppercase text-center px-2">
+      <div id="spectator-banner" class="hidden text-zinc-600 text-[9px] sm:text-[10px] tracking-[0.25em] uppercase text-center px-2">
         — Condamné au silence : Tu contemples leur marche —
       </div>
     </section>
 
-    <section id="screen-gameover" class="screen-view entering hidden w-full max-w-md flex-col items-center gap-5 sm:gap-8 py-4 sm:py-8 text-center my-auto">
-      <div class="space-y-2 sm:space-y-3">
-        <h2 id="gameover-title" class="text-2xl sm:text-3xl font-cinzel font-black tracking-[0.2em] sm:tracking-[0.25em] text-white uppercase">
+    <!-- SCREEN: GAME OVER / ROUND SUMMARY -->
+    <section id="screen-gameover" class="screen-view entering hidden w-full max-w-md flex-col items-center gap-3 sm:gap-5 py-4 sm:py-6 text-center my-auto">
+      <div class="space-y-1.5 sm:space-y-2">
+        <h2 id="gameover-title" class="text-2xl sm:text-3xl font-cinzel font-black tracking-[0.2em] text-white uppercase">
           FIN DU VOYAGE
         </h2>
         <p id="gameover-subtitle" class="text-zinc-600 text-[10px] sm:text-xs tracking-widest uppercase">
           Le néant a réclamé ses dettes.
         </p>
-        <div id="gameover-round-status" class="text-[9px] sm:text-[10px] tracking-[0.25em] sm:tracking-[0.3em] font-mono text-zinc-500 uppercase pt-0.5 sm:pt-1">
+        <div id="gameover-round-status" class="text-[9px] sm:text-[10px] tracking-[0.25em] font-mono text-zinc-500 uppercase pt-0.5">
           Manche 1 terminée
         </div>
+      </div>
+
+      <!-- Dedicated Relic Distribution Announcement Box (Between Rounds) -->
+      <div id="gameover-relics-box" class="w-full hidden bg-ash/70 border border-zinc-800 rounded-2xl p-3 sm:p-4 text-left space-y-2.5 shadow-xl">
+        <div class="flex items-center justify-between border-b border-zinc-900 pb-1.5">
+          <div class="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-300">
+            <i class="fa-solid fa-wand-magic-sparkles text-zinc-400"></i>
+            <span>Bénédiction des Reliques</span>
+          </div>
+          <span class="text-[8px] text-zinc-600 uppercase font-mono tracking-wider">Pour Manche Suivante</span>
+        </div>
+        
+        <!-- Personal outcome -->
+        <div id="gameover-my-relic-announcement" class="text-xs font-mono"></div>
+
+        <!-- Rivals outcome toggle / overview -->
+        <div id="gameover-all-relics-summary" class="pt-1 border-t border-zinc-900/80 space-y-1 text-[10px] text-zinc-500 font-mono"></div>
       </div>
 
       <div class="w-full bg-ash/40 border border-zinc-900 rounded-2xl p-3 sm:p-4 space-y-2">
@@ -475,7 +525,7 @@
           <span>Présence</span>
           <span>Score Total</span>
         </div>
-        <div id="gameover-leaderboard" class="space-y-1.5 max-h-48 sm:max-h-56 overflow-y-auto pr-0.5"></div>
+        <div id="gameover-leaderboard" class="space-y-1.5 max-h-40 overflow-y-auto pr-0.5"></div>
       </div>
 
       <div class="w-full flex flex-col gap-2">
@@ -488,171 +538,248 @@
       </div>
     </section>
 
+    <!-- MODAL: GRIMOIRE DES RELIQUES -->
+    <div id="modal-grimoire" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+      <div class="bg-ash border border-zinc-800 rounded-2xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+        <div class="p-4 border-b border-zinc-900 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-book-skull text-zinc-400"></i>
+            <h3 class="font-cinzel font-black tracking-widest text-sm text-bone uppercase">Grimoire des Reliques</h3>
+          </div>
+          <button id="btn-close-grimoire" type="button" class="text-zinc-500 hover:text-white p-1 text-sm">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        
+        <div class="p-4 overflow-y-auto space-y-3.5 text-xs font-mono">
+          <div class="p-2.5 rounded-xl border border-zinc-900 bg-void space-y-1">
+            <div class="text-red-400 font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-heart"></i>
+              <span>Cœur de Sursis (Survie)</span>
+            </div>
+            <p class="text-[11px] text-zinc-500">
+              Attribué d'office au meilleur joueur à chaque nouvelle manche (dès la manche 2). Ne se cumule pas (max 1). Si tu franchis la porte de la mort, ton cœur se brise mais ton âme survit !
+            </p>
+          </div>
+
+          <div class="p-2.5 rounded-xl border border-zinc-900 bg-void space-y-1">
+            <div class="text-cyan-400 font-bold flex items-center gap-1.5">
+              <i class="fa-regular fa-eye"></i>
+              <span>Miroir d’Augure (Vision)</span>
+            </div>
+            <p class="text-[11px] text-zinc-500">
+              Attribué au dernier joueur dès la moitié du tournoi. À activer quand tu veux : il révèle en secret une porte sûre pour ce palier.
+            </p>
+          </div>
+
+          <div class="p-2.5 rounded-xl border border-zinc-900 bg-void space-y-1">
+            <div class="text-amber-400 font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-hourglass-start"></i>
+              <span>Malédiction (Panique)</span>
+            </div>
+            <p class="text-[11px] text-zinc-500">
+              Cible un adversaire vivant : son sablier s'écroule immédiatement et il n'a plus que 3 secondes pour fixer sa porte !
+            </p>
+          </div>
+
+          <div class="p-2.5 rounded-xl border border-zinc-900 bg-void space-y-1">
+            <div class="text-zinc-300 font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-link"></i>
+              <span>Chaîne des Damnés (Sacrifice)</span>
+            </div>
+            <p class="text-[11px] text-zinc-500">
+              Lie ton destin à un rival. Si tu fais l'erreur fatale de choisir la porte de la mort, c'est ta cible qui est dévorée par l'abysse à ta place.
+            </p>
+          </div>
+
+          <div class="p-2.5 rounded-xl border border-zinc-900 bg-void space-y-1">
+            <div class="text-purple-400 font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-mask"></i>
+              <span>Voile d’Ombre (Dissimulation)</span>
+            </div>
+            <p class="text-[11px] text-zinc-500">
+              Masque totalement ta présence et ton choix en direct. Aucun rival ne saura quelle porte tu as prise avant l'ouverture finale. <em class="text-zinc-400">(Actif uniquement si la Révélation en Direct est activée)</em>.
+            </p>
+          </div>
+
+          <div class="p-2.5 rounded-xl border border-zinc-900 bg-void space-y-1">
+            <div class="text-emerald-400 font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              <span>Fétiche d’Échange (Permutation)</span>
+            </div>
+            <p class="text-[11px] text-zinc-500">
+              Échange secrètement et instantanément ta porte choisie avec celle de ta cible.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: TARGET SELECTION -->
+    <div id="modal-target-selection" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+      <div class="bg-ash border border-zinc-800 rounded-2xl max-w-sm w-full p-4 flex flex-col gap-3 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-zinc-900 pb-2">
+          <span id="target-modal-title" class="font-cinzel text-xs font-bold uppercase tracking-widest text-zinc-300">Cibler une Âme</span>
+          <button id="btn-close-target-modal" type="button" class="text-zinc-500 hover:text-white text-xs">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div id="target-players-list" class="space-y-1.5 max-h-48 overflow-y-auto"></div>
+      </div>
+    </div>
+
   </main>
 
   <script>
-    class DarkAudio {
-      constructor() {
-        this.ctx = null;
-        this.enabled = true;
-        this.ambientStarted = false;
-        this.masterGain = null;
-        this.ambientGain = null;
-        this.filterNode = null;
-        this.dissonanceGain = null;
-      }
+    const audio = {
+      ctx: null,
+      enabled: true,
+      masterGain: null,
+      droneGain: null,
+      tensionGain: null,
+      tensionFilter: null,
+      initialized: false,
 
       init() {
-        if (!this.ctx) {
-          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          if (AudioContextClass) {
-            this.ctx = new AudioContextClass();
+        if (this.initialized && this.ctx) {
+          if (this.ctx.state === 'suspended' && this.enabled) {
+            this.ctx.resume().catch(() => {});
           }
+          return;
         }
-        if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
+        try {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContextClass) return;
+          this.ctx = new AudioContextClass();
+
+          this.masterGain = this.ctx.createGain();
+          this.masterGain.gain.setValueAtTime(this.enabled ? 0.8 : 0, this.ctx.currentTime);
+          this.masterGain.connect(this.ctx.destination);
+
+          // Deep sub-bass ambient drone
+          this.droneGain = this.ctx.createGain();
+          this.droneGain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+
+          const droneFilter = this.ctx.createBiquadFilter();
+          droneFilter.type = 'lowpass';
+          droneFilter.frequency.setValueAtTime(80, this.ctx.currentTime);
+
+          const osc1 = this.ctx.createOscillator();
+          osc1.type = 'sawtooth';
+          osc1.frequency.setValueAtTime(43, this.ctx.currentTime);
+
+          const osc2 = this.ctx.createOscillator();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(45.5, this.ctx.currentTime);
+
+          osc1.connect(droneFilter);
+          osc2.connect(droneFilter);
+          droneFilter.connect(this.droneGain);
+          this.droneGain.connect(this.masterGain);
+
+          osc1.start();
+          osc2.start();
+
+          // Dissonant tension pad activated during monolith veil dissolutions
+          this.tensionGain = this.ctx.createGain();
+          this.tensionGain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
+
+          this.tensionFilter = this.ctx.createBiquadFilter();
+          this.tensionFilter.type = 'lowpass';
+          this.tensionFilter.frequency.setValueAtTime(140, this.ctx.currentTime);
+
+          const tensOsc = this.ctx.createOscillator();
+          tensOsc.type = 'triangle';
+          tensOsc.frequency.setValueAtTime(61.74, this.ctx.currentTime);
+
+          tensOsc.connect(this.tensionFilter);
+          this.tensionFilter.connect(this.tensionGain);
+          this.tensionGain.connect(this.masterGain);
+
+          tensOsc.start();
+
+          this.initialized = true;
+          if (this.ctx.state === 'suspended') {
+            this.ctx.resume().catch(() => {});
+          }
+        } catch (e) {
+          console.warn('Web Audio initialization error:', e);
         }
-        if (this.ctx && !this.ambientStarted && this.enabled) {
-          this.startDarkSoundscape();
-        }
-      }
+      },
 
       toggle() {
         this.enabled = !this.enabled;
-        if (this.ctx && this.masterGain) {
-          const targetVol = this.enabled ? 1.0 : 0.0001;
-          this.masterGain.gain.setTargetAtTime(targetVol, this.ctx.currentTime, 0.4);
+        if (!this.initialized) {
+          this.init();
         }
-        if (this.enabled && !this.ambientStarted) {
-          this.startDarkSoundscape();
+        if (this.ctx && this.masterGain) {
+          const now = this.ctx.currentTime;
+          this.masterGain.gain.cancelScheduledValues(now);
+          this.masterGain.gain.setTargetAtTime(this.enabled ? 0.8 : 0, now, 0.05);
+          if (this.enabled && this.ctx.state === 'suspended') {
+            this.ctx.resume().catch(() => {});
+          }
         }
         return this.enabled;
-      }
+      },
 
-      startDarkSoundscape() {
-        if (!this.ctx || this.ambientStarted) return;
-        this.ambientStarted = true;
-
-        const now = this.ctx.currentTime;
-
-        // Master Output Stage
-        this.masterGain = this.ctx.createGain();
-        this.masterGain.gain.setValueAtTime(this.enabled ? 1.0 : 0.0001, now);
-        this.masterGain.connect(this.ctx.destination);
-
-        // Ambient bus with smooth, slow 4-second fade in
-        this.ambientGain = this.ctx.createGain();
-        this.ambientGain.gain.setValueAtTime(0.0001, now);
-        this.ambientGain.gain.exponentialRampToValueAtTime(0.35, now + 4.0);
-        this.ambientGain.connect(this.masterGain);
-
-        // Breathing Low-Pass Filter (simulates the suffocating air of the catacombs)
-        this.filterNode = this.ctx.createBiquadFilter();
-        this.filterNode.type = 'lowpass';
-        this.filterNode.frequency.setValueAtTime(120, now);
-        this.filterNode.Q.setValueAtTime(3.0, now);
-        this.filterNode.connect(this.ambientGain);
-
-        // Slow LFO: creates an ominous breathing undulation (1 cycle every ~14 seconds)
-        const lfo = this.ctx.createOscillator();
-        const lfoGain = this.ctx.createGain();
-        lfo.type = 'sine';
-        lfo.frequency.setValueAtTime(0.07, now);
-        lfoGain.gain.setValueAtTime(45, now); // modulates filter between 75Hz and 165Hz
-        lfo.connect(lfoGain);
-        lfoGain.connect(this.filterNode.frequency);
-        lfo.start(now);
-
-        // Deep subterranean drone: detuned low sub-frequencies (43.65Hz and 44.1Hz)
-        [43.65, 44.15, 65.4].forEach(freq => {
-          const osc = this.ctx.createOscillator();
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, now);
-          osc.connect(this.filterNode);
-          osc.start(now);
-        });
-
-        // Dissonant micro-harmonic pad (diminished 5th / tritone tension)
-        this.dissonanceGain = this.ctx.createGain();
-        this.dissonanceGain.gain.setValueAtTime(0.025, now);
-
-        const highFilter = this.ctx.createBiquadFilter();
-        highFilter.type = 'bandpass';
-        highFilter.frequency.setValueAtTime(280, now);
-        highFilter.Q.setValueAtTime(4.0, now);
-        highFilter.connect(this.ambientGain);
-        this.dissonanceGain.connect(highFilter);
-
-        // Minor second / tritone cluster (Eerie psychological friction)
-        [130.8, 138.6, 185.0].forEach(f => {
-          const osc = this.ctx.createOscillator();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(f, now);
-          osc.connect(this.dissonanceGain);
-          osc.start(now);
-        });
-      }
-
-      setTension(isHigh) {
-        if (!this.ctx || !this.filterNode) return;
-        const now = this.ctx.currentTime;
-        if (isHigh) {
-          // Open filter and swell the dissonance during veil dissolution
-          this.filterNode.frequency.setTargetAtTime(260, now, 2.5);
-          if (this.dissonanceGain) this.dissonanceGain.gain.setTargetAtTime(0.065, now, 2.0);
-        } else {
-          // Settle back into deep muffled dark silence
-          this.filterNode.frequency.setTargetAtTime(110, now, 3.0);
-          if (this.dissonanceGain) this.dissonanceGain.gain.setTargetAtTime(0.025, now, 3.0);
-        }
-      }
-
-      heartbeat(intense = false) {
+      heartbeat(urgent = false) {
         if (!this.enabled) return;
-        this.init();
+        if (!this.ctx || this.ctx.state === 'suspended') {
+          this.init();
+        }
         if (!this.ctx) return;
 
-        const t = this.ctx.currentTime;
-        
-        const playPulse = (time, freq, volume, duration) => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          const filter = this.ctx.createBiquadFilter();
+        try {
+          const now = this.ctx.currentTime;
+          const playThud = (timeOffset, pitch, volume) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const filter = this.ctx.createBiquadFilter();
 
-          filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(130, time);
+            osc.type = 'sine';
+            const startTime = now + timeOffset;
+            osc.frequency.setValueAtTime(pitch, startTime);
+            osc.frequency.exponentialRampToValueAtTime(32, startTime + 0.18);
 
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, time);
-          osc.frequency.exponentialRampToValueAtTime(28, time + duration);
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(130, startTime);
 
-          gain.gain.setValueAtTime(volume, time);
-          gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+            gain.gain.setValueAtTime(0.0001, startTime);
+            gain.gain.exponentialRampToValueAtTime(volume, startTime + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.22);
 
-          osc.connect(filter);
-          filter.connect(gain);
-          gain.connect(this.masterGain || this.ctx.destination);
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.masterGain);
 
-          osc.start(time);
-          osc.stop(time + duration);
-        };
+            osc.start(startTime);
+            osc.stop(startTime + 0.25);
+          };
 
-        const baseGain = intense ? 0.55 : 0.32;
-        // Premier battement lourd
-        playPulse(t, 72, baseGain, 0.14);
-        // Deuxième battement décalé
-        playPulse(t + 0.16, 56, baseGain * 0.75, 0.17);
+          const vol = urgent ? 0.85 : 0.55;
+          playThud(0, urgent ? 95 : 85, vol);
+          playThud(0.14, urgent ? 75 : 68, vol * 0.75);
+        } catch (e) {}
+      },
+
+      setTension(active = false) {
+        if (!this.initialized || !this.ctx || !this.tensionGain || !this.tensionFilter) return;
+        try {
+          const now = this.ctx.currentTime;
+          this.tensionGain.gain.cancelScheduledValues(now);
+          this.tensionFilter.frequency.cancelScheduledValues(now);
+          if (active) {
+            this.tensionGain.gain.setTargetAtTime(0.35, now, 0.8);
+            this.tensionFilter.frequency.setTargetAtTime(380, now, 1.2);
+          } else {
+            this.tensionGain.gain.setTargetAtTime(0.0001, now, 1.5);
+            this.tensionFilter.frequency.setTargetAtTime(140, now, 1.5);
+          }
+        } catch (e) {}
       }
+    };
 
-      doorCreak() {}
-      deathTone() {}
-      survivalTone() {}
-    }
-
-    const audio = new DarkAudio();
-  </script>
-
-  <script>
     let myId = 'soul_' + Math.random().toString(36).substring(2, 7);
     let myName = 'Âme';
     let isHost = true;
@@ -661,19 +788,36 @@
     let hostConn = null;
     let broadcastChannel = null;
     let timerInterval = null;
-    let timeLeft = 25;
+    let timeLeft = 20;
     let currentActiveScreen = 'screen-auth';
+
+    let pendingRelicUsage = null;
+    let activeSafeDoorHint = null;
+
+    const ALL_RELIC_KEYS = ['heart', 'mirror', 'curse', 'chain', 'veil', 'swap'];
+
+    const RELIC_DEFINITIONS = {
+      heart: { name: 'Cœur de Sursis', icon: 'fa-solid fa-heart text-red-500', targetable: false },
+      mirror: { name: 'Miroir d’Augure', icon: 'fa-regular fa-eye text-cyan-400', targetable: false },
+      curse: { name: 'Malédiction', icon: 'fa-solid fa-hourglass-start text-amber-500', targetable: true },
+      chain: { name: 'Chaîne des Damnés', icon: 'fa-solid fa-link text-zinc-400', targetable: true },
+      veil: { name: 'Voile d’Ombre', icon: 'fa-solid fa-mask text-purple-400', targetable: false },
+      swap: { name: 'Fétiche d’Échange', icon: 'fa-solid fa-arrows-rotate text-emerald-400', targetable: true }
+    };
 
     let gameState = {
       code: 'SOLO',
-      status: 'lobby', // 'lobby' | 'picking' | 'revealing' | 'ended'
+      status: 'lobby',
       floor: 1,
       trapDoor: 1,
       totalRounds: 3,
       currentRound: 1,
       choiceDuration: 20,
       revealPicksLive: false,
-      players: {}
+      itemsEnabled: true,
+      allowedItems: ['heart', 'mirror', 'curse', 'chain', 'swap'],
+      players: {},
+      lastRoundRewards: {}
     };
 
     const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV"];
@@ -684,6 +828,7 @@
 
     function showToast(msg) {
       const container = document.getElementById('toast-container');
+      if (!container) return;
       const toast = document.createElement('div');
       toast.className = 'border border-zinc-900 bg-void/90 text-zinc-400 text-[10px] tracking-[0.25em] uppercase px-3 py-2 rounded shadow-2xl backdrop-blur transition-all duration-700 opacity-0 translate-y-2';
       toast.innerText = msg;
@@ -692,7 +837,7 @@
       setTimeout(() => {
         toast.classList.add('opacity-0');
         setTimeout(() => toast.remove(), 700);
-      }, 3000);
+      }, 3200);
     }
 
     function showScreen(screenId) {
@@ -705,7 +850,6 @@
         oldScreen.classList.remove('active');
         oldScreen.classList.add('entering');
         
-        // Lingering darkness pause before showing the next stage
         setTimeout(() => {
           oldScreen.classList.add('hidden');
           oldScreen.classList.remove('flex');
@@ -720,7 +864,7 @@
 
           currentActiveScreen = screenId;
         }, 800);
-      } else {
+      } else if (newScreen) {
         newScreen.classList.remove('hidden', 'entering');
         newScreen.classList.add('flex', 'active');
         currentActiveScreen = screenId;
@@ -742,6 +886,10 @@
           } else if (!isHost && msg.type === 'SYNC_STATE') {
             gameState = msg.state;
             renderUI();
+          } else if (msg.type === 'SAFE_DOOR_HINT' && msg.recipientId === myId) {
+            activeSafeDoorHint = msg.safeDoor;
+            showToast(`Le Miroir révèle : La porte ${getRoman(msg.safeDoor)} est sûre.`);
+            renderUI();
           }
         };
       } catch (err) {
@@ -752,7 +900,6 @@
     function broadcastState() {
       if (!isHost) return;
       
-      // Send through BroadcastChannel (works locally across tabs without WebSockets)
       if (broadcastChannel) {
         try {
           broadcastChannel.postMessage({
@@ -760,12 +907,9 @@
             state: gameState,
             sender: myId
           });
-        } catch (e) {
-          console.warn(e);
-        }
+        } catch (e) {}
       }
 
-      // Send through PeerJS WebRTC connections if available
       connections.forEach(conn => {
         try {
           if (conn && conn.open) conn.send({ type: 'SYNC_STATE', state: gameState });
@@ -779,7 +923,6 @@
       if (isHost) {
         handleClientMessage(message);
       } else {
-        // Send via BroadcastChannel
         if (broadcastChannel) {
           try {
             broadcastChannel.postMessage({
@@ -789,7 +932,6 @@
             });
           } catch (e) {}
         }
-        // Send via PeerJS if connected
         if (hostConn && hostConn.open) {
           try {
             hostConn.send(message);
@@ -800,6 +942,7 @@
 
     function handleClientMessage(msg) {
       if (!isHost || !msg) return;
+
       if (msg.type === 'PLAYER_JOIN') {
         gameState.players[msg.player.id] = msg.player;
         broadcastState();
@@ -812,6 +955,19 @@
         broadcastState();
       } else if (msg.type === 'SET_LIVE_PICKS') {
         gameState.revealPicksLive = Boolean(msg.revealPicksLive);
+        if (!gameState.revealPicksLive) {
+          gameState.allowedItems = (gameState.allowedItems || []).filter(k => k !== 'veil');
+        } else if (msg.allowedItems) {
+          gameState.allowedItems = msg.allowedItems;
+        }
+        broadcastState();
+      } else if (msg.type === 'SET_ITEMS_CONFIG') {
+        gameState.itemsEnabled = Boolean(msg.enabled);
+        if (Array.isArray(msg.allowedItems)) {
+          gameState.allowedItems = gameState.revealPicksLive 
+            ? msg.allowedItems 
+            : msg.allowedItems.filter(k => k !== 'veil');
+        }
         broadcastState();
       } else if (msg.type === 'TOGGLE_READY') {
         if (gameState.players[msg.id]) {
@@ -822,20 +978,25 @@
         if (gameState.players[msg.id] && gameState.status === 'picking') {
           gameState.players[msg.id].chosenDoor = msg.door;
           broadcastState();
-          checkAllLivingPlayersHaveChosen();
         }
+      } else if (msg.type === 'USE_RELIC') {
+        handleRelicExecution(msg);
       } else if (msg.type === 'NEXT_ROUND') {
         if (gameState.currentRound < gameState.totalRounds) {
-          // Enchaînement direct de la manche suivante sans repasser par le lobby ni se remettre prêt
           gameState.currentRound += 1;
           gameState.floor = 1;
           gameState.trapDoor = Math.floor(Math.random() * 3) + 1;
           gameState.status = 'picking';
+          
           Object.values(gameState.players).forEach(p => {
             p.isAlive = true;
             p.chosenDoor = null;
             p.deathFloor = null;
+            p.activeChainTarget = null;
+            p.isVeiled = false;
+            p.isCursed = false;
           });
+
           broadcastState();
           simulateBotChoices();
           startRoundCountdown();
@@ -854,12 +1015,127 @@
           p.chosenDoor = null;
           p.deathFloor = null;
           p.score = 0;
+          p.items = [];
+          p.activeChainTarget = null;
+          p.isVeiled = false;
+          p.isCursed = false;
         });
         gameState.floor = 1;
         gameState.currentRound = 1;
+        gameState.lastRoundRewards = {};
         gameState.status = 'lobby';
         broadcastState();
       }
+    }
+
+    function distributeBetweenRoundsRelics() {
+      if (!gameState.itemsEnabled) {
+        gameState.lastRoundRewards = {};
+        return;
+      }
+      const players = Object.values(gameState.players);
+      if (players.length === 0) return;
+
+      const upcomingRound = gameState.currentRound + 1;
+      const rewardsLog = {};
+      players.forEach(p => { rewardsLog[p.id] = []; });
+
+      const sortedByScore = [...players].sort((a, b) => (b.score || 0) - (a.score || 0));
+      const highestScore = sortedByScore[0].score || 0;
+      const lowestScore = sortedByScore[sortedByScore.length - 1].score || 0;
+
+      // 1. Heart of Survival to highest score (from round 2, max 1)
+      if (upcomingRound >= 2 && gameState.allowedItems.includes('heart')) {
+        const leaders = sortedByScore.filter(p => (p.score || 0) === highestScore);
+        leaders.forEach(leader => {
+          leader.items = leader.items || [];
+          if (!leader.items.includes('heart')) {
+            leader.items.push('heart');
+            rewardsLog[leader.id].push({ item: 'heart', reason: 'Maître du Sanctuaire (Meilleur score)' });
+          }
+        });
+      }
+
+      // 2. Mirror of Augury to last place from halfway point
+      const halfRounds = Math.ceil(gameState.totalRounds / 2);
+      if (upcomingRound >= halfRounds && gameState.allowedItems.includes('mirror')) {
+        const lastPlayers = sortedByScore.filter(p => (p.score || 0) === lowestScore);
+        lastPlayers.forEach(lastP => {
+          lastP.items = lastP.items || [];
+          if (!lastP.items.includes('mirror')) {
+            lastP.items.push('mirror');
+            rewardsLog[lastP.id].push({ item: 'mirror', reason: 'Lueur du Trépas (Dernier au score)' });
+          }
+        });
+      }
+
+      // 3. Random relics (1 in 3 chance)
+      const randomPool = ['curse', 'chain', 'veil', 'swap'].filter(k => 
+        gameState.allowedItems.includes(k) && (k !== 'veil' || gameState.revealPicksLive)
+      );
+
+      if (randomPool.length > 0) {
+        players.forEach(p => {
+          p.items = p.items || [];
+          if (Math.random() < 0.33) {
+            const picked = randomPool[Math.floor(Math.random() * randomPool.length)];
+            p.items.push(picked);
+            rewardsLog[p.id].push({ item: picked, reason: 'Pacte du Néant (Tirage aléatoire)' });
+          }
+        });
+      }
+
+      gameState.lastRoundRewards = rewardsLog;
+    }
+
+    function handleRelicExecution(msg) {
+      if (!isHost || gameState.status !== 'picking') return;
+      const user = gameState.players[msg.userId];
+      if (!user || !user.isAlive || !user.items || !user.items.includes(msg.relic)) return;
+
+      const relic = msg.relic;
+      const target = msg.targetId ? gameState.players[msg.targetId] : null;
+
+      const idx = user.items.indexOf(relic);
+      if (idx !== -1) user.items.splice(idx, 1);
+
+      if (relic === 'mirror') {
+        const safeDoors = [1, 2, 3].filter(d => d !== gameState.trapDoor);
+        const safeDoor = safeDoors[Math.floor(Math.random() * safeDoors.length)];
+        
+        connections.forEach(conn => {
+          if (conn.open) conn.send({ type: 'SAFE_DOOR_HINT', recipientId: user.id, safeDoor });
+        });
+        if (broadcastChannel) {
+          try {
+            broadcastChannel.postMessage({ type: 'SAFE_DOOR_HINT', recipientId: user.id, safeDoor });
+          } catch (e) {}
+        }
+        if (user.id === myId) {
+          activeSafeDoorHint = safeDoor;
+          showToast(`Le Miroir révèle : La porte ${getRoman(safeDoor)} est sûre.`);
+        }
+      } else if (relic === 'curse' && target && target.isAlive) {
+        target.isCursed = true;
+        showToast(`${user.name} a maudit ${target.name} !`);
+        if (timeLeft > 3) {
+          timeLeft = 3;
+          updateTimerDisplay();
+        }
+      } else if (relic === 'chain' && target && target.isAlive) {
+        user.activeChainTarget = target.id;
+        showToast(`${user.name} a forgé une Chaîne Obscure.`);
+      } else if (relic === 'veil') {
+        user.isVeiled = true;
+        showToast(`${user.name} s'est enveloppé d'ombres.`);
+      } else if (relic === 'swap' && target && target.isAlive) {
+        const tempDoor = user.chosenDoor;
+        user.chosenDoor = target.chosenDoor;
+        target.chosenDoor = tempDoor;
+        showToast(`${user.name} a échangé son destin avec ${target.name} !`);
+      }
+
+      broadcastState();
     }
 
     function initHostPeer(customCode) {
@@ -873,7 +1149,6 @@
       document.getElementById('room-badge').classList.add('flex');
       showToast(`Sanctuaire ${code} ouvert.`);
 
-      // Attempt PeerJS with safety guard to prevent unhandled WebSocket SecurityError
       if (typeof Peer !== 'undefined') {
         try {
           const peerId = 'deathpath-' + code.toLowerCase();
@@ -887,12 +1162,10 @@
             });
           });
 
-          peer.on('error', (err) => {
-            console.warn('Mode réseau direct actif (PeerJS restreint):', err.type || err);
+          peer.on('error', () => {
+            console.warn('Mode réseau direct actif');
           });
-        } catch (e) {
-          console.warn('WebSockets restreints dans cet environnement. Le mode multi-onglets reste actif.', e);
-        }
+        } catch (e) {}
       }
     }
 
@@ -915,15 +1188,17 @@
           isAlive: true,
           score: 0,
           chosenDoor: null,
-          deathFloor: null
+          deathFloor: null,
+          items: [],
+          activeChainTarget: null,
+          isVeiled: false,
+          isCursed: false
         }
       };
 
-      // Notify host through BroadcastChannel immediately
       sendToHost(joinPayload);
       showToast(`Connexion au sanctuaire ${cleanCode}...`);
 
-      // Attempt PeerJS connection as secondary transport
       if (typeof Peer !== 'undefined') {
         try {
           const targetPeerId = 'deathpath-' + cleanCode.toLowerCase();
@@ -931,24 +1206,19 @@
           
           peer.on('open', () => {
             hostConn = peer.connect(targetPeerId);
-            hostConn.on('open', () => {
-              hostConn.send(joinPayload);
-            });
+            hostConn.on('open', () => hostConn.send(joinPayload));
             hostConn.on('data', (data) => {
               if (data && data.type === 'SYNC_STATE') {
                 gameState = data.state;
                 renderUI();
+              } else if (data && data.type === 'SAFE_DOOR_HINT' && data.recipientId === myId) {
+                activeSafeDoorHint = data.safeDoor;
+                showToast(`Le Miroir révèle : La porte ${getRoman(data.safeDoor)} est sûre.`);
+                renderUI();
               }
             });
-            hostConn.on('error', () => {});
           });
-
-          peer.on('error', () => {
-            console.warn('PeerJS restreint. Mode local / multi-onglets conservé.');
-          });
-        } catch (e) {
-          console.warn('WebSockets restreints. Mode BroadcastChannel actif.', e);
-        }
+        } catch (e) {}
       }
     }
 
@@ -961,7 +1231,6 @@
         timeLeft--;
         updateTimerDisplay();
 
-        // Sinister pacing: heartbeats slow and heavy in the final suspenseful seconds
         if (timeLeft <= 8 && timeLeft > 0) {
           audio.heartbeat(timeLeft <= 4);
         }
@@ -969,7 +1238,6 @@
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
           if (isHost && gameState.status === 'picking') {
-            // Unresponsive players forced to choose at the very end
             Object.values(gameState.players).forEach(p => {
               if (p.isAlive && p.chosenDoor === null) {
                 p.chosenDoor = Math.floor(Math.random() * 3) + 1;
@@ -983,6 +1251,7 @@
 
     function updateTimerDisplay() {
       const timerEl = document.getElementById('game-timer');
+      if (!timerEl) return;
       timerEl.innerText = `${timeLeft}s`;
       if (timeLeft <= 7) {
         timerEl.classList.add('text-zinc-300');
@@ -993,41 +1262,33 @@
       }
     }
 
-    function checkAllLivingPlayersHaveChosen() {
-      if (!isHost || gameState.status !== 'picking') return;
-      // La révélation ne se fait QUE à la fin du décompte du chronomètre.
-      // Quand tout le monde a choisi, le décompte continue pour maintenir l'angoisse.
-    }
-
     function triggerDoorReveal() {
       if (!isHost) return;
       clearInterval(timerInterval);
       gameState.status = 'revealing';
       broadcastState();
 
-      // Deep double thud as the dissolution begins and music swells
       audio.setTension(true);
       audio.heartbeat(true);
 
-      // Mid-dissolve heartbeat shock
-      setTimeout(() => {
-        audio.heartbeat(true);
-      }, 2400);
+      setTimeout(() => audio.heartbeat(true), 2400);
 
-      // When the true nature of each path is revealed
       setTimeout(() => {
         const me = gameState.players[myId];
         if (me && me.isAlive) {
           if (me.chosenDoor === gameState.trapDoor) {
-            audio.heartbeat(true);
-            showToast("Le néant t'engloutit.");
+            if (me.items && me.items.includes('heart')) {
+              showToast("Ton Cœur se brise ! Un ultime sursis t'est accordé.");
+            } else {
+              audio.heartbeat(true);
+              showToast("Le néant t'engloutit.");
+            }
           } else {
             showToast("Un sursis t'est accordé.");
           }
         }
       }, 3800);
 
-      // Long, slow 7.5-second resolution so tension lingers heavily
       setTimeout(() => {
         audio.setTension(false);
         if (gameState.status !== 'revealing') return;
@@ -1038,23 +1299,44 @@
         Object.values(gameState.players).forEach(p => {
           if (p.isAlive) {
             if (p.chosenDoor === trap) {
-              p.isAlive = false;
-              p.deathFloor = currentFloor;
+              if (p.activeChainTarget && gameState.players[p.activeChainTarget] && gameState.players[p.activeChainTarget].isAlive) {
+                const victim = gameState.players[p.activeChainTarget];
+                victim.isAlive = false;
+                victim.deathFloor = currentFloor;
+                p.score = (p.score || 0) + 1;
+                showToast(`${p.name} sacrifie ${victim.name} via la Chaîne des Damnés !`);
+              } else if (p.items && p.items.includes('heart')) {
+                const hIdx = p.items.indexOf('heart');
+                p.items.splice(hIdx, 1);
+                p.score = (p.score || 0) + 1;
+                showToast(`Le cœur de ${p.name} s'est brisé mais son âme demeure.`);
+              } else {
+                p.isAlive = false;
+                p.deathFloor = currentFloor;
+              }
             } else {
-              // Points for each floor successfully crossed
               p.score = (p.score || 0) + 1;
             }
           }
           p.chosenDoor = null;
+          p.activeChainTarget = null;
+          p.isVeiled = false;
+          p.isCursed = false;
         });
+
+        activeSafeDoorHint = null;
 
         const survivors = Object.values(gameState.players).filter(p => p.isAlive);
 
         if (survivors.length <= 1) {
-          // Bonus points for the sole round winner
           if (survivors.length === 1) {
             survivors[0].score = (survivors[0].score || 0) + 2;
           }
+          
+          if (gameState.currentRound < gameState.totalRounds) {
+            distributeBetweenRoundsRelics();
+          }
+
           gameState.status = 'ended';
           broadcastState();
         } else {
@@ -1072,15 +1354,12 @@
     function simulateBotChoices() {
       if (!isHost) return;
       const bots = Object.values(gameState.players).filter(p => p.isBot && p.isAlive);
-      
-      // Bots deliberate slowly (between 5s and 12s) to heighten uncertainty
       bots.forEach(bot => {
         const delay = Math.floor(Math.random() * 7000) + 5000;
         setTimeout(() => {
           if (gameState.status === 'picking' && bot.isAlive) {
             bot.chosenDoor = Math.floor(Math.random() * 3) + 1;
             broadcastState();
-            checkAllLivingPlayersHaveChosen();
           }
         }, delay);
       });
@@ -1101,22 +1380,42 @@
       }
     }
 
-    function renderLobbyUI(me) {
-      document.getElementById('lobby-code-display').innerText = gameState.code;
-      const playerList = Object.values(gameState.players);
-      document.getElementById('lobby-player-count').innerText = playerList.length;
+    function updateSliderVisuals(rounds) {
+      document.querySelectorAll('.slider-tick').forEach(btn => {
+        const val = parseInt(btn.getAttribute('data-val'), 10);
+        const bar = btn.querySelector('span:first-child');
+        const txt = btn.querySelector('span:last-child');
+        if (val === rounds) {
+          bar.className = 'w-[2px] h-1.5 bg-white mb-0.5';
+          txt.className = 'text-[9px] font-mono text-white font-bold scale-110';
+        } else {
+          bar.className = 'w-[1px] h-1 bg-zinc-800 group-hover:bg-zinc-500 mb-0.5';
+          txt.className = 'text-[9px] font-mono text-zinc-600 group-hover:text-zinc-300';
+        }
+      });
+      const slider = document.getElementById('slider-rounds');
+      if (slider) {
+        const pct = ((rounds - 1) / 9) * 100;
+        slider.style.setProperty('--slider-pct', `${pct}%`);
+      }
+    }
 
-      // Update rounds slider display & interactivity
+    function renderLobbyUI(me) {
+      const codeDisplay = document.getElementById('lobby-code-display');
+      if (codeDisplay) codeDisplay.innerText = gameState.code;
+      const playerList = Object.values(gameState.players);
+      const countEl = document.getElementById('lobby-player-count');
+      if (countEl) countEl.innerText = playerList.length;
+
       const slider = document.getElementById('slider-rounds');
       const roundsVal = document.getElementById('lobby-rounds-value');
       const hostHint = document.getElementById('slider-host-hint');
       const currentRounds = gameState.totalRounds || 3;
       
-      slider.value = currentRounds;
-      roundsVal.innerText = currentRounds;
+      if (slider) slider.value = currentRounds;
+      if (roundsVal) roundsVal.innerText = currentRounds;
       updateSliderVisuals(currentRounds);
 
-      // Update duration slider
       const durationSlider = document.getElementById('slider-duration');
       const durationVal = document.getElementById('lobby-duration-value');
       const currentDuration = gameState.choiceDuration || 20;
@@ -1127,124 +1426,248 @@
         durationSlider.style.setProperty('--slider-pct', `${durPct}%`);
       }
 
-      // Update live picks toggle
+      // Render Live Picks illuminated button
       const liveBtn = document.getElementById('btn-toggle-live-picks');
-      const liveKnob = document.getElementById('toggle-live-picks-knob');
-      if (liveBtn && liveKnob) {
+      const liveInd = document.getElementById('live-picks-indicator');
+      const liveTxt = document.getElementById('live-picks-text');
+      if (liveBtn) {
         if (gameState.revealPicksLive) {
-          liveBtn.className = "w-12 h-6 rounded-full p-0.5 transition-colors duration-300 bg-zinc-200 border border-white relative focus:outline-none";
-          liveKnob.className = "w-5 h-5 rounded-full bg-black shadow-md transform transition-transform duration-300 translate-x-6";
+          liveBtn.className = "px-3 py-1.5 rounded-xl border border-zinc-300 bg-zinc-200 text-black text-[10px] uppercase tracking-wider font-bold shadow-[0_0_15px_rgba(255,255,255,0.25)] transition-all flex items-center gap-1.5 focus:outline-none";
+          if (liveInd) liveInd.className = "w-1.5 h-1.5 rounded-full bg-black";
+          if (liveTxt) liveTxt.innerText = "Visible";
         } else {
-          liveBtn.className = "w-12 h-6 rounded-full p-0.5 transition-colors duration-300 bg-zinc-800 border border-zinc-700/60 relative focus:outline-none";
-          liveKnob.className = "w-5 h-5 rounded-full bg-zinc-400 shadow-md transform transition-transform duration-300 translate-x-0";
+          liveBtn.className = "px-3 py-1.5 rounded-xl border border-zinc-800 bg-void text-zinc-500 hover:text-zinc-300 hover:border-zinc-700 text-[10px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 focus:outline-none";
+          if (liveInd) liveInd.className = "w-1.5 h-1.5 rounded-full bg-zinc-800";
+          if (liveTxt) liveTxt.innerText = "Secret";
         }
       }
+
+      // Render Items Mode illuminated button
+      const itemsBtn = document.getElementById('btn-toggle-items-mode');
+      const itemsInd = document.getElementById('items-mode-indicator');
+      const itemsTxt = document.getElementById('items-mode-text');
+      const itemsBox = document.getElementById('items-selection-box');
+      if (itemsBtn) {
+        if (gameState.itemsEnabled) {
+          itemsBtn.className = "px-3 py-1.5 rounded-xl border border-zinc-300 bg-zinc-200 text-black text-[10px] uppercase tracking-wider font-bold shadow-[0_0_15px_rgba(255,255,255,0.25)] transition-all flex items-center gap-1.5 focus:outline-none";
+          if (itemsInd) itemsInd.className = "w-1.5 h-1.5 rounded-full bg-black";
+          if (itemsTxt) itemsTxt.innerText = "Actif";
+          if (itemsBox) itemsBox.classList.remove('hidden');
+        } else {
+          itemsBtn.className = "px-3 py-1.5 rounded-xl border border-zinc-800 bg-void text-zinc-500 hover:text-zinc-300 hover:border-zinc-700 text-[10px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 focus:outline-none";
+          if (itemsInd) itemsInd.className = "w-1.5 h-1.5 rounded-full bg-zinc-800";
+          if (itemsTxt) itemsTxt.innerText = "Désactivé";
+          if (itemsBox) itemsBox.classList.add('hidden');
+        }
+      }
+
+      // Sync checkboxes with allowedItems & enforce Veil availability
+      const veilLabel = document.getElementById('label-item-veil');
+      const veilLabelText = document.getElementById('label-item-veil-text');
+
+      document.querySelectorAll('.item-chk').forEach(chk => {
+        const itemKey = chk.getAttribute('data-item');
+
+        if (itemKey === 'veil') {
+          if (!gameState.revealPicksLive) {
+            chk.checked = false;
+            chk.disabled = true;
+            if (veilLabel) {
+              veilLabel.classList.add('opacity-30', 'cursor-not-allowed');
+              veilLabel.title = "Désactivé : nécessite la Révélation en Direct";
+            }
+            if (veilLabelText) {
+              veilLabelText.innerText = "Voile (Inactif)";
+            }
+          } else {
+            chk.checked = (gameState.allowedItems || []).includes('veil');
+            chk.disabled = !isHost;
+            if (veilLabel) {
+              veilLabel.classList.remove('opacity-30', 'cursor-not-allowed');
+              veilLabel.title = "";
+            }
+            if (veilLabelText) {
+              veilLabelText.innerText = "Voile d’Ombre";
+            }
+          }
+        } else {
+          chk.checked = (gameState.allowedItems || ALL_RELIC_KEYS).includes(itemKey);
+          chk.disabled = !isHost;
+        }
+      });
 
       if (isHost) {
         if (slider) { slider.disabled = false; slider.classList.remove('opacity-50', 'cursor-not-allowed'); }
         if (durationSlider) { durationSlider.disabled = false; durationSlider.classList.remove('opacity-50', 'cursor-not-allowed'); }
         if (liveBtn) { liveBtn.disabled = false; liveBtn.classList.remove('opacity-50', 'cursor-not-allowed'); }
+        if (itemsBtn) { itemsBtn.disabled = false; itemsBtn.classList.remove('opacity-50', 'cursor-not-allowed'); }
         if (hostHint) hostHint.classList.add('hidden');
       } else {
         if (slider) { slider.disabled = true; slider.classList.add('opacity-50', 'cursor-not-allowed'); }
         if (durationSlider) { durationSlider.disabled = true; durationSlider.classList.add('opacity-50', 'cursor-not-allowed'); }
         if (liveBtn) { liveBtn.disabled = true; liveBtn.classList.add('opacity-50', 'cursor-not-allowed'); }
+        if (itemsBtn) { itemsBtn.disabled = true; itemsBtn.classList.add('opacity-50', 'cursor-not-allowed'); }
         if (hostHint) hostHint.classList.remove('hidden');
       }
 
       const grid = document.getElementById('lobby-players-grid');
-      grid.innerHTML = '';
+      if (grid) {
+        grid.innerHTML = '';
+        playerList.forEach(p => {
+          const isCurrent = p.id === myId;
+          const row = document.createElement('div');
+          row.className = `p-3 rounded-xl border flex items-center justify-between text-xs ${
+            p.isReady ? 'border-zinc-600 bg-zinc-900/60 text-bone' : 'border-zinc-900 bg-void text-zinc-600'
+          }`;
 
-      playerList.forEach(p => {
-        const isCurrent = p.id === myId;
-        const row = document.createElement('div');
-        row.className = `p-3 rounded-xl border flex items-center justify-between text-xs ${
-          p.isReady ? 'border-zinc-600 bg-zinc-900/60 text-bone' : 'border-zinc-900 bg-void text-zinc-600'
-        }`;
-        row.innerHTML = `
-          <div class="flex items-center gap-2.5">
-            <span class="w-1.5 h-1.5 rounded-full ${p.isReady ? 'bg-zinc-300' : 'bg-zinc-800'}"></span>
-            <span class="font-bold">${p.name} ${isCurrent ? '<span class="text-[9px] text-zinc-500">(Toi)</span>' : ''}</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="text-[9px] text-zinc-500 tracking-wider font-mono">${p.score || 0} pts</span>
-            <span class="text-[10px] tracking-widest uppercase font-bold ${p.isReady ? 'text-zinc-200' : 'text-zinc-600'}">${p.isReady ? 'Prêt' : 'En attente'}</span>
-          </div>
-        `;
-        grid.appendChild(row);
-      });
+          let relicsHtml = '';
+          if (gameState.itemsEnabled && p.items && p.items.length > 0) {
+            relicsHtml = p.items.map(it => {
+              const def = RELIC_DEFINITIONS[it];
+              return def ? `<i class="${def.icon} text-[10px]" title="${def.name}"></i>` : '';
+            }).join(' ');
+          }
+
+          row.innerHTML = `
+            <div class="flex items-center gap-2.5">
+              <span class="w-1.5 h-1.5 rounded-full ${p.isReady ? 'bg-zinc-300' : 'bg-zinc-800'}"></span>
+              <span class="font-bold">${p.name} ${isCurrent ? '<span class="text-[9px] text-zinc-500">(Toi)</span>' : ''}</span>
+              <div class="flex items-center gap-1 ml-1">${relicsHtml}</div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-[9px] text-zinc-500 tracking-wider font-mono">${p.score || 0} pts</span>
+              <span class="text-[10px] tracking-widest uppercase font-bold ${p.isReady ? 'text-zinc-200' : 'text-zinc-600'}">${p.isReady ? 'Prêt' : 'En attente'}</span>
+            </div>
+          `;
+          grid.appendChild(row);
+        });
+      }
 
       const btnReady = document.getElementById('btn-toggle-ready');
-      if (me && me.isReady) {
-        btnReady.className = "flex-1 py-3 rounded-xl border border-zinc-400 bg-zinc-200 text-black text-xs uppercase tracking-widest font-black transition-all";
-        btnReady.innerText = "Prêt ✓";
-      } else {
-        btnReady.className = "flex-1 py-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white text-xs uppercase tracking-widest font-bold transition-all";
-        btnReady.innerText = "Se Préparer";
+      if (btnReady) {
+        if (me && me.isReady) {
+          btnReady.className = "flex-1 py-3 rounded-xl border border-zinc-400 bg-zinc-200 text-black text-xs uppercase tracking-widest font-black transition-all";
+          btnReady.innerText = "Prêt ✓";
+        } else {
+          btnReady.className = "flex-1 py-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white text-xs uppercase tracking-widest font-bold transition-all";
+          btnReady.innerText = "Se Préparer";
+        }
       }
 
       const btnStart = document.getElementById('btn-start-game');
       const allReady = playerList.length >= 1 && playerList.every(p => p.isReady);
-      if (isHost && allReady) {
-        btnStart.disabled = false;
-        btnStart.innerText = gameState.currentRound > 1 ? `Lancer Manche ${gameState.currentRound}` : "Commencer";
-        btnStart.className = "flex-1 py-3 rounded-xl border border-zinc-600 bg-zinc-900 hover:bg-zinc-800 text-bone text-xs uppercase tracking-widest font-bold cursor-pointer transition-all";
-      } else {
-        btnStart.disabled = true;
-        btnStart.innerText = allReady ? "Commencer" : "En attente...";
-        btnStart.className = "flex-1 py-3 rounded-xl border border-zinc-900 bg-void text-zinc-700 text-xs uppercase tracking-widest font-bold cursor-not-allowed transition-all";
+      if (btnStart) {
+        if (isHost && allReady) {
+          btnStart.disabled = false;
+          btnStart.innerText = gameState.currentRound > 1 ? `Lancer Manche ${gameState.currentRound}` : "Commencer";
+          btnStart.className = "flex-1 py-3 rounded-xl border border-zinc-600 bg-zinc-900 hover:bg-zinc-800 text-bone text-xs uppercase tracking-widest font-bold cursor-pointer transition-all";
+        } else {
+          btnStart.disabled = true;
+          btnStart.innerText = allReady ? "Commencer" : "En attente...";
+          btnStart.className = "flex-1 py-3 rounded-xl border border-zinc-900 bg-void text-zinc-700 text-xs uppercase tracking-widest font-bold cursor-not-allowed transition-all";
+        }
       }
     }
 
     function renderGameUI(me) {
-      document.getElementById('game-floor-number').innerText = getRoman(gameState.floor);
-      document.getElementById('game-round-indicator').innerText = `M ${gameState.currentRound}/${gameState.totalRounds || 3}`;
+      const floorEl = document.getElementById('game-floor-number');
+      if (floorEl) floorEl.innerText = getRoman(gameState.floor);
+      const roundEl = document.getElementById('game-round-indicator');
+      if (roundEl) roundEl.innerText = `M ${gameState.currentRound}/${gameState.totalRounds || 3}`;
 
       const playerList = Object.values(gameState.players);
       const isMeAlive = me && me.isAlive;
       const isRevealing = gameState.status === 'revealing';
 
       const spectatorEl = document.getElementById('spectator-banner');
-      if (!isMeAlive) spectatorEl.classList.remove('hidden');
-      else spectatorEl.classList.add('hidden');
+      if (spectatorEl) {
+        if (!isMeAlive) spectatorEl.classList.remove('hidden');
+        else spectatorEl.classList.add('hidden');
+      }
 
       const allLivingHaveChosen = playerList.filter(p => p.isAlive).length > 0 && playerList.filter(p => p.isAlive).every(p => p.chosenDoor !== null);
 
       const banner = document.getElementById('game-status-banner');
-      if (isRevealing) {
-        banner.innerText = "Dissolution du voile...";
-        banner.className = "text-xs tracking-[0.25em] text-zinc-300 uppercase";
-      } else if (allLivingHaveChosen) {
-        banner.innerText = "Choix scellés... Attends la fin du sablier";
-        banner.className = "text-xs tracking-[0.25em] text-zinc-400 uppercase pulse-subtle";
-      } else {
-        banner.innerText = isMeAlive ? "Fixe ton destin" : "Les ombres hésitent";
-        banner.className = "text-xs tracking-[0.25em] text-zinc-600 uppercase";
+      if (banner) {
+        if (isRevealing) {
+          banner.innerText = "Dissolution du voile...";
+          banner.className = "text-xs tracking-[0.25em] text-zinc-300 uppercase";
+        } else if (me && me.isCursed) {
+          banner.innerText = "MAUDIT ! Choisis en 3s !";
+          banner.className = "text-xs tracking-[0.25em] text-amber-500 uppercase pulse-subtle font-bold";
+        } else if (allLivingHaveChosen) {
+          banner.innerText = "Choix scellés... Attends la fin du sablier";
+          banner.className = "text-xs tracking-[0.25em] text-zinc-400 uppercase pulse-subtle";
+        } else {
+          banner.innerText = isMeAlive ? "Fixe ton destin" : "Les ombres hésitent";
+          banner.className = "text-xs tracking-[0.25em] text-zinc-600 uppercase";
+        }
       }
 
-      // Participants pills
+      const curseBadge = document.getElementById('curse-warning-badge');
+      if (curseBadge) {
+        if (me && me.isCursed && !isRevealing) curseBadge.classList.remove('hidden');
+        else curseBadge.classList.add('hidden');
+      }
+
       const participants = document.getElementById('game-participants');
-      participants.innerHTML = '';
-      playerList.forEach(p => {
-        const item = document.createElement('div');
-        const hasPicked = p.chosenDoor !== null;
-        let cls = "text-[10px] tracking-wider uppercase px-2 py-0.5 rounded border transition-all duration-700 ";
-        if (!p.isAlive) {
-          cls += "border-zinc-950 text-zinc-800 line-through";
-          item.innerText = `† ${p.name}`;
-        } else if (hasPicked) {
-          cls += "border-zinc-700 bg-zinc-900/80 text-zinc-300";
-          item.innerText = `● ${p.name}`;
+      if (participants) {
+        participants.innerHTML = '';
+        playerList.forEach(p => {
+          const item = document.createElement('div');
+          const hasPicked = p.chosenDoor !== null;
+          let cls = "text-[10px] tracking-wider uppercase px-2 py-0.5 rounded border transition-all duration-700 flex items-center gap-1.5 ";
+          
+          let heartIcon = (p.items && p.items.includes('heart')) ? '<i class="fa-solid fa-heart text-red-500 text-[8px]" title="Cœur de Sursis"></i>' : '';
+          let chainIcon = p.activeChainTarget ? '<i class="fa-solid fa-link text-zinc-400 text-[8px]" title="Lié"></i>' : '';
+          let veiledIcon = p.isVeiled ? '<i class="fa-solid fa-mask text-purple-400 text-[8px]" title="Voilé"></i>' : '';
+
+          if (!p.isAlive) {
+            cls += "border-zinc-950 text-zinc-800 line-through";
+            item.innerHTML = `<span>† ${p.name}</span>`;
+          } else if (hasPicked) {
+            cls += "border-zinc-700 bg-zinc-900/80 text-zinc-300";
+            item.innerHTML = `<span>● ${p.name}</span> ${heartIcon}${chainIcon}${veiledIcon}`;
+          } else {
+            cls += "border-zinc-900 text-zinc-700";
+            item.innerHTML = `<span>○ ${p.name}</span> ${heartIcon}${chainIcon}${veiledIcon}`;
+          }
+          item.className = cls;
+          participants.appendChild(item);
+        });
+      }
+
+      const invBar = document.getElementById('game-inventory-bar');
+      const invList = document.getElementById('inventory-items-list');
+      if (invBar && invList) {
+        if (gameState.itemsEnabled && isMeAlive && me.items && me.items.length > 0) {
+          invBar.classList.remove('hidden');
+          invList.innerHTML = '';
+          
+          me.items.forEach(itKey => {
+            const def = RELIC_DEFINITIONS[itKey];
+            if (!def) return;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = "flex items-center gap-1.5 px-2.5 py-1 bg-void border border-zinc-700/80 hover:border-white rounded-lg text-zinc-300 hover:text-white text-[10px] font-mono tracking-wider active:scale-95 transition-all";
+            btn.disabled = isRevealing;
+            if (itKey === 'heart') {
+              btn.classList.add('cursor-default', 'border-red-900/60');
+              btn.innerHTML = `<i class="${def.icon}"></i> <span>Protégé (Passif)</span>`;
+            } else {
+              btn.innerHTML = `<i class="${def.icon}"></i> <span>${def.name}</span>`;
+              btn.onclick = () => triggerUseRelic(itKey);
+            }
+            invList.appendChild(btn);
+          });
         } else {
-          cls += "border-zinc-900 text-zinc-700";
-          item.innerText = `○ ${p.name}`;
+          invBar.classList.add('hidden');
         }
-        item.className = cls;
-        participants.appendChild(item);
-      });
+      }
 
       for (let d = 1; d <= 3; d++) {
         const card = document.querySelector(`.monolith-card[data-door-id="${d}"]`);
+        if (!card) continue;
         const veil = card.querySelector('.monolith-veil');
         const frame = card.querySelector('.monolith-frame');
         const reveal = card.querySelector('.monolith-content');
@@ -1252,52 +1675,64 @@
         const text = card.querySelector('.reveal-text');
         const chosenContainer = card.querySelector('.door-chosen-by');
 
-        chosenContainer.innerHTML = '';
+        if (chosenContainer) chosenContainer.innerHTML = '';
         const myPick = me ? me.chosenDoor : null;
         const isMyChoice = myPick === d;
 
-        if (isMyChoice) {
-          frame.classList.add('selected-glow');
-        } else {
-          frame.classList.remove('selected-glow');
+        if (frame) {
+          if (isMyChoice) frame.classList.add('selected-glow');
+          else frame.classList.remove('selected-glow');
+
+          if (activeSafeDoorHint === d && !isRevealing) {
+            frame.style.borderColor = 'rgba(34, 211, 238, 0.7)';
+            frame.style.boxShadow = '0 0 25px rgba(34, 211, 238, 0.25)';
+          } else if (!isMyChoice) {
+            frame.style.borderColor = '';
+            frame.style.boxShadow = '';
+          }
         }
 
-        // Show player badges if revealing OR if live choice visibility option is enabled
         const shouldShowBadges = isRevealing || gameState.revealPicksLive;
-        if (shouldShowBadges) {
+        if (shouldShowBadges && chosenContainer) {
           playerList.forEach(p => {
             if (p.isAlive && p.chosenDoor === d) {
+              if (!isRevealing && p.isVeiled && p.id !== myId) return;
+
               const tag = document.createElement('span');
               const isSelf = p.id === myId;
-              tag.className = `text-[9px] px-1.5 py-0.5 rounded border tracking-wider transition-all ${
+              tag.className = `text-[9px] px-1.5 py-0.5 rounded border tracking-wider transition-all flex items-center gap-1 ${
                 isSelf ? 'border-zinc-600 bg-zinc-800/80 text-white font-bold' : 'border-zinc-900 bg-zinc-950/70 text-zinc-400'
               }`;
-              tag.innerText = p.name;
+              tag.innerHTML = `${p.name} ${p.isVeiled ? '<i class="fa-solid fa-mask text-[8px] text-purple-400"></i>' : ''}`;
               chosenContainer.appendChild(tag);
             }
           });
         }
 
-        // Slow, ghostly fade into darkness/light
         if (isRevealing) {
-          veil.classList.add('dissolved');
-          reveal.style.opacity = '1';
+          if (veil) veil.classList.add('dissolved');
+          if (reveal) reveal.style.opacity = '1';
 
           const isTrap = gameState.trapDoor === d;
-          if (isTrap) {
-            frame.classList.add('death-glow');
-            icon.className = "reveal-icon text-3xl sm:text-4xl mb-3 text-red-700/80 fa-solid fa-skull";
-            text.innerText = "TRÉPAS";
-            text.className = "reveal-text font-cinzel text-xs tracking-[0.25em] uppercase text-red-600 font-bold";
-          } else {
-            icon.className = "reveal-icon text-3xl sm:text-4xl mb-3 text-zinc-300 fa-regular fa-compass";
-            text.innerText = "PASSAGE";
-            text.className = "reveal-text font-cinzel text-xs tracking-[0.25em] uppercase text-zinc-300";
+          if (frame) {
+            if (isTrap) frame.classList.add('death-glow');
+            else frame.classList.remove('death-glow');
+          }
+          if (icon && text) {
+            if (isTrap) {
+              icon.className = "reveal-icon text-3xl sm:text-4xl mb-3 text-red-700/80 fa-solid fa-skull";
+              text.innerText = "TRÉPAS";
+              text.className = "reveal-text font-cinzel text-xs tracking-[0.25em] uppercase text-red-600 font-bold";
+            } else {
+              icon.className = "reveal-icon text-3xl sm:text-4xl mb-3 text-zinc-300 fa-regular fa-compass";
+              text.innerText = "PASSAGE";
+              text.className = "reveal-text font-cinzel text-xs tracking-[0.25em] uppercase text-zinc-300";
+            }
           }
         } else {
-          veil.classList.remove('dissolved');
-          reveal.style.opacity = '0';
-          frame.classList.remove('death-glow');
+          if (veil) veil.classList.remove('dissolved');
+          if (reveal) reveal.style.opacity = '0';
+          if (frame) frame.classList.remove('death-glow');
         }
 
         card.onclick = () => selectDoor(d);
@@ -1317,6 +1752,66 @@
       });
     }
 
+    function triggerUseRelic(relicKey) {
+      if (gameState.status !== 'picking') return;
+      const def = RELIC_DEFINITIONS[relicKey];
+      if (!def) return;
+
+      if (!def.targetable) {
+        audio.heartbeat(true);
+        sendToHost({
+          type: 'USE_RELIC',
+          userId: myId,
+          relic: relicKey
+        });
+      } else {
+        pendingRelicUsage = relicKey;
+        openTargetSelectionModal(def.name);
+      }
+    }
+
+    function openTargetSelectionModal(title) {
+      const modal = document.getElementById('modal-target-selection');
+      const titleEl = document.getElementById('target-modal-title');
+      const listEl = document.getElementById('target-players-list');
+      if (!modal || !titleEl || !listEl) return;
+      
+      titleEl.innerText = title;
+      listEl.innerHTML = '';
+
+      const otherLivingPlayers = Object.values(gameState.players).filter(p => p.isAlive && p.id !== myId);
+
+      if (otherLivingPlayers.length === 0) {
+        showToast("Aucune autre âme à cibler.");
+        return;
+      }
+
+      otherLivingPlayers.forEach(p => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = "w-full p-2.5 rounded-xl border border-zinc-800 bg-void hover:bg-zinc-900 hover:border-zinc-600 text-left text-xs font-mono text-zinc-200 flex items-center justify-between transition-all";
+        btn.innerHTML = `<span>${p.name}</span> <i class="fa-solid fa-crosshairs text-zinc-600"></i>`;
+        btn.onclick = () => {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+          if (pendingRelicUsage) {
+            audio.heartbeat(true);
+            sendToHost({
+              type: 'USE_RELIC',
+              userId: myId,
+              relic: pendingRelicUsage,
+              targetId: p.id
+            });
+            pendingRelicUsage = null;
+          }
+        };
+        listEl.appendChild(btn);
+      });
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
     function renderGameOverUI() {
       const players = Object.values(gameState.players);
       const survivors = players.filter(p => p.isAlive);
@@ -1327,91 +1822,207 @@
       const btnReplay = document.getElementById('btn-replay');
 
       const isTournamentEnd = gameState.currentRound >= gameState.totalRounds;
-
-      // Sort by cumulative score first, then survival status
       const sorted = [...players].sort((a, b) => (b.score || 0) - (a.score || 0));
 
       if (isTournamentEnd) {
         const champion = sorted[0];
-        title.innerText = `${champion ? champion.name : 'Néant'} Triomphe`;
-        subtitle.innerText = `Vainqueur suprême après ${gameState.totalRounds} manche(s)`;
-        roundStatus.innerText = "Fin de la partie";
-        btnNextRound.classList.add('hidden');
-        btnReplay.innerText = "Nouvelle Partie";
+        if (title) title.innerText = `${champion ? champion.name : 'Néant'} Triomphe`;
+        if (subtitle) subtitle.innerText = `Vainqueur suprême après ${gameState.totalRounds} manche(s)`;
+        if (roundStatus) roundStatus.innerText = "Fin de la partie";
+        if (btnNextRound) btnNextRound.classList.add('hidden');
+        if (btnReplay) btnReplay.innerText = "Nouvelle Partie";
       } else {
-        if (survivors.length === 1) {
-          title.innerText = `${survivors[0].name} Remporte la Manche`;
-        } else {
-          title.innerText = `Hécatombe`;
+        if (title) {
+          if (survivors.length === 1) title.innerText = `${survivors[0].name} Remporte la Manche`;
+          else title.innerText = `Hécatombe`;
         }
-        subtitle.innerText = `Palier ${getRoman(gameState.floor)} atteint`;
-        roundStatus.innerText = `Manche ${gameState.currentRound} sur ${gameState.totalRounds} terminée`;
-        btnNextRound.classList.remove('hidden');
-        btnNextRound.innerText = `Passer à la Manche ${gameState.currentRound + 1}`;
-        btnReplay.innerText = "Réinitialiser la partie";
+        if (subtitle) subtitle.innerText = `Palier ${getRoman(gameState.floor)} atteint`;
+        if (roundStatus) roundStatus.innerText = `Manche ${gameState.currentRound} sur ${gameState.totalRounds} terminée`;
+        if (btnNextRound) {
+          btnNextRound.classList.remove('hidden');
+          btnNextRound.innerText = `Passer à la Manche ${gameState.currentRound + 1}`;
+        }
+        if (btnReplay) btnReplay.innerText = "Réinitialiser la partie";
       }
 
-      const lb = document.getElementById('gameover-leaderboard');
-      lb.innerHTML = '';
-      sorted.forEach((p, idx) => {
-        const row = document.createElement('div');
-        row.className = "flex items-center justify-between p-2.5 rounded-lg text-xs text-zinc-400 border border-zinc-900 bg-void/50";
-        row.innerHTML = `
-          <div class="flex items-center gap-2">
-            <span class="font-mono text-zinc-600 text-[10px]">#${idx + 1}</span>
-            <strong class="${idx === 0 ? 'text-white' : 'text-zinc-400'}">${p.name}</strong>
-          </div>
-          <span class="font-mono text-[11px] tracking-wider text-zinc-200 font-bold">${p.score || 0} pts</span>
-        `;
-        lb.appendChild(row);
-      });
-    }
+      // Render Between-Rounds Relics Announcement Box
+      const relicBox = document.getElementById('gameover-relics-box');
+      const myRelicEl = document.getElementById('gameover-my-relic-announcement');
+      const allRelicsEl = document.getElementById('gameover-all-relics-summary');
 
-    function updateSliderVisuals(val) {
-      const slider = document.getElementById('slider-rounds');
-      if (slider) {
-        const pct = ((val - 1) / 9) * 100;
-        slider.style.setProperty('--slider-pct', `${pct}%`);
-      }
-      document.querySelectorAll('.slider-tick').forEach(tick => {
-        const tickVal = parseInt(tick.getAttribute('data-val'), 10);
-        const textSpan = tick.querySelector('span:last-child');
-        const tickLine = tick.querySelector('span:first-child');
-        if (tickVal === val) {
-          textSpan.className = "text-[10px] font-mono text-white font-bold scale-110";
-          if (tickLine) tickLine.className = "w-[1px] h-1 bg-zinc-300 mb-0.5";
+      if (relicBox && myRelicEl && allRelicsEl) {
+        if (gameState.itemsEnabled && !isTournamentEnd && gameState.lastRoundRewards) {
+          relicBox.classList.remove('hidden');
+          
+          const myRewards = gameState.lastRoundRewards[myId] || [];
+          if (myRewards.length > 0) {
+            myRelicEl.innerHTML = `
+              <div class="space-y-1.5">
+                <span class="text-[9px] tracking-wider uppercase text-zinc-400">Pour toi :</span>
+                ${myRewards.map(rw => {
+                  const def = RELIC_DEFINITIONS[rw.item];
+                  return `
+                    <div class="p-2 sm:p-2.5 rounded-xl border border-zinc-700/80 bg-zinc-900/80 flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <i class="${def ? def.icon : 'fa-solid fa-sparkles'} text-sm"></i>
+                        <div>
+                          <div class="text-bone font-bold text-[11px]">${def ? def.name : rw.item}</div>
+                          <div class="text-[9px] text-zinc-500 font-mono">${rw.reason}</div>
+                        </div>
+                      </div>
+                      <span class="text-[8px] uppercase tracking-wider text-emerald-400 font-bold border border-emerald-950 bg-emerald-950/30 px-1.5 py-0.5 rounded">Reçu</span>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            `;
+          } else {
+            myRelicEl.innerHTML = `
+              <div class="p-2.5 rounded-xl border border-zinc-900 bg-void/60 text-zinc-500 text-[11px] text-center italic">
+                Le néant ne t'accorde aucun item pour cette manche.
+              </div>
+            `;
+          }
+
+          // Summary of all participants
+          const otherEntries = Object.entries(gameState.lastRoundRewards).filter(([pId]) => pId !== myId);
+          if (otherEntries.length > 0) {
+            allRelicsEl.innerHTML = `
+              <div class="pt-1 text-[9px] text-zinc-500 uppercase tracking-wider mb-1">Âmes rivales :</div>
+              <div class="space-y-1">
+                ${otherEntries.map(([pId, rws]) => {
+                  const pName = gameState.players[pId] ? gameState.players[pId].name : 'Âme';
+                  if (rws && rws.length > 0) {
+                    const itemNames = rws.map(r => RELIC_DEFINITIONS[r.item] ? RELIC_DEFINITIONS[r.item].name : r.item).join(', ');
+                    return `<div class="flex justify-between items-center text-[10px]"><span>${pName} :</span><span class="text-zinc-300 font-bold">${itemNames}</span></div>`;
+                  } else {
+                    return `<div class="flex justify-between items-center text-[10px] text-zinc-600"><span>${pName} :</span><span>Aucun item</span></div>`;
+                  }
+                }).join('')}
+              </div>
+            `;
+            allRelicsEl.classList.remove('hidden');
+          } else {
+            allRelicsEl.classList.add('hidden');
+          }
         } else {
-          textSpan.className = "text-[10px] font-mono text-zinc-600 group-hover:text-zinc-300";
-          if (tickLine) tickLine.className = "w-[1px] h-1 bg-zinc-800 group-hover:bg-zinc-500 mb-0.5";
+          relicBox.classList.add('hidden');
         }
-      });
+      }
+
+      const leaderboard = document.getElementById('gameover-leaderboard');
+      if (leaderboard) {
+        leaderboard.innerHTML = '';
+        sorted.forEach((p, idx) => {
+          const row = document.createElement('div');
+          row.className = 'flex items-center justify-between text-xs px-2.5 py-1.5 rounded-lg bg-void/50 border border-zinc-900';
+          
+          let relicsIcons = '';
+          if (gameState.itemsEnabled && p.items && p.items.length > 0) {
+            relicsIcons = p.items.map(it => {
+              const def = RELIC_DEFINITIONS[it];
+              return def ? `<i class="${def.icon} text-[9px]"></i>` : '';
+            }).join(' ');
+          }
+
+          row.innerHTML = `
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-zinc-600 font-bold">${idx + 1}.</span>
+              <span class="font-bold text-bone">${p.name}</span>
+              <div class="flex items-center gap-1 ml-1">${relicsIcons}</div>
+            </div>
+            <span class="font-mono text-zinc-400 font-bold">${p.score || 0} pts</span>
+          `;
+          leaderboard.appendChild(row);
+        });
+      }
     }
 
-    // Slider listener for host
-    document.getElementById('slider-rounds').addEventListener('input', (e) => {
-      if (!isHost) return;
-      const count = parseInt(e.target.value, 10);
-      document.getElementById('lobby-rounds-value').innerText = count;
-      gameState.totalRounds = count;
-      updateSliderVisuals(count);
-      broadcastState();
-    });
-
-    // Direct click on any number from 1 to 10
+    // Slider clicks directly on graduation markers
     document.querySelectorAll('.slider-tick').forEach(btn => {
       btn.addEventListener('click', () => {
         if (!isHost) return;
-        const count = parseInt(btn.getAttribute('data-val'), 10);
+        const val = parseInt(btn.getAttribute('data-val'), 10);
         const slider = document.getElementById('slider-rounds');
-        slider.value = count;
-        document.getElementById('lobby-rounds-value').innerText = count;
-        gameState.totalRounds = count;
-        updateSliderVisuals(count);
-        broadcastState();
+        if (slider) slider.value = val;
+        gameState.totalRounds = val;
+        updateSliderVisuals(val);
+        sendToHost({ type: 'SET_ROUNDS', totalRounds: val });
       });
     });
 
-    // Duration slider event listener
+    const roundsSliderEl = document.getElementById('slider-rounds');
+    if (roundsSliderEl) {
+      roundsSliderEl.addEventListener('input', (e) => {
+        if (!isHost) return;
+        const val = parseInt(e.target.value, 10);
+        gameState.totalRounds = val;
+        updateSliderVisuals(val);
+        sendToHost({ type: 'SET_ROUNDS', totalRounds: val });
+      });
+    }
+
+    // Grimoire Modal listeners
+    const grimoireBtn = document.getElementById('btn-open-grimoire');
+    const closeGrimoireBtn = document.getElementById('btn-close-grimoire');
+    const grimoireModal = document.getElementById('modal-grimoire');
+    if (grimoireBtn && grimoireModal) {
+      grimoireBtn.addEventListener('click', () => {
+        grimoireModal.classList.remove('hidden');
+        grimoireModal.classList.add('flex');
+      });
+    }
+    if (closeGrimoireBtn && grimoireModal) {
+      closeGrimoireBtn.addEventListener('click', () => {
+        grimoireModal.classList.add('hidden');
+        grimoireModal.classList.remove('flex');
+      });
+    }
+
+    // Target modal close listener
+    const closeTargetBtn = document.getElementById('btn-close-target-modal');
+    const targetModal = document.getElementById('modal-target-selection');
+    if (closeTargetBtn && targetModal) {
+      closeTargetBtn.addEventListener('click', () => {
+        targetModal.classList.add('hidden');
+        targetModal.classList.remove('flex');
+        pendingRelicUsage = null;
+      });
+    }
+
+    // Items mode toggle listener
+    const itemsToggleBtn = document.getElementById('btn-toggle-items-mode');
+    if (itemsToggleBtn) {
+      itemsToggleBtn.addEventListener('click', () => {
+        if (!isHost) return;
+        const newEnabled = !gameState.itemsEnabled;
+        gameState.itemsEnabled = newEnabled;
+        sendToHost({
+          type: 'SET_ITEMS_CONFIG',
+          enabled: newEnabled,
+          allowedItems: gameState.allowedItems
+        });
+      });
+    }
+
+    // Item checkboxes listener
+    document.querySelectorAll('.item-chk').forEach(chk => {
+      chk.addEventListener('change', () => {
+        if (!isHost) return;
+        const activeItems = [];
+        document.querySelectorAll('.item-chk').forEach(c => {
+          if (c.checked && (!c.disabled)) activeItems.push(c.getAttribute('data-item'));
+        });
+        gameState.allowedItems = activeItems;
+        sendToHost({
+          type: 'SET_ITEMS_CONFIG',
+          enabled: gameState.itemsEnabled,
+          allowedItems: activeItems
+        });
+      });
+    });
+
+    // Duration slider listener
     const durSliderEl = document.getElementById('slider-duration');
     if (durSliderEl) {
       durSliderEl.addEventListener('input', (e) => {
@@ -1422,21 +2033,34 @@
         gameState.choiceDuration = dur;
         const durPct = ((dur - 5) / 40) * 100;
         e.target.style.setProperty('--slider-pct', `${durPct}%`);
-        broadcastState();
+        sendToHost({ type: 'SET_DURATION', duration: dur });
       });
     }
 
-    // Toggle live choices visibility
+    // Live picks toggle listener
     const livePicksBtnEl = document.getElementById('btn-toggle-live-picks');
     if (livePicksBtnEl) {
       livePicksBtnEl.addEventListener('click', () => {
         if (!isHost) return;
-        gameState.revealPicksLive = !gameState.revealPicksLive;
-        broadcastState();
+        const nextVal = !gameState.revealPicksLive;
+        gameState.revealPicksLive = nextVal;
+
+        if (!nextVal) {
+          gameState.allowedItems = (gameState.allowedItems || []).filter(k => k !== 'veil');
+        } else {
+          if (!gameState.allowedItems.includes('veil')) {
+            gameState.allowedItems.push('veil');
+          }
+        }
+
+        sendToHost({ 
+          type: 'SET_LIVE_PICKS', 
+          revealPicksLive: nextVal, 
+          allowedItems: gameState.allowedItems 
+        });
       });
     }
 
-    // Leave room / Return to home menu
     function leaveRoom() {
       clearInterval(timerInterval);
       if (broadcastChannel) {
@@ -1468,148 +2092,181 @@
         currentRound: 1,
         choiceDuration: 20,
         revealPicksLive: false,
-        players: {}
+        itemsEnabled: true,
+        allowedItems: ['heart', 'mirror', 'curse', 'chain', 'swap'],
+        players: {},
+        lastRoundRewards: {}
       };
-      document.getElementById('room-badge').classList.add('hidden');
-      document.getElementById('room-badge').classList.remove('flex');
+      const roomBadge = document.getElementById('room-badge');
+      if (roomBadge) {
+        roomBadge.classList.add('hidden');
+        roomBadge.classList.remove('flex');
+      }
       showScreen('screen-auth');
       showToast('Retour au seuil du monde.');
     }
 
     const leaveBtnEl = document.getElementById('btn-leave-room');
-    if (leaveBtnEl) {
-      leaveBtnEl.addEventListener('click', leaveRoom);
+    if (leaveBtnEl) leaveBtnEl.addEventListener('click', leaveRoom);
+
+    const btnNextRound = document.getElementById('btn-next-round');
+    if (btnNextRound) btnNextRound.addEventListener('click', () => sendToHost({ type: 'NEXT_ROUND' }));
+
+    const btnReplay = document.getElementById('btn-replay');
+    if (btnReplay) btnReplay.addEventListener('click', () => sendToHost({ type: 'REQUEST_REPLAY' }));
+
+    const audioToggleBtn = document.getElementById('btn-audio-toggle');
+    if (audioToggleBtn) {
+      audioToggleBtn.addEventListener('click', () => {
+        const active = audio.toggle();
+        const icon = document.getElementById('audio-icon');
+        if (icon) icon.className = active ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark text-zinc-700';
+      });
     }
 
-    document.getElementById('btn-next-round').addEventListener('click', () => {
-      sendToHost({ type: 'NEXT_ROUND' });
-    });
-
-    document.getElementById('btn-audio-toggle').addEventListener('click', () => {
-      const active = audio.toggle();
-      document.getElementById('audio-icon').className = active ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark text-zinc-700';
-    });
-
-    document.getElementById('btn-copy-code').addEventListener('click', () => {
-      const dummy = document.createElement('textarea');
-      dummy.value = gameState.code;
-      document.body.appendChild(dummy);
-      dummy.select();
-      document.execCommand('copy');
-      document.body.removeChild(dummy);
-      showToast(`Code ${gameState.code} copié.`);
-    });
-
-    document.getElementById('badge-room-code').addEventListener('click', () => {
-      document.getElementById('btn-copy-code').click();
-    });
-
-    // Enter solo with 2 bots (already ready)
-    document.getElementById('btn-solo-bots').addEventListener('click', () => {
-      audio.init();
-      myName = document.getElementById('input-username').value.trim() || 'Ombre';
-      isHost = true;
-      gameState.code = 'SOLO';
-      gameState.currentRound = 1;
-
-      gameState.players = {
-        [myId]: { id: myId, name: myName, isBot: false, isReady: false, isAlive: true, score: 0, chosenDoor: null, deathFloor: null },
-        'bot_1': { id: 'bot_1', name: 'Le Muet', isBot: true, isReady: true, isAlive: true, score: 0, chosenDoor: null, deathFloor: null },
-        'bot_2': { id: 'bot_2', name: 'L’Égaré', isBot: true, isReady: true, isAlive: true, score: 0, chosenDoor: null, deathFloor: null }
-      };
-
-      document.getElementById('badge-room-code').innerText = 'SOLO';
-      document.getElementById('room-badge').classList.remove('hidden');
-      document.getElementById('room-badge').classList.add('flex');
-
-      showScreen('screen-lobby');
-      renderLobbyUI(gameState.players[myId]);
-    });
-
-    // Add Bot in lobby (already ready)
-    document.getElementById('btn-add-bot').addEventListener('click', () => {
-      if (!isHost) return;
-      const botNames = ['Le Vagabond', 'L’Oublié', 'Le Veilleur', 'Le Pénitent', 'L’Inconnu'];
-      const botId = 'bot_' + Math.random().toString(36).substring(2, 6);
-      const name = botNames[Math.floor(Math.random() * botNames.length)];
-      
-      gameState.players[botId] = {
-        id: botId,
-        name: name,
-        isBot: true,
-        isReady: true,
-        isAlive: true,
-        score: 0,
-        chosenDoor: null,
-        deathFloor: null
-      };
-
-      broadcastState();
-      showToast(`${name} s'avance.`);
-    });
-
-    // Create room
-    document.getElementById('btn-create-room').addEventListener('click', () => {
-      audio.init();
-      myName = document.getElementById('input-username').value.trim() || `Âme_${Math.floor(Math.random() * 900 + 100)}`;
-      isHost = true;
-      gameState.currentRound = 1;
-
-      gameState.players = {
-        [myId]: { id: myId, name: myName, isBot: false, isReady: false, isAlive: true, score: 0, chosenDoor: null, deathFloor: null }
-      };
-
-      initHostPeer();
-      showScreen('screen-lobby');
-      renderLobbyUI(gameState.players[myId]);
-    });
-
-    // Join room
-    document.getElementById('btn-join-room').addEventListener('click', () => {
-      audio.init();
-      const code = document.getElementById('input-room-code').value.trim().toUpperCase();
-      if (!code || code.length < 3) {
-        showToast("Code invalide.");
-        return;
-      }
-      myName = document.getElementById('input-username').value.trim() || `Âme_${Math.floor(Math.random() * 900 + 100)}`;
-      isHost = false;
-
-      initClientPeer(code);
-      showScreen('screen-lobby');
-    });
-
-    // Ready toggle
-    document.getElementById('btn-toggle-ready').addEventListener('click', () => {
-      audio.init();
-      audio.heartbeat(true);
-      sendToHost({ type: 'TOGGLE_READY', id: myId });
-    });
-
-    // Start game
-    document.getElementById('btn-start-game').addEventListener('click', () => {
-      if (!isHost) return;
-      audio.heartbeat(true);
-
-      Object.values(gameState.players).forEach(p => {
-        p.isAlive = true;
-        p.chosenDoor = null;
-        p.deathFloor = null;
+    const copyBtn = document.getElementById('btn-copy-code');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        const dummy = document.createElement('textarea');
+        dummy.value = gameState.code;
+        document.body.appendChild(dummy);
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        showToast(`Code ${gameState.code} copié.`);
       });
+    }
 
-      gameState.floor = 1;
-      gameState.trapDoor = Math.floor(Math.random() * 3) + 1;
-      gameState.status = 'picking';
-      broadcastState();
+    const badgeRoomCode = document.getElementById('badge-room-code');
+    if (badgeRoomCode && copyBtn) {
+      badgeRoomCode.addEventListener('click', () => copyBtn.click());
+    }
 
-      simulateBotChoices();
-      startRoundCountdown();
-    });
+    const soloBtn = document.getElementById('btn-solo-bots');
+    if (soloBtn) {
+      soloBtn.addEventListener('click', () => {
+        audio.init();
+        const userInput = document.getElementById('input-username');
+        myName = (userInput && userInput.value.trim()) || 'Ombre';
+        isHost = true;
+        gameState.code = 'SOLO';
+        gameState.currentRound = 1;
 
-    // Replay
-    document.getElementById('btn-replay').addEventListener('click', () => {
-      sendToHost({ type: 'REQUEST_REPLAY' });
-    });
+        gameState.players = {
+          [myId]: { id: myId, name: myName, isBot: false, isReady: false, isAlive: true, score: 0, chosenDoor: null, deathFloor: null, items: [] },
+          'bot_1': { id: 'bot_1', name: 'Le Muet', isBot: true, isReady: true, isAlive: true, score: 0, chosenDoor: null, deathFloor: null, items: [] },
+          'bot_2': { id: 'bot_2', name: 'L’Égaré', isBot: true, isReady: true, isAlive: true, score: 0, chosenDoor: null, deathFloor: null, items: [] }
+        };
+
+        const badge = document.getElementById('badge-room-code');
+        if (badge) badge.innerText = 'SOLO';
+        const roomBadge = document.getElementById('room-badge');
+        if (roomBadge) {
+          roomBadge.classList.remove('hidden');
+          roomBadge.classList.add('flex');
+        }
+
+        showScreen('screen-lobby');
+        renderLobbyUI(gameState.players[myId]);
+      });
+    }
+
+    const addBotBtn = document.getElementById('btn-add-bot');
+    if (addBotBtn) {
+      addBotBtn.addEventListener('click', () => {
+        if (!isHost) return;
+        const botNames = ['Le Vagabond', 'L’Oublié', 'Le Veilleur', 'Le Pénitent', 'L’Inconnu'];
+        const botId = 'bot_' + Math.random().toString(36).substring(2, 6);
+        const name = botNames[Math.floor(Math.random() * botNames.length)];
+        
+        gameState.players[botId] = {
+          id: botId,
+          name: name,
+          isBot: true,
+          isReady: true,
+          isAlive: true,
+          score: 0,
+          chosenDoor: null,
+          deathFloor: null,
+          items: []
+        };
+
+        broadcastState();
+        showToast(`${name} s'avance.`);
+      });
+    }
+
+    const createRoomBtn = document.getElementById('btn-create-room');
+    if (createRoomBtn) {
+      createRoomBtn.addEventListener('click', () => {
+        audio.init();
+        const userInput = document.getElementById('input-username');
+        myName = (userInput && userInput.value.trim()) || `Âme_${Math.floor(Math.random() * 900 + 100)}`;
+        isHost = true;
+        gameState.currentRound = 1;
+
+        gameState.players = {
+          [myId]: { id: myId, name: myName, isBot: false, isReady: false, isAlive: true, score: 0, chosenDoor: null, deathFloor: null, items: [] }
+        };
+
+        initHostPeer();
+        showScreen('screen-lobby');
+        renderLobbyUI(gameState.players[myId]);
+      });
+    }
+
+    const joinRoomBtn = document.getElementById('btn-join-room');
+    if (joinRoomBtn) {
+      joinRoomBtn.addEventListener('click', () => {
+        audio.init();
+        const codeInput = document.getElementById('input-room-code');
+        const code = codeInput ? codeInput.value.trim().toUpperCase() : '';
+        if (!code || code.length < 3) {
+          showToast("Code invalide.");
+          return;
+        }
+        const userInput = document.getElementById('input-username');
+        myName = (userInput && userInput.value.trim()) || `Âme_${Math.floor(Math.random() * 900 + 100)}`;
+        isHost = false;
+
+        initClientPeer(code);
+        showScreen('screen-lobby');
+      });
+    }
+
+    const readyBtn = document.getElementById('btn-toggle-ready');
+    if (readyBtn) {
+      readyBtn.addEventListener('click', () => {
+        audio.init();
+        audio.heartbeat(true);
+        sendToHost({ type: 'TOGGLE_READY', id: myId });
+      });
+    }
+
+    const startGameBtn = document.getElementById('btn-start-game');
+    if (startGameBtn) {
+      startGameBtn.addEventListener('click', () => {
+        if (!isHost) return;
+        audio.heartbeat(true);
+
+        Object.values(gameState.players).forEach(p => {
+          p.isAlive = true;
+          p.chosenDoor = null;
+          p.deathFloor = null;
+          p.activeChainTarget = null;
+          p.isVeiled = false;
+          p.isCursed = false;
+        });
+
+        gameState.floor = 1;
+        gameState.trapDoor = Math.floor(Math.random() * 3) + 1;
+        gameState.status = 'picking';
+
+        broadcastState();
+        simulateBotChoices();
+        startRoundCountdown();
+      });
+    }
 
     window.onload = function() {
       window.addEventListener('click', () => audio.init(), { once: true });
