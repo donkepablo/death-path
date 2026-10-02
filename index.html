@@ -207,7 +207,16 @@
       <button id="btn-audio-toggle" class="p-1.5 border border-[#2b3a2e] rounded text-dore hover:text-white bg-[#171e19] text-xs transition-colors" title="Son">
         <i id="audio-icon" class="fa-solid fa-volume-high"></i>
       </button>
-
+      <input 
+        id="audio-volume-slider" 
+        type="range" 
+        min="0" 
+        max="1" 
+        step="0.05" 
+        value="0.3" 
+        class="w-16 h-1 bg-[#233126] rounded-lg appearance-none cursor-pointer accent-[#d4af37]" 
+        title="Volume"
+      />
       <button id="btn-open-rules" class="px-2.5 py-1 border border-[#304234] rounded text-[#d6dfd8] hover:text-white bg-[#171e19] text-[11px] font-mono tracking-wider uppercase transition-colors">
         Règles
       </button>
@@ -621,9 +630,10 @@
     const audio = {
       ctx: null,
       enabled: true,
+      volume: 0.3,
       masterGain: null,
       initialized: false,
-
+      
       init() {
         if (this.initialized && this.ctx) {
           if (this.ctx.state === 'suspended' && this.enabled) this.ctx.resume().catch(() => {});
@@ -634,20 +644,31 @@
           if (!AudioContextClass) return;
           this.ctx = new AudioContextClass();
           this.masterGain = this.ctx.createGain();
-          this.masterGain.gain.setValueAtTime(this.enabled ? 0.4 : 0, this.ctx.currentTime);
+          this.masterGain.gain.setValueAtTime(this.enabled ? this.volume : 0, this.ctx.currentTime);
           this.masterGain.connect(this.ctx.destination);
           this.initialized = true;
           if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
         } catch (e) {}
       },
 
+      setVolume(val) {
+        this.volume = parseFloat(val);
+        if (!this.initialized) this.init();
+        if (this.volume > 0) this.enabled = true;
+        if (this.ctx && this.masterGain) {
+          this.masterGain.gain.setTargetAtTime(this.enabled ? this.volume : 0, this.ctx.currentTime, 0.03);
+        }
+        this.updateIcon();
+      },
+
       toggle() {
         this.enabled = !this.enabled;
         if (!this.initialized) this.init();
         if (this.ctx && this.masterGain) {
-          const now = this.ctx.currentTime;
-          this.masterGain.gain.setTargetAtTime(this.enabled ? 0.8 : 0, now, 0.05);
+          const target = this.enabled ? (this.volume > 0 ? this.volume : 0.3) : 0;
+          this.masterGain.gain.setTargetAtTime(target, this.ctx.currentTime, 0.05);
         }
+        this.updateIcon();
         return this.enabled;
       },
 
@@ -667,6 +688,27 @@
           osc.start(now);
           osc.stop(now + 0.05);
         } catch(e) {}
+      },
+
+      updateIcon() {
+        const icon = document.getElementById('audio-icon');
+        if (!icon) return;
+        if (!this.enabled || this.volume === 0) {
+          icon.className = 'fa-solid fa-volume-xmark text-[#6e8073]';
+        } else if (this.volume < 0.4) {
+          icon.className = 'fa-solid fa-volume-low text-dore';
+        } else {
+          icon.className = 'fa-solid fa-volume-high text-dore';
+        }
+      },
+
+      playFaaah() {
+        if (!this.enabled || this.volume === 0) return;
+        try {
+          const sound = new Audio('faaah.mp3');
+          sound.volume = this.volume; // S'aligne automatiquement sur le slider
+          sound.play().catch(() => {});
+        } catch (e) {}
       },
 
       cardSlide() {
@@ -767,15 +809,6 @@
           gain.connect(this.masterGain);
           noise.start(now);
         } catch(e) {}
-      },
-
-      playFaaah() {
-        if (!this.enabled) return;
-        try {
-          const sound = new Audio('faaah.mp3');
-          sound.volume = 0.2;
-          sound.play().catch(() => {});
-        } catch (e) {}
       }
     };
 
@@ -2547,11 +2580,22 @@
       document.getElementById('modal-rules').classList.remove('flex');
     });
 
-    document.getElementById('btn-audio-toggle').addEventListener('click', () => {
-      const active = audio.toggle();
-      const icon = document.getElementById('audio-icon');
-      if (icon) icon.className = active ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark text-[#6e8073]';
-    });
+    const audioSlider = document.getElementById('audio-volume-slider');
+    const btnAudioToggle = document.getElementById('btn-audio-toggle');
+
+    if (btnAudioToggle) {
+      btnAudioToggle.addEventListener('click', () => {
+        const isMuted = !audio.toggle();
+        if (audioSlider) audioSlider.value = isMuted ? 0 : audio.volume || 0.3;
+      });
+    }
+
+    if (audioSlider) {
+      audioSlider.addEventListener('input', (e) => {
+        audio.init();
+        audio.setVolume(e.target.value);
+      });
+    }
 
     document.getElementById('btn-copy-code').addEventListener('click', () => {
       const text = gameState.code;
