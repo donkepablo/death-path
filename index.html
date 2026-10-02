@@ -173,6 +173,20 @@
     .dice-rolling {
       opacity: 0.9;
     }
+    
+    /* Style de la barre de volume élargie */
+    #audio-volume-slider::-webkit-slider-runnable-track {
+      height: 6px;
+      background: #233126;
+      border-radius: 9999px;
+      border: 1px solid #324636;
+    }
+    #audio-volume-slider::-webkit-slider-thumb {
+      margin-top: -5px;
+      width: 16px;
+      height: 16px;
+    }
+    
   </style>
 </head>
 <body class="h-[100dvh] max-h-[100dvh] overflow-hidden text-[#e8ece9] flex flex-col justify-between font-mono">
@@ -203,20 +217,22 @@
       <span id="header-mode-tag" class="text-[9px] font-mono text-[#8a998e] border-l border-[#243327] pl-2 uppercase hidden sm:inline">MODE : CARTES</span>
     </div>
 
-    <div class="flex items-center gap-2">
-      <button id="btn-audio-toggle" class="p-1.5 border border-[#2b3a2e] rounded text-dore hover:text-white bg-[#171e19] text-xs transition-colors" title="Son">
-        <i id="audio-icon" class="fa-solid fa-volume-high"></i>
-      <input 
-        id="audio-volume-slider" 
-        type="range" 
-        min="0" 
-        max="1" 
-        step="0.05" 
-        value="0.3" 
-        class="w-16 h-1 bg-[#233126] rounded-lg appearance-none cursor-pointer accent-[#d4af37] select-auto" 
-        style="touch-action: auto; user-select: auto;"
-        title="Volume"
-      />
+      <div class="flex items-center gap-2 bg-[#171e19] border border-[#2b3a2e] rounded-lg px-2.5 py-1 z-50">
+        <button id="btn-audio-toggle" type="button" class="text-dore hover:text-white text-xs transition-colors flex items-center justify-center p-0.5" title="Couper / Activer le son">
+          <i id="audio-icon" class="fa-solid fa-volume-high"></i>
+        </button>
+        <input 
+          id="audio-volume-slider" 
+          type="range" 
+          min="0" 
+          max="1" 
+          step="0.05" 
+          value="0.3" 
+          class="w-24 sm:w-28 h-5 bg-transparent cursor-pointer accent-[#d4af37]"
+          style="touch-action: pan-x; user-select: auto;"
+          title="Volume"
+        />
+      </div>
       <button id="btn-open-rules" class="px-2.5 py-1 border border-[#304234] rounded text-[#d6dfd8] hover:text-white bg-[#171e19] text-[11px] font-mono tracking-wider uppercase transition-colors">
         Règles
       </button>
@@ -2586,7 +2602,8 @@
     const btnAudioToggle = document.getElementById('btn-audio-toggle');
 
     if (btnAudioToggle) {
-      btnAudioToggle.addEventListener('click', () => {
+      btnAudioToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
         const active = audio.toggle();
         if (audioSlider) {
           audioSlider.value = active ? (audio.volume > 0 ? audio.volume : 0.3) : 0;
@@ -2595,12 +2612,21 @@
     }
 
     if (audioSlider) {
-      const applySliderVolume = (e) => {
+      // Bloque la propagation pour ne pas déclencher le bouton toggle
+      const stopEventBubble = (e) => e.stopPropagation();
+      audioSlider.addEventListener('click', stopEventBubble);
+      audioSlider.addEventListener('pointerdown', stopEventBubble);
+      audioSlider.addEventListener('touchstart', stopEventBubble, { passive: true });
+
+      const onVolumeChange = (e) => {
+        e.stopPropagation();
         audio.init();
-        audio.setVolume(e.target.value);
+        const val = parseFloat(e.target.value);
+        audio.setVolume(val);
       };
-      audioSlider.addEventListener('input', applySliderVolume);
-      audioSlider.addEventListener('change', applySliderVolume);
+
+      audioSlider.addEventListener('input', onVolumeChange);
+      audioSlider.addEventListener('change', onVolumeChange);
     }
 
     document.getElementById('btn-copy-code').addEventListener('click', () => {
