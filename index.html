@@ -36,7 +36,6 @@
   </script>
 
   <style>
-    /* Vignette & Grain */
     body {
       background-color: #030303;
       background-image: 
@@ -61,6 +60,7 @@
     }
     
     .screen-view {
+      display: none !important;
       transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
@@ -71,6 +71,7 @@
     }
     
     .screen-view.active {
+      display: flex !important;
       opacity: 1;
       transform: scale(1);
       pointer-events: auto;
@@ -246,7 +247,7 @@
     </section>
 
     <!-- SCREEN: LOBBY -->
-    <section id="screen-lobby" class="screen-view entering hidden w-full max-w-lg flex-col gap-3 my-auto max-h-full">
+    <section id="screen-lobby" class="screen-view w-full max-w-lg flex flex-col gap-3 my-auto max-h-full">
       <div class="bg-ash/60 border border-zinc-800/80 rounded-2xl p-3.5 sm:p-5 backdrop-blur-md space-y-3 shadow-2xl flex flex-col max-h-[88vh]">
         
         <div class="flex items-center justify-between border-b border-zinc-900 pb-2.5 flex-shrink-0">
@@ -346,7 +347,7 @@
             </button>
           </div>
 
-          <!-- MODE: Jugement des Ombres (Vote des Éliminés) -->
+          <!-- MODE: Jugement des Ombres -->
           <div class="pt-2 border-t border-zinc-900 flex items-center justify-between text-xs">
             <div class="pr-2">
               <div class="text-[10px] tracking-widest text-zinc-300 uppercase font-bold flex items-center gap-1.5">
@@ -377,7 +378,6 @@
               </button>
             </div>
 
-            <!-- Relic checkboxes box -->
             <div id="items-selection-box" class="bg-void/60 border border-zinc-900 rounded-xl p-2 space-y-1">
               <div class="text-[9px] tracking-widest text-zinc-500 uppercase font-bold mb-1">Reliques actives dans l'arène :</div>
               <div class="grid grid-cols-2 gap-1.5 text-[10px] font-mono text-zinc-400">
@@ -421,8 +421,8 @@
       </div>
     </section>
 
-    <!-- SCREEN: GHOST VOTE (Le Jugement des Ombres) -->
-    <section id="screen-ghost-vote" class="screen-view entering hidden w-full max-w-2xl flex-col items-center gap-4 my-auto">
+    <!-- SCREEN: GHOST VOTE -->
+    <section id="screen-ghost-vote" class="screen-view w-full max-w-2xl flex flex-col items-center gap-4 my-auto">
       <div class="w-full flex items-center justify-between border-b border-zinc-800 pb-2.5">
         <div class="flex items-baseline gap-2">
           <span class="text-[9px] text-zinc-500 tracking-[0.25em] uppercase font-bold"><i class="fa-solid fa-ghost mr-1"></i> RITUEL</span>
@@ -436,17 +436,13 @@
         </div>
       </div>
 
-      <!-- Message spécifique selon vivant ou mort -->
       <div id="ghost-role-instruction" class="text-center px-4 py-3 bg-ash/70 border border-zinc-800/80 rounded-xl w-full">
         <h3 id="ghost-role-title" class="font-cinzel text-sm sm:text-base font-bold text-white uppercase tracking-widest"></h3>
         <p id="ghost-role-desc" class="text-[11px] text-zinc-500 font-mono mt-0.5"></p>
       </div>
 
-      <!-- VUE POUR LES MORTS : Portes de vote interactives -->
       <div id="ghost-voting-doors-area" class="w-full py-2 flex flex-col items-center gap-2">
         <div class="grid grid-cols-3 gap-3 sm:gap-6 w-full">
-          
-          <!-- GHOST DOOR 1 -->
           <div data-ghost-door="1" class="ghost-card group flex flex-col items-center cursor-pointer select-none">
             <div class="ghost-frame w-full aspect-[9/14] sm:aspect-[9/15] bg-black rounded-lg border border-zinc-800 relative overflow-hidden flex flex-col items-center justify-between p-3 transition-all duration-300">
               <span class="font-cinzel text-lg text-zinc-400 font-bold">I</span>
@@ -456,7 +452,6 @@
             <div class="ghost-door-votes flex flex-wrap gap-1 justify-center mt-2 min-h-[16px]"></div>
           </div>
 
-          <!-- GHOST DOOR 2 -->
           <div data-ghost-door="2" class="ghost-card group flex flex-col items-center cursor-pointer select-none">
             <div class="ghost-frame w-full aspect-[9/14] sm:aspect-[9/15] bg-black rounded-lg border border-zinc-800 relative overflow-hidden flex flex-col items-center justify-between p-3 transition-all duration-300">
               <span class="font-cinzel text-lg text-zinc-400 font-bold">II</span>
@@ -466,7 +461,6 @@
             <div class="ghost-door-votes flex flex-wrap gap-1 justify-center mt-2 min-h-[16px]"></div>
           </div>
 
-          <!-- GHOST DOOR 3 -->
           <div data-ghost-door="3" class="ghost-card group flex flex-col items-center cursor-pointer select-none">
             <div class="ghost-frame w-full aspect-[9/14] sm:aspect-[9/15] bg-black rounded-lg border border-zinc-800 relative overflow-hidden flex flex-col items-center justify-between p-3 transition-all duration-300">
               <span class="font-cinzel text-lg text-zinc-400 font-bold">III</span>
@@ -475,14 +469,12 @@
             </div>
             <div class="ghost-door-votes flex flex-wrap gap-1 justify-center mt-2 min-h-[16px]"></div>
           </div>
-
         </div>
         <div class="text-zinc-600 text-[10px] tracking-[0.2em] uppercase font-mono text-center mt-2">
           La porte la plus maudite sera scellée par le trépas.
         </div>
       </div>
 
-      <!-- VUE POUR LES VIVANTS : En attente aveugle sans portes -->
       <div id="ghost-waiting-area" class="w-full py-8 hidden flex-col items-center justify-center gap-4">
         <div class="w-20 h-20 rounded-full border border-zinc-800 flex items-center justify-center bg-void pulse-ritual">
           <i class="fa-solid fa-hourglass-half text-2xl text-zinc-500"></i>
@@ -491,13 +483,10 @@
           Les murmures de l'au-delà s'élèvent. Impossible de percevoir la porte qu'ils préparent...
         </p>
       </div>
-
     </section>
 
     <!-- SCREEN: GAMEPLAY -->
-    <section id="screen-game" class="screen-view entering hidden w-full flex-col items-center gap-3 sm:gap-4 my-auto">
-      
-      <!-- Minimal status header -->
+    <section id="screen-game" class="screen-view w-full flex flex-col items-center gap-3 sm:gap-4 my-auto">
       <div class="w-full max-w-2xl flex items-center justify-between border-b border-zinc-900 pb-2.5 sm:pb-3">
         <div class="flex items-baseline gap-1.5 sm:gap-3">
           <span class="text-[9px] sm:text-[10px] text-zinc-600 tracking-[0.25em] uppercase">Palier</span>
@@ -514,26 +503,20 @@
         </div>
       </div>
 
-      <!-- Curse panic warning badge -->
       <div id="curse-warning-badge" class="hidden text-[10px] font-mono text-amber-400 bg-amber-950/40 border border-amber-800/80 px-3 py-1 rounded-full animate-bounce">
         <i class="fa-solid fa-hourglass-start mr-1"></i> MAUDIT : Tu as 3 secondes pour fixer ton choix !
       </div>
 
-      <!-- Player tracking tags -->
       <div id="game-participants" class="w-full max-w-2xl flex flex-wrap gap-1.5 sm:gap-2 justify-center min-h-[24px] max-h-16 overflow-y-auto px-1">
       </div>
 
-      <!-- In-Game Relics Inventory Bar -->
       <div id="game-inventory-bar" class="w-full max-w-2xl hidden flex flex-col items-center gap-1.5 py-1">
         <span class="text-[8px] tracking-[0.25em] text-zinc-600 uppercase font-mono">Tes Reliques Disponibles</span>
         <div id="inventory-items-list" class="flex flex-wrap gap-2 justify-center"></div>
       </div>
 
-      <!-- The 3 monolith portals with slow dissolving veils -->
       <div class="w-full max-w-2xl py-2 sm:py-3 pt-2">
         <div class="grid grid-cols-3 gap-2.5 sm:gap-6">
-          
-          <!-- MONOLITH 1 -->
           <div data-door-id="1" class="monolith-card group flex flex-col items-center cursor-pointer select-none">
             <div class="monolith-frame w-full aspect-[9/15] sm:aspect-[9/16] bg-black rounded-lg border border-zinc-900 relative overflow-hidden">
               <div class="monolith-content absolute inset-0 bg-void flex flex-col items-center justify-center p-2 sm:p-3 text-center opacity-0">
@@ -549,7 +532,6 @@
             <div class="door-chosen-by flex flex-wrap gap-1 justify-center mt-2 sm:mt-3 min-h-[18px]"></div>
           </div>
 
-          <!-- MONOLITH 2 -->
           <div data-door-id="2" class="monolith-card group flex flex-col items-center cursor-pointer select-none">
             <div class="monolith-frame w-full aspect-[9/15] sm:aspect-[9/16] bg-black rounded-lg border border-zinc-900 relative overflow-hidden">
               <div class="monolith-content absolute inset-0 bg-void flex flex-col items-center justify-center p-2 sm:p-3 text-center opacity-0">
@@ -565,7 +547,6 @@
             <div class="door-chosen-by flex flex-wrap gap-1 justify-center mt-2 sm:mt-3 min-h-[18px]"></div>
           </div>
 
-          <!-- MONOLITH 3 -->
           <div data-door-id="3" class="monolith-card group flex flex-col items-center cursor-pointer select-none">
             <div class="monolith-frame w-full aspect-[9/15] sm:aspect-[9/16] bg-black rounded-lg border border-zinc-900 relative overflow-hidden">
               <div class="monolith-content absolute inset-0 bg-void flex flex-col items-center justify-center p-2 sm:p-3 text-center opacity-0">
@@ -580,18 +561,16 @@
             </div>
             <div class="door-chosen-by flex flex-wrap gap-1 justify-center mt-2 sm:mt-3 min-h-[18px]"></div>
           </div>
-
         </div>
       </div>
 
-      <!-- Spectator hint -->
       <div id="spectator-banner" class="hidden text-zinc-600 text-[9px] sm:text-[10px] tracking-[0.25em] uppercase text-center px-2">
         — Condamné au silence : Tu contemples leur marche —
       </div>
     </section>
 
-    <!-- SCREEN: SUSPENSE / RELIC DISTRIBUTION ORACLE -->
-    <section id="screen-suspense" class="screen-view entering hidden w-full max-w-md flex-col items-center justify-center text-center gap-5 sm:gap-7 my-auto py-6">
+    <!-- SCREEN: SUSPENSE -->
+    <section id="screen-suspense" class="screen-view w-full max-w-md flex flex-col items-center justify-center text-center gap-5 sm:gap-7 my-auto py-6">
       <div class="space-y-1.5">
         <span class="text-[9px] tracking-[0.35em] uppercase text-zinc-600 font-mono">
           Entre les mondes
@@ -601,18 +580,15 @@
         </h2>
       </div>
 
-      <!-- Réceptacle occulte fixe -->
       <div class="relative flex items-center justify-center my-2 sm:my-4 w-36 h-36 sm:w-44 sm:h-44">
         <div id="suspense-orb-pulse" class="absolute inset-0 rounded-2xl border border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl pulse-ritual shadow-[0_0_40px_rgba(0,0,0,0.95)] transition-all duration-1000"></div>
         <div class="absolute inset-3 rounded-xl border border-zinc-900/90 pointer-events-none"></div>
 
-        <!-- Icône centrale -->
         <div id="suspense-icon-container" class="relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-90">
           <i id="suspense-icon" class="fa-solid fa-eye-slash text-3xl sm:text-4xl text-zinc-700 transition-all duration-700"></i>
         </div>
       </div>
 
-      <!-- Texte de l'oracle -->
       <div class="flex flex-col items-center justify-center gap-3 max-w-sm px-4">
         <div id="suspense-oracle-text" class="text-xs sm:text-sm font-mono text-zinc-400 tracking-wider text-center leading-relaxed min-h-[52px] flex flex-col items-center justify-center">
           Le néant scrute la profondeur de ton âme...
@@ -625,8 +601,8 @@
       </button>
     </section>
 
-    <!-- SCREEN: GAME OVER / ROUND SUMMARY -->
-    <section id="screen-gameover" class="screen-view entering hidden w-full max-w-md flex-col items-center gap-3 sm:gap-4 py-2 sm:py-4 text-center my-auto max-h-[90vh]">
+    <!-- SCREEN: GAME OVER -->
+    <section id="screen-gameover" class="screen-view w-full max-w-md flex flex-col items-center gap-3 sm:gap-4 py-2 sm:py-4 text-center my-auto max-h-[90vh]">
       <div class="space-y-1">
         <h2 id="gameover-title" class="text-xl sm:text-2xl font-cinzel font-black tracking-[0.2em] text-white uppercase">
           FIN DU VOYAGE
@@ -639,7 +615,6 @@
         </div>
       </div>
 
-      <!-- Dedicated Relic Distribution Announcement Box -->
       <div id="gameover-relics-box" class="w-full hidden bg-ash/70 border border-zinc-800 rounded-2xl p-2.5 sm:p-3 text-left space-y-2 shadow-xl max-h-36 overflow-y-auto">
         <div class="flex items-center justify-between border-b border-zinc-900 pb-1">
           <div class="flex items-center gap-1.5 text-[9px] font-bold tracking-[0.2em] uppercase text-zinc-300">
@@ -649,14 +624,10 @@
           <span class="text-[8px] text-zinc-600 uppercase font-mono tracking-wider">Manche Suivante</span>
         </div>
         
-        <!-- Personal outcome -->
         <div id="gameover-my-relic-announcement" class="text-xs font-mono"></div>
-
-        <!-- Rivals outcome toggle / overview -->
         <div id="gameover-all-relics-summary" class="pt-1 border-t border-zinc-900/80 space-y-1 text-[10px] text-zinc-500 font-mono"></div>
       </div>
 
-      <!-- Leaderboard & Presence Status -->
       <div class="w-full bg-ash/40 border border-zinc-900 rounded-2xl p-2.5 sm:p-3 space-y-1.5 flex-1 min-h-[110px] max-h-40 overflow-hidden flex flex-col">
         <div class="flex justify-between text-[9px] text-zinc-600 uppercase tracking-widest px-1 pb-1 border-b border-zinc-900 flex-shrink-0">
           <span>Présence</span>
@@ -665,7 +636,6 @@
         <div id="gameover-leaderboard" class="space-y-1 overflow-y-auto pr-0.5 flex-1"></div>
       </div>
 
-      <!-- Inter-round Ready & Next Round Control -->
       <div class="w-full flex flex-col gap-2 pt-1 flex-shrink-0">
         <button id="btn-next-round-ready" class="hidden w-full py-3 border border-zinc-700 bg-zinc-900 active:scale-[0.98] text-xs uppercase tracking-[0.2em] text-zinc-300 font-bold rounded-xl transition-all">
           Se Préparer pour la Suite
@@ -681,7 +651,7 @@
       </div>
     </section>
 
-    <!-- MODAL: GRIMOIRE DES RELIQUES -->
+    <!-- MODAL: GRIMOIRE -->
     <div id="modal-grimoire" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
       <div class="bg-ash border border-zinc-800 rounded-2xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
         <div class="p-3.5 border-b border-zinc-900 flex items-center justify-between flex-shrink-0">
@@ -695,13 +665,13 @@
         </div>
         
         <div class="p-4 overflow-y-auto space-y-3 text-xs font-mono">
-         <div class="p-2.5 rounded-xl border border-zinc-900 bg-void space-y-1">
+          <div class="p-2.5 rounded-xl border border-zinc-900 bg-void space-y-1">
             <div class="text-red-400 font-bold flex items-center gap-1.5">
               <i class="fa-solid fa-heart"></i>
               <span>Cœur de Sursis</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              Attribué à l'âme qui est allée le plus loin dans la manche écoulée (dès la manche 2). Si plusieurs joueurs sont ex-æquo au palier le plus haut, un tirage au sort désigne qui reçoit le cœur. Ne se cumule pas (max 1). Absorbe une mort fatale.
+              Attribué au survivant de la manche écoulée (dès la manche 2). Si ex-æquo, tirage au sort. Ne se cumule pas (max 1). Absorbe une mort fatale.
             </p>
           </div>
 
@@ -711,7 +681,7 @@
               <span>Miroir d’Augure</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              Attribué dès la moitié du tournoi à un seul des premiers perdants (tirage au sort en cas d'égalité au score le plus bas). Révèle en secret une porte sûre.
+              Attribué dès la moitié du tournoi à un des scores les plus bas. Révèle en secret une porte sûre.
             </p>
           </div>
 
@@ -721,7 +691,7 @@
               <span>Malédiction</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              1 chance sur 3. Cible un rival vivant : son sablier s'effondre et il n'a plus que 3 secondes pour fixer sa porte.
+              1 chance sur 3. Cible un rival vivant : il n'a plus que 3 secondes pour fixer sa porte.
             </p>
           </div>
 
@@ -731,7 +701,7 @@
               <span>Chaîne des Damnés</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              1 chance sur 3. Lie ton destin à un rival. Si tu choisis la mauvaise porte, le rival est sacrifié à ta place.
+              1 chance sur 3. Si tu choisis la mauvaise porte, le rival lié meurt à ta place.
             </p>
           </div>
 
@@ -741,7 +711,7 @@
               <span>Voile d’Ombre</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              1 chance sur 3. Masque totalement ta présence et ton choix en direct. <em class="text-zinc-400">(Actif si Révélation est cochée)</em>.
+              1 chance sur 3. Masque ton choix en direct.
             </p>
           </div>
 
@@ -751,7 +721,7 @@
               <span>Fétiche d’Échange</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              1 chance sur 3. Échange instantanément ta porte choisie avec celle d'un rival vivant.
+              1 chance sur 3. Échange ta porte choisie avec celle d'un rival vivant.
             </p>
           </div>
         </div>
@@ -799,7 +769,6 @@
           this.masterGain.gain.setValueAtTime(this.enabled ? 0.8 : 0, this.ctx.currentTime);
           this.masterGain.connect(this.ctx.destination);
 
-          // Deep sub-bass ambient drone
           this.droneGain = this.ctx.createGain();
           this.droneGain.gain.setValueAtTime(0.12, this.ctx.currentTime);
 
@@ -823,7 +792,6 @@
           osc1.start();
           osc2.start();
 
-          // Dissonant tension pad
           this.tensionGain = this.ctx.createGain();
           this.tensionGain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
 
@@ -956,8 +924,6 @@
 
     let localSuspenseCompletedForRound = 0;
     let suspenseAnimationTimeout = null;
-
-    // Sécurité : stocker la vraie trapDoor côté hôte uniquement jusqu'à révélation
     let privateHostTrapDoor = 1;
 
     const ALL_RELIC_KEYS = ['heart', 'mirror', 'curse', 'chain', 'veil', 'swap'];
@@ -973,7 +939,7 @@
 
     let gameState = {
       code: 'SOLO',
-      status: 'lobby', // 'lobby', 'ghost_vote', 'picking', 'revealing', 'ended'
+      status: 'lobby',
       floor: 1,
       trapDoor: null,
       totalRounds: 3,
@@ -1019,22 +985,14 @@
         oldScreen.classList.add('entering');
         
         setTimeout(() => {
-          oldScreen.classList.add('hidden');
-          oldScreen.classList.remove('flex');
-
-          newScreen.classList.remove('hidden');
-          newScreen.classList.add('flex');
-          
-          requestAnimationFrame(() => {
-            newScreen.classList.remove('entering');
+          oldScreen.classList.remove('active', 'entering');
+          if (newScreen) {
             newScreen.classList.add('active');
-          });
-
+          }
           currentActiveScreen = screenId;
-        }, 500);
+        }, 300);
       } else if (newScreen) {
-        newScreen.classList.remove('hidden', 'entering');
-        newScreen.classList.add('flex', 'active');
+        newScreen.classList.add('active');
         currentActiveScreen = screenId;
       }
     }
@@ -1078,7 +1036,6 @@
             if (gameState.status !== 'revealing') {
               stateForConn.trapDoor = null;
             }
-            // Secret absolu : masquer les ghostVotes aux vivants
             if (isTargetAlive) {
               stateForConn.ghostVotes = {};
             }
@@ -1227,8 +1184,6 @@
       }
     }
 
-    /* DISTRIBUTION DES RELIQUES CONFORME AUX RÈGLES DE PALIER DE MANCHE */
-    /* DISTRIBUTION DES RELIQUES CONFORME AUX RÈGLES DE PALIER DE MANCHE */
     function distributeBetweenRoundsRelics() {
       if (!gameState.itemsEnabled) {
         gameState.lastRoundRewards = {};
@@ -1241,7 +1196,6 @@
       const rewardsLog = {};
       players.forEach(p => { rewardsLog[p.id] = []; });
 
-      // Survivants actuels de la manche
       const roundSurvivors = players.filter(p => p.isAlive);
 
       if (upcomingRound >= 2 && gameState.allowedItems.includes('heart')) {
@@ -1249,15 +1203,12 @@
         let reasonText = '';
 
         if (roundSurvivors.length === 1) {
-          // Un vainqueur unique incontestable a survécu à la manche
           chosenWinner = roundSurvivors[0];
           reasonText = `Vainqueur de la manche (Seul survivant au Palier ${getRoman(gameState.floor)})`;
         } else if (roundSurvivors.length > 1) {
-          // Cas rare : ex-æquo parmi les survivants
           chosenWinner = roundSurvivors[Math.floor(Math.random() * roundSurvivors.length)];
           reasonText = `Vainqueur de la manche (Tiré au sort parmi les survivants du Palier ${getRoman(gameState.floor)})`;
         } else {
-          // Hécatombe totale : aucun survivant, on départage ceux tombés au palier le plus élevé
           const maxDeathFloor = Math.max(...players.map(p => p.deathFloor || 1));
           const topDead = players.filter(p => (p.deathFloor || 1) === maxDeathFloor);
           chosenWinner = topDead[Math.floor(Math.random() * topDead.length)];
@@ -1275,7 +1226,6 @@
         }
       }
 
-      // Règle Miroir d'Augure pour le(s) score(s) le(s) plus faible(s)
       const sortedByScore = [...players].sort((a, b) => (b.score || 0) - (a.score || 0));
       const lowestScore = sortedByScore[sortedByScore.length - 1].score || 0;
       const halfRounds = Math.ceil(gameState.totalRounds / 2);
@@ -1295,7 +1245,6 @@
         }
       }
 
-      // Reliques aléatoires ordinaires (1 chance sur 3)
       const randomPool = ['curse', 'chain', 'veil', 'swap'].filter(k => 
         gameState.allowedItems.includes(k) && (k !== 'veil' || gameState.revealPicksLive)
       );
@@ -1389,7 +1338,7 @@
           });
 
           peer.on('error', () => {
-            console.warn('Mode réseau direct actif');
+            console.warn('Mode direct actif');
           });
         } catch (e) {}
       }
@@ -1717,7 +1666,6 @@
       });
     }
 
-    /* RITUEL DE SUSPENSE INTER-MANCHES */
     function triggerSuspenseRitual() {
       showScreen('screen-suspense');
 
@@ -1746,7 +1694,6 @@
 
       clearTimeout(suspenseAnimationTimeout);
 
-      // Étape 1 : 3,0s
       suspenseAnimationTimeout = setTimeout(() => {
         audio.heartbeat(false);
         oracleText.innerText = "Les voix anciennes délibèrent dans le silence...";
@@ -1754,7 +1701,6 @@
         oracleText.classList.add('text-zinc-300');
         icon.className = "fa-solid fa-hand-holding text-3xl sm:text-4xl text-zinc-700 transition-all duration-700";
 
-        // Étape 2 : 6,5s
         suspenseAnimationTimeout = setTimeout(() => {
           audio.heartbeat(true);
           oracleText.innerText = "Le gouffre tranche. Ton offrande se dessine...";
@@ -1762,7 +1708,6 @@
           oracleText.classList.add('text-bone');
           icon.className = "fa-solid fa-circle text-2xl text-zinc-600 transition-all duration-700 opacity-60";
 
-          // Étape 3 : 10,0s (Révélation)
           suspenseAnimationTimeout = setTimeout(() => {
             audio.heartbeat(true);
             audio.setTension(false);
@@ -1913,7 +1858,6 @@
         updateDurationSliderVisuals(currentDuration);
       }
 
-      // Render Live Picks illuminated button with Eye Icon
       const liveBtn = document.getElementById('btn-toggle-live-picks');
       const liveInd = document.getElementById('live-picks-indicator');
       const liveTxt = document.getElementById('live-picks-text');
@@ -1929,7 +1873,6 @@
         }
       }
 
-      // Render Shadow Judgment button (Monochrome)
       const shadowBtn = document.getElementById('btn-toggle-shadow-judgment');
       const shadowInd = document.getElementById('shadow-judgment-indicator');
       const shadowTxt = document.getElementById('shadow-judgment-text');
@@ -1945,7 +1888,6 @@
         }
       }
 
-      // Render Items Mode illuminated button
       const itemsBtn = document.getElementById('btn-toggle-items-mode');
       const itemsInd = document.getElementById('items-mode-indicator');
       const itemsTxt = document.getElementById('items-mode-text');
@@ -2073,7 +2015,6 @@
       }
     }
 
-    /* RENDU DE L'ÉCRAN DU VOTE DES OMBRES (MONOCHROME & STRICTEMENT MASQUÉ AUX VIVANTS) */
     function renderGhostVoteUI(me) {
       const floorEl = document.getElementById('ghost-floor-number');
       if (floorEl) floorEl.innerText = getRoman(gameState.floor);
@@ -2140,7 +2081,6 @@
         }
 
       } else {
-        // Vivant : affichage aveugle complet
         if (doorsArea) doorsArea.classList.add('hidden');
         if (waitingArea) {
           waitingArea.classList.remove('hidden');
@@ -2468,7 +2408,6 @@
         if (btnReplay) btnReplay.innerText = "Réinitialiser la partie";
       }
 
-      // Render Between-Rounds Relics Announcement Box
       const relicBox = document.getElementById('gameover-relics-box');
       const myRelicEl = document.getElementById('gameover-my-relic-announcement');
       const allRelicsEl = document.getElementById('gameover-all-relics-summary');
@@ -2569,7 +2508,6 @@
       }
     }
 
-    // Slider clicks directly on graduation markers
     document.querySelectorAll('.slider-tick').forEach(btn => {
       btn.addEventListener('click', () => {
         if (!isHost) return;
@@ -2593,7 +2531,6 @@
       });
     }
 
-    // Durations ticks click listeners
     document.querySelectorAll('.dur-tick').forEach(btn => {
       btn.addEventListener('click', () => {
         if (!isHost) return;
@@ -2608,7 +2545,6 @@
       });
     });
 
-    // Grimoire Modal listeners
     const grimoireBtn = document.getElementById('btn-open-grimoire');
     const closeGrimoireBtn = document.getElementById('btn-close-grimoire');
     const grimoireModal = document.getElementById('modal-grimoire');
@@ -2625,7 +2561,6 @@
       });
     }
 
-    // Target modal close listener
     const closeTargetBtn = document.getElementById('btn-close-target-modal');
     const targetModal = document.getElementById('modal-target-selection');
     if (closeTargetBtn && targetModal) {
@@ -2636,7 +2571,6 @@
       });
     }
 
-    // Items mode toggle listener
     const itemsToggleBtn = document.getElementById('btn-toggle-items-mode');
     if (itemsToggleBtn) {
       itemsToggleBtn.addEventListener('click', () => {
@@ -2651,7 +2585,6 @@
       });
     }
 
-    // Shadow Judgment toggle listener
     const shadowToggleBtn = document.getElementById('btn-toggle-shadow-judgment');
     if (shadowToggleBtn) {
       shadowToggleBtn.addEventListener('click', () => {
@@ -2665,7 +2598,6 @@
       });
     }
 
-    // Item checkboxes listener
     document.querySelectorAll('.item-chk').forEach(chk => {
       chk.addEventListener('change', () => {
         if (!isHost) return;
@@ -2682,7 +2614,6 @@
       });
     });
 
-    // Duration slider listener
     const durSliderEl = document.getElementById('slider-duration');
     if (durSliderEl) {
       durSliderEl.addEventListener('input', (e) => {
@@ -2696,7 +2627,6 @@
       });
     }
 
-    // Live picks toggle listener
     const livePicksBtnEl = document.getElementById('btn-toggle-live-picks');
     if (livePicksBtnEl) {
       livePicksBtnEl.addEventListener('click', () => {
