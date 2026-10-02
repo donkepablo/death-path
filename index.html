@@ -206,7 +206,6 @@
     <div class="flex items-center gap-2">
       <button id="btn-audio-toggle" class="p-1.5 border border-[#2b3a2e] rounded text-dore hover:text-white bg-[#171e19] text-xs transition-colors" title="Son">
         <i id="audio-icon" class="fa-solid fa-volume-high"></i>
-      </button>
       <input 
         id="audio-volume-slider" 
         type="range" 
@@ -214,7 +213,8 @@
         max="1" 
         step="0.05" 
         value="0.3" 
-        class="w-16 h-1 bg-[#233126] rounded-lg appearance-none cursor-pointer accent-[#d4af37]" 
+        class="w-16 h-1 bg-[#233126] rounded-lg appearance-none cursor-pointer accent-[#d4af37] select-auto" 
+        style="touch-action: auto; user-select: auto;"
         title="Volume"
       />
       <button id="btn-open-rules" class="px-2.5 py-1 border border-[#304234] rounded text-[#d6dfd8] hover:text-white bg-[#171e19] text-[11px] font-mono tracking-wider uppercase transition-colors">
@@ -653,10 +653,11 @@
 
       setVolume(val) {
         this.volume = parseFloat(val);
+        this.enabled = this.volume > 0;
         if (!this.initialized) this.init();
-        if (this.volume > 0) this.enabled = true;
         if (this.ctx && this.masterGain) {
-          this.masterGain.gain.setTargetAtTime(this.enabled ? this.volume : 0, this.ctx.currentTime, 0.03);
+          if (this.ctx.state === 'suspended' && this.enabled) this.ctx.resume().catch(() => {});
+          this.masterGain.gain.setValueAtTime(this.volume, this.ctx.currentTime);
         }
         this.updateIcon();
       },
@@ -665,8 +666,9 @@
         this.enabled = !this.enabled;
         if (!this.initialized) this.init();
         if (this.ctx && this.masterGain) {
+          if (this.ctx.state === 'suspended' && this.enabled) this.ctx.resume().catch(() => {});
           const target = this.enabled ? (this.volume > 0 ? this.volume : 0.3) : 0;
-          this.masterGain.gain.setTargetAtTime(target, this.ctx.currentTime, 0.05);
+          this.masterGain.gain.setValueAtTime(target, this.ctx.currentTime);
         }
         this.updateIcon();
         return this.enabled;
@@ -2585,16 +2587,20 @@
 
     if (btnAudioToggle) {
       btnAudioToggle.addEventListener('click', () => {
-        const isMuted = !audio.toggle();
-        if (audioSlider) audioSlider.value = isMuted ? 0 : audio.volume || 0.3;
+        const active = audio.toggle();
+        if (audioSlider) {
+          audioSlider.value = active ? (audio.volume > 0 ? audio.volume : 0.3) : 0;
+        }
       });
     }
 
     if (audioSlider) {
-      audioSlider.addEventListener('input', (e) => {
+      const applySliderVolume = (e) => {
         audio.init();
         audio.setVolume(e.target.value);
-      });
+      };
+      audioSlider.addEventListener('input', applySliderVolume);
+      audioSlider.addEventListener('change', applySliderVolume);
     }
 
     document.getElementById('btn-copy-code').addEventListener('click', () => {
