@@ -515,11 +515,11 @@
         </div>
       </div>
 
-      <!-- Texte de l'oracle -->
-      <div class="space-y-3 max-w-xs">
-        <p id="suspense-oracle-text" class="text-xs sm:text-sm font-mono text-zinc-400 tracking-wider min-h-[48px] flex items-center justify-center leading-relaxed transition-all duration-700">
+<!-- Texte de l'oracle -->
+      <div class="flex flex-col items-center justify-center gap-3 max-w-sm px-4">
+        <div id="suspense-oracle-text" class="text-xs sm:text-sm font-mono text-zinc-400 tracking-wider text-center leading-relaxed min-h-[56px] flex flex-col items-center justify-center">
           Le néant scrute la profondeur de ton âme...
-        </p>
+        </div>
         <div id="suspense-verdict-tag" class="hidden text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border"></div>
       </div>
 
@@ -1475,8 +1475,9 @@
       if (!oracleText || !icon || !iconContainer || !verdictTag || !continueBtn) return;
 
       // État initial (0s)
-      oracleText.innerText = "Le néant scrute la profondeur de ton âme...";
-      oracleText.className = "text-xs sm:text-sm font-mono text-zinc-500 tracking-wider min-h-[48px] flex items-center justify-center leading-relaxed transition-all duration-700";
+      // 1. Dans l'état initial (remplace la ligne oracleText.className) :
+      oracleText.innerText = "Le néant scrute les profondeurs de ton âme...";
+      oracleText.className = "text-xs sm:text-sm font-mono text-zinc-500 tracking-wider text-center leading-relaxed min-h-[56px] flex flex-col items-center justify-center transition-all duration-700";
       icon.className = "fa-solid fa-eye-slash text-3xl sm:text-4xl text-zinc-800 transition-all duration-700";
       iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-90";
       verdictTag.className = "hidden";
@@ -1513,33 +1514,39 @@
             const hasRelic = myRewards.length > 0;
 
             if (hasRelic) {
-              const firstRelic = myRewards[0];
-              const def = RELIC_DEFINITIONS[firstRelic.item];
-              const relicName = def ? def.name : firstRelic.item;
-              const relicIcon = def ? def.icon : 'fa-solid fa-wand-magic-sparkles text-zinc-200';
+    const firstRelic = myRewards[0];
+    const def = RELIC_DEFINITIONS[firstRelic.item];
+    const relicName = def ? def.name : firstRelic.item;
+    const relicIcon = def ? def.icon : 'fa-solid fa-wand-magic-sparkles text-zinc-200';
 
-              oracleText.innerHTML = `L'abysse t'accorde une faveur :<br><strong class="text-bone font-cinzel text-base tracking-widest mt-1 block uppercase">${relicName}</strong>`;
-              icon.className = `${relicIcon} text-4xl sm:text-5xl transition-all duration-700 animate-pulse`;
-              iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-125";
-              
-              verdictTag.innerText = "Relique Accordée";
-              verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-400 bg-zinc-900/90 text-bone shadow-[0_0_20px_rgba(255,255,255,0.2)]";
+    oracleText.innerHTML = `
+      <span class="text-zinc-400 text-xs tracking-widest block mb-1">L'abysse t'accorde une faveur :</span>
+      <span class="text-bone font-cinzel text-xl sm:text-2xl font-black tracking-[0.2em] uppercase drop-shadow-[0_0_12px_rgba(255,255,255,0.2)] block">${relicName}</span>
+    `;
+    icon.className = `${relicIcon} text-4xl sm:text-5xl transition-all duration-700 animate-pulse`;
+    iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-125";
+    
+    verdictTag.innerText = "Relique Accordée";
+    verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-400 bg-zinc-900/90 text-bone shadow-[0_0_20px_rgba(255,255,255,0.2)]";
 
-              if (orbPulse) {
-                orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-600 bg-zinc-900/60 backdrop-blur-xl shadow-[0_0_60px_rgba(255,255,255,0.15)] transition-all duration-1000";
-              }
-            } else {
-              oracleText.innerHTML = `Le néant s'est détourné.<br><span class="text-zinc-500 text-xs italic mt-0.5 block">Aucune relique ne t'est accordée pour ce palier.</span>`;
-              icon.className = "fa-solid fa-ban text-4xl text-zinc-700 transition-all duration-700";
-              iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-100 opacity-50";
-              
-              verdictTag.innerText = "Refus du Silence";
-              verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-900 bg-void text-zinc-600";
+    if (orbPulse) {
+      orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-600 bg-zinc-900/60 backdrop-blur-xl shadow-[0_0_60px_rgba(255,255,255,0.15)] transition-all duration-1000";
+    }
+  } else {
+    oracleText.innerHTML = `
+      <span class="text-zinc-300 text-xs tracking-wider block mb-1">Le néant s'est détourné.</span>
+      <span class="text-zinc-600 text-[11px] italic block">Aucune relique ne t'est accordée pour ce palier.</span>
+    `;
+    icon.className = "fa-solid fa-ban text-4xl text-zinc-700 transition-all duration-700";
+    iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-100 opacity-50";
+    
+    verdictTag.innerText = "Refus du Silence";
+    verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-900 bg-void text-zinc-600";
 
-              if (orbPulse) {
-                orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-900 bg-void backdrop-blur-xl shadow-[0_0_25px_rgba(0,0,0,0.8)] transition-all duration-1000";
-              }
-            }
+    if (orbPulse) {
+      orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-900 bg-void backdrop-blur-xl shadow-[0_0_25px_rgba(0,0,0,0.8)] transition-all duration-1000";
+    }
+  }
 
             continueBtn.classList.remove('hidden');
             requestAnimationFrame(() => {
