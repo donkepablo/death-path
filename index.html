@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="h-full bg-black text-zinc-200 selection:bg-zinc-800 selection:text-white">
+<html lang="fr" class="h-[100dvh] max-h-[100dvh] overflow-hidden bg-black text-zinc-200 selection:bg-zinc-800 selection:text-white">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -61,7 +61,7 @@
     }
     
     .screen-view {
-      transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1), transform 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     .screen-view.entering {
@@ -87,7 +87,7 @@
     .monolith-frame {
       box-shadow: 0 10px 40px -10px rgba(0,0,0,0.9), inset 0 0 25px rgba(0,0,0,0.9);
       transition: border-color 1.6s ease, box-shadow 1.8s ease;
-      max-height: 48vh;
+      max-height: 44vh;
     }
 
     .monolith-veil {
@@ -171,13 +171,13 @@
     }
   </style>
 </head>
-<body class="h-full text-zinc-300 flex flex-col font-mono select-none overflow-x-hidden">
+<body class="h-[100dvh] max-h-[100dvh] overflow-hidden text-zinc-300 flex flex-col font-mono select-none">
 
   <!-- Toast notification system -->
   <div id="toast-container" class="fixed top-4 sm:top-6 left-4 right-4 sm:left-auto sm:right-6 z-50 flex flex-col gap-2 pointer-events-none items-center sm:items-end"></div>
 
   <!-- Header -->
-  <header class="w-full border-b border-zinc-900/80 bg-black/60 backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between sticky top-0 z-40">
+  <header class="w-full flex-shrink-0 border-b border-zinc-900/80 bg-black/60 backdrop-blur-md px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between z-40">
     <div class="flex items-center gap-2.5 sm:gap-3">
       <h1 class="text-base sm:text-lg tracking-[0.3em] uppercase font-cinzel font-black text-bone">
         DEATH PATH
@@ -195,25 +195,25 @@
     </div>
   </header>
 
-  <main class="flex-1 max-w-4xl w-full mx-auto px-3 sm:px-4 py-4 sm:py-8 flex flex-col justify-center items-center relative">
+  <main class="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-4 py-2 sm:py-4 flex flex-col justify-center items-center relative overflow-hidden">
 
     <!-- SCREEN: AUTH / WELCOME -->
-    <section id="screen-auth" class="screen-view active w-full max-w-md flex flex-col gap-5 sm:gap-7 my-auto">
-      <div class="text-center space-y-1.5 sm:space-y-2">
+    <section id="screen-auth" class="screen-view active w-full max-w-md flex flex-col gap-4 sm:gap-6 my-auto">
+      <div class="text-center space-y-1">
         <h2 class="text-3xl sm:text-5xl font-cinzel font-black tracking-[0.25em] text-white">
           DEATH PATH
         </h2>
         <p class="text-zinc-600 text-[10px] sm:text-xs tracking-widest uppercase">Trois issues. Une mort certaine.</p>
       </div>
 
-      <div class="bg-ash/70 border border-zinc-800/80 rounded-2xl p-4 sm:p-7 backdrop-blur-md space-y-4 sm:space-y-5 shadow-2xl">
+      <div class="bg-ash/70 border border-zinc-800/80 rounded-2xl p-4 sm:p-6 backdrop-blur-md space-y-4 shadow-2xl">
         <div>
           <label class="block text-[10px] tracking-[0.2em] text-zinc-500 uppercase mb-2">Identifiant</label>
           <input id="input-username" type="text" maxlength="12" placeholder="Anonyme" 
             class="w-full bg-void border border-zinc-800 rounded-xl py-3 px-4 text-zinc-200 placeholder-zinc-700 focus:outline-none focus:border-zinc-500 font-mono" />
         </div>
 
-        <button id="btn-solo-bots" class="w-full py-3.5 bg-zinc-900 active:scale-[0.99] hover:bg-zinc-800 border border-zinc-700/60 rounded-xl text-zinc-200 hover:text-white transition-all text-xs tracking-wider uppercase font-bold flex items-center justify-center gap-2">
+        <button id="btn-solo-bots" class="w-full py-3 bg-zinc-900 active:scale-[0.99] hover:bg-zinc-800 border border-zinc-700/60 rounded-xl text-zinc-200 hover:text-white transition-all text-xs tracking-wider uppercase font-bold flex items-center justify-center gap-2">
           <span>Entrer Seul (avec 2 Âmes)</span>
         </button>
 
@@ -224,15 +224,15 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-          <button id="btn-create-room" class="p-3.5 bg-void active:scale-[0.99] hover:bg-zinc-900 border border-zinc-800 hover:border-zinc-600 rounded-xl flex flex-col items-center justify-center gap-1 transition-all">
+          <button id="btn-create-room" class="p-3 bg-void active:scale-[0.99] hover:bg-zinc-900 border border-zinc-800 hover:border-zinc-600 rounded-xl flex flex-col items-center justify-center gap-1 transition-all">
             <span class="text-xs uppercase tracking-wider text-zinc-200 font-bold">Ouvrir Salle</span>
             <span class="text-[10px] text-zinc-600">Hôte</span>
           </button>
 
-          <div class="p-2.5 sm:p-3 bg-void border border-zinc-800 rounded-xl flex flex-col justify-between gap-2">
+          <div class="p-2.5 bg-void border border-zinc-800 rounded-xl flex flex-col justify-between gap-2">
             <input id="input-room-code" type="text" maxlength="4" placeholder="CODE" 
-              class="w-full bg-ash border border-zinc-800 rounded-lg py-2 sm:py-1.5 text-center uppercase tracking-widest text-xs font-bold text-zinc-200 focus:outline-none focus:border-zinc-500" />
-            <button id="btn-join-room" class="w-full py-2 sm:py-1.5 bg-zinc-900 active:scale-[0.99] hover:bg-zinc-800 text-zinc-400 hover:text-white rounded-lg text-xs sm:text-[11px] uppercase tracking-wider transition-all font-bold">
+              class="w-full bg-ash border border-zinc-800 rounded-lg py-1.5 text-center uppercase tracking-widest text-xs font-bold text-zinc-200 focus:outline-none focus:border-zinc-500" />
+            <button id="btn-join-room" class="w-full py-1.5 bg-zinc-900 active:scale-[0.99] hover:bg-zinc-800 text-zinc-400 hover:text-white rounded-lg text-xs sm:text-[11px] uppercase tracking-wider transition-all font-bold">
               Rejoindre
             </button>
           </div>
@@ -246,151 +246,157 @@
     </section>
 
     <!-- SCREEN: LOBBY -->
-    <section id="screen-lobby" class="screen-view entering hidden w-full max-w-lg flex-col gap-4 sm:gap-6 my-auto">
-      <div class="bg-ash/60 border border-zinc-800/80 rounded-2xl p-4 sm:p-7 backdrop-blur-md space-y-4 sm:space-y-5 shadow-2xl">
+    <section id="screen-lobby" class="screen-view entering hidden w-full max-w-lg flex-col gap-3 my-auto max-h-full">
+      <div class="bg-ash/60 border border-zinc-800/80 rounded-2xl p-3.5 sm:p-5 backdrop-blur-md space-y-3 shadow-2xl flex flex-col max-h-[88vh]">
         
-        <div class="flex items-center justify-between border-b border-zinc-900 pb-3 sm:pb-4">
+        <div class="flex items-center justify-between border-b border-zinc-900 pb-2.5 flex-shrink-0">
           <div>
             <div class="text-[9px] sm:text-[10px] tracking-widest text-zinc-600 uppercase">Code du Sanctuaire</div>
             <div class="flex items-center gap-2 sm:gap-3 mt-0.5">
-              <span id="lobby-code-display" class="font-cinzel text-2xl sm:text-3xl font-black text-white tracking-[0.2em]">----</span>
-              <button id="btn-copy-code" class="text-xs text-zinc-500 hover:text-zinc-200 transition-colors p-1.5 active:scale-90" title="Copier le code">
+              <span id="lobby-code-display" class="font-cinzel text-xl sm:text-2xl font-black text-white tracking-[0.2em]">----</span>
+              <button id="btn-copy-code" class="text-xs text-zinc-500 hover:text-zinc-200 transition-colors p-1 active:scale-90" title="Copier le code">
                 <i class="fa-regular fa-copy"></i>
               </button>
             </div>
           </div>
-          <div class="flex flex-wrap gap-1.5 sm:gap-2 justify-end">
-            <button id="btn-add-bot" class="text-[10px] sm:text-[11px] px-2.5 sm:px-3 py-1.5 border border-zinc-800 hover:border-zinc-600 rounded-lg text-zinc-400 hover:text-zinc-200 active:scale-95 transition-all">
+          <div class="flex flex-wrap gap-1.5 justify-end">
+            <button id="btn-add-bot" class="text-[10px] px-2.5 py-1.5 border border-zinc-800 hover:border-zinc-600 rounded-lg text-zinc-400 hover:text-zinc-200 active:scale-95 transition-all">
               + Âme
             </button>
-            <button id="btn-leave-room" class="text-[10px] sm:text-[11px] px-2.5 sm:px-3 py-1.5 border border-zinc-900 hover:border-red-950/80 bg-zinc-950 hover:text-red-400 rounded-lg text-zinc-500 active:scale-95 transition-all flex items-center gap-1.5" title="Quitter la salle">
+            <button id="btn-leave-room" class="text-[10px] px-2.5 py-1.5 border border-zinc-900 hover:border-red-950/80 bg-zinc-950 hover:text-red-400 rounded-lg text-zinc-500 active:scale-95 transition-all flex items-center gap-1.5" title="Quitter la salle">
               <i class="fa-solid fa-arrow-left text-[9px]"></i>
               <span>Quitter</span>
             </button>
           </div>
         </div>
 
-        <div class="space-y-1.5 sm:space-y-2">
-          <div class="text-[9px] sm:text-[10px] tracking-widest text-zinc-600 uppercase">Présences (<span id="lobby-player-count">0</span>)</div>
-          <div id="lobby-players-grid" class="space-y-1.5 max-h-32 sm:max-h-48 overflow-y-auto pr-1"></div>
-        </div>
+        <div class="overflow-y-auto pr-1 space-y-3 flex-1">
+          <!-- Présences -->
+          <div class="space-y-1.5">
+            <div class="text-[9px] sm:text-[10px] tracking-widest text-zinc-600 uppercase">Présences (<span id="lobby-player-count">0</span>)</div>
+            <div id="lobby-players-grid" class="space-y-1 max-h-24 sm:max-h-32 overflow-y-auto pr-1"></div>
+          </div>
 
-        <!-- Rounds slider -->
-        <div class="pt-3 border-t border-zinc-900 space-y-2">
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-[9px] sm:text-[10px] tracking-widest text-zinc-500 uppercase">Nombre de Manches</span>
-            <div class="flex items-center gap-1.5 font-cinzel font-bold text-white tracking-widest">
-              <span id="lobby-rounds-value">3</span>
-              <span class="text-[9px] sm:text-[10px] text-zinc-600 font-mono font-normal uppercase">manche(s)</span>
-            </div>
-          </div>
-          <div class="relative flex items-center py-1">
-            <input id="slider-rounds" type="range" min="1" max="10" value="3" step="1" 
-              class="dark-slider w-full cursor-pointer accent-white transition-all h-6 sm:h-auto" />
-          </div>
-          
-          <div id="slider-ticks-track" class="relative w-full h-6 select-none">
-            <button type="button" data-val="1" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 0 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">1</span></button>
-            <button type="button" data-val="2" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 1 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">2</span></button>
-            <button type="button" data-val="3" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 2 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-white font-bold scale-110">3</span></button>
-            <button type="button" data-val="4" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 3 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">4</span></button>
-            <button type="button" data-val="5" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 4 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">5</span></button>
-            <button type="button" data-val="6" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 5 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">6</span></button>
-            <button type="button" data-val="7" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 6 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">7</span></button>
-            <button type="button" data-val="8" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 7 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">8</span></button>
-            <button type="button" data-val="9" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 8 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">9</span></button>
-            <button type="button" data-val="10" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all py-1" style="left: calc(9px + (100% - 18px) * 9 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">10</span></button>
-          </div>
-          <p id="slider-host-hint" class="hidden text-[9px] text-zinc-600 tracking-wider text-center italic">
-            Réglé par l'Hôte du Sanctuaire
-          </p>
-        </div>
-
-        <!-- Duration slider -->
-        <div class="pt-3 border-t border-zinc-900 space-y-2">
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-[9px] sm:text-[10px] tracking-widest text-zinc-500 uppercase">Temps de Réflexion</span>
-            <div class="flex items-center gap-1 font-cinzel font-bold text-white tracking-widest">
-              <span id="lobby-duration-value">20</span>
-              <span class="text-[9px] sm:text-[10px] text-zinc-600 font-mono font-normal uppercase">secondes</span>
-            </div>
-          </div>
-          <div class="relative flex items-center py-1">
-            <input id="slider-duration" type="range" min="5" max="45" value="20" step="1" 
-              class="dark-slider w-full cursor-pointer accent-white transition-all h-6 sm:h-auto" style="--slider-pct: 37.5%;" />
-          </div>
-          <div class="flex justify-between text-[9px] font-mono text-zinc-600 px-1">
-            <span>5s (Panique)</span>
-            <span>20s</span>
-            <span>45s (Agonie)</span>
-          </div>
-        </div>
-
-        <!-- Live Picks Illuminated Button -->
-        <div class="pt-3 border-t border-zinc-900 flex items-center justify-between text-xs">
-          <div class="pr-2">
-            <div class="text-[10px] tracking-widest text-zinc-400 uppercase font-bold">Révélation</div>
-            <div class="text-[9px] text-zinc-600">Voir les portes choisies en temps réel</div>
-          </div>
-          <button id="btn-toggle-live-picks" type="button" class="px-3 py-1.5 rounded-xl border text-[10px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 focus:outline-none">
-            <span id="live-picks-indicator" class="w-1.5 h-1.5 rounded-full"></span>
-            <span id="live-picks-text">Visible</span>
-          </button>
-        </div>
-
-        <!-- Relics / Items Mode Illuminated Button -->
-        <div class="pt-3 border-t border-zinc-900 space-y-2.5">
-          <div class="flex items-center justify-between text-xs">
-            <div class="pr-2">
-              <div class="text-[10px] tracking-widest text-zinc-300 uppercase font-bold flex items-center gap-1.5">
-                <i class="fa-solid fa-wand-magic-sparkles text-zinc-400"></i>
-                <span>Mode Reliques</span>
+          <!-- Rounds slider -->
+          <div class="pt-2 border-t border-zinc-900 space-y-1.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-[9px] sm:text-[10px] tracking-widest text-zinc-500 uppercase">Nombre de Manches</span>
+              <div class="flex items-center gap-1.5 font-cinzel font-bold text-white tracking-widest">
+                <span id="lobby-rounds-value">3</span>
+                <span class="text-[9px] sm:text-[10px] text-zinc-600 font-mono font-normal uppercase">manche(s)</span>
               </div>
-              <div class="text-[9px] text-zinc-600">Distribue des items stratégiques</div>
             </div>
-            <button id="btn-toggle-items-mode" type="button" class="px-3 py-1.5 rounded-xl border text-[10px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 focus:outline-none">
-              <span id="items-mode-indicator" class="w-1.5 h-1.5 rounded-full"></span>
-              <span id="items-mode-text">Actif</span>
+            <div class="relative flex items-center py-1">
+              <input id="slider-rounds" type="range" min="1" max="10" value="3" step="1" 
+                class="dark-slider w-full cursor-pointer accent-white transition-all h-5" />
+            </div>
+            
+            <div id="slider-ticks-track" class="relative w-full h-5 select-none">
+              <button type="button" data-val="1" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 0 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">1</span></button>
+              <button type="button" data-val="2" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 1 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">2</span></button>
+              <button type="button" data-val="3" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 2 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-white font-bold scale-110">3</span></button>
+              <button type="button" data-val="4" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 3 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">4</span></button>
+              <button type="button" data-val="5" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 4 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">5</span></button>
+              <button type="button" data-val="6" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 5 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">6</span></button>
+              <button type="button" data-val="7" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 6 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">7</span></button>
+              <button type="button" data-val="8" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 7 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">8</span></button>
+              <button type="button" data-val="9" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 8 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">9</span></button>
+              <button type="button" data-val="10" class="slider-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 9 / 9);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[9px] font-mono text-zinc-600">10</span></button>
+            </div>
+            <p id="slider-host-hint" class="hidden text-[9px] text-zinc-600 tracking-wider text-center italic">
+              Réglé par l'Hôte du Sanctuaire
+            </p>
+          </div>
+
+          <!-- Duration slider -->
+          <div class="pt-2 border-t border-zinc-900 space-y-1.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-[9px] sm:text-[10px] tracking-widest text-zinc-500 uppercase">Temps de Réflexion</span>
+              <div class="flex items-center gap-1 font-cinzel font-bold text-white tracking-widest">
+                <span id="lobby-duration-value">20</span>
+                <span class="text-[9px] sm:text-[10px] text-zinc-600 font-mono font-normal uppercase">secondes</span>
+              </div>
+            </div>
+            <div class="relative flex items-center py-1">
+              <input id="slider-duration" type="range" min="5" max="45" value="20" step="1" 
+                class="dark-slider w-full cursor-pointer accent-white transition-all h-5" style="--slider-pct: 37.5%;" />
+            </div>
+            <div id="slider-duration-ticks" class="relative w-full h-5 select-none">
+              <button type="button" data-dur="5" class="dur-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 0 / 40);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[8px] font-mono text-zinc-600">5s</span></button>
+              <button type="button" data-dur="10" class="dur-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 5 / 40);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[8px] font-mono text-zinc-600">10s</span></button>
+              <button type="button" data-dur="15" class="dur-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 10 / 40);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[8px] font-mono text-zinc-600">15s</span></button>
+              <button type="button" data-dur="20" class="dur-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 15 / 40);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[8px] font-mono text-white font-bold scale-110">20s</span></button>
+              <button type="button" data-dur="30" class="dur-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 25 / 40);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[8px] font-mono text-zinc-600">30s</span></button>
+              <button type="button" data-dur="45" class="dur-tick absolute -translate-x-1/2 flex flex-col items-center group transition-all" style="left: calc(9px + (100% - 18px) * 40 / 40);"><span class="w-[1px] h-1 bg-zinc-800 mb-0.5"></span><span class="text-[8px] font-mono text-zinc-600">45s</span></button>
+            </div>
+          </div>
+
+          <!-- Live Picks -->
+          <div class="pt-2 border-t border-zinc-900 flex items-center justify-between text-xs">
+            <div class="pr-2">
+              <div class="text-[10px] tracking-widest text-zinc-400 uppercase font-bold">Révélation</div>
+              <div class="text-[9px] text-zinc-600">Voir les portes choisies en temps réel</div>
+            </div>
+            <button id="btn-toggle-live-picks" type="button" class="px-2.5 py-1 rounded-xl border text-[10px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 focus:outline-none">
+              <span id="live-picks-indicator" class="w-1.5 h-1.5 rounded-full"></span>
+              <span id="live-picks-text">Visible</span>
             </button>
           </div>
 
-          <!-- Relic checkboxes box -->
-          <div id="items-selection-box" class="bg-void/60 border border-zinc-900 rounded-xl p-2.5 space-y-1.5">
-            <div class="text-[9px] tracking-widest text-zinc-500 uppercase font-bold mb-1">Reliques actives dans l'arène :</div>
-            <div class="grid grid-cols-2 gap-1.5 text-[10px] font-mono text-zinc-400">
-              <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
-                <input type="checkbox" data-item="heart" class="item-chk accent-zinc-200 rounded" checked />
-                <span>Cœur de Sursis</span>
-              </label>
-              <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
-                <input type="checkbox" data-item="mirror" class="item-chk accent-zinc-200 rounded" checked />
-                <span>Miroir d’Augure</span>
-              </label>
-              <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
-                <input type="checkbox" data-item="curse" class="item-chk accent-zinc-200 rounded" checked />
-                <span>Malédiction</span>
-              </label>
-              <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
-                <input type="checkbox" data-item="chain" class="item-chk accent-zinc-200 rounded" checked />
-                <span>Chaîne Damnée</span>
-              </label>
-              <label id="label-item-veil" class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200 transition-opacity">
-                <input type="checkbox" data-item="veil" class="item-chk accent-zinc-200 rounded" />
-                <span id="label-item-veil-text">Voile d’Ombre</span>
-              </label>
-              <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
-                <input type="checkbox" data-item="swap" class="item-chk accent-zinc-200 rounded" checked />
-                <span>Fétiche Échange</span>
-              </label>
+          <!-- Relics / Items Mode -->
+          <div class="pt-2 border-t border-zinc-900 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <div class="pr-2">
+                <div class="text-[10px] tracking-widest text-zinc-300 uppercase font-bold flex items-center gap-1.5">
+                  <i class="fa-solid fa-wand-magic-sparkles text-zinc-400"></i>
+                  <span>Mode Reliques</span>
+                </div>
+                <div class="text-[9px] text-zinc-600">Distribue des items stratégiques</div>
+              </div>
+              <button id="btn-toggle-items-mode" type="button" class="px-2.5 py-1 rounded-xl border text-[10px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 focus:outline-none">
+                <span id="items-mode-indicator" class="w-1.5 h-1.5 rounded-full"></span>
+                <span id="items-mode-text">Actif</span>
+              </button>
+            </div>
+
+            <!-- Relic checkboxes box -->
+            <div id="items-selection-box" class="bg-void/60 border border-zinc-900 rounded-xl p-2 space-y-1">
+              <div class="text-[9px] tracking-widest text-zinc-500 uppercase font-bold mb-1">Reliques actives dans l'arène :</div>
+              <div class="grid grid-cols-2 gap-1.5 text-[10px] font-mono text-zinc-400">
+                <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
+                  <input type="checkbox" data-item="heart" class="item-chk accent-zinc-200 rounded" checked />
+                  <span>Cœur de Sursis</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
+                  <input type="checkbox" data-item="mirror" class="item-chk accent-zinc-200 rounded" checked />
+                  <span>Miroir d’Augure</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
+                  <input type="checkbox" data-item="curse" class="item-chk accent-zinc-200 rounded" checked />
+                  <span>Malédiction</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
+                  <input type="checkbox" data-item="chain" class="item-chk accent-zinc-200 rounded" checked />
+                  <span>Chaîne Damnée</span>
+                </label>
+                <label id="label-item-veil" class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200 transition-opacity">
+                  <input type="checkbox" data-item="veil" class="item-chk accent-zinc-200 rounded" />
+                  <span id="label-item-veil-text">Voile d’Ombre</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer hover:text-zinc-200">
+                  <input type="checkbox" data-item="swap" class="item-chk accent-zinc-200 rounded" checked />
+                  <span>Fétiche Échange</span>
+                </label>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="pt-3 sm:pt-4 flex gap-2.5 sm:gap-3 border-t border-zinc-900">
-          <button id="btn-toggle-ready" class="flex-1 py-3.5 sm:py-3 rounded-xl border border-zinc-700 bg-zinc-900 active:scale-[0.98] text-xs uppercase tracking-widest text-zinc-300 font-bold transition-all">
+        <div class="pt-2 flex gap-2 border-t border-zinc-900 flex-shrink-0">
+          <button id="btn-toggle-ready" class="flex-1 py-2.5 rounded-xl border border-zinc-700 bg-zinc-900 active:scale-[0.98] text-xs uppercase tracking-widest text-zinc-300 font-bold transition-all">
             Prêt
           </button>
-          <button id="btn-start-game" class="flex-1 py-3.5 sm:py-3 rounded-xl border border-zinc-800 bg-void text-zinc-600 cursor-not-allowed text-xs uppercase tracking-widest font-bold transition-all">
+          <button id="btn-start-game" class="flex-1 py-2.5 rounded-xl border border-zinc-800 bg-void text-zinc-600 cursor-not-allowed text-xs uppercase tracking-widest font-bold transition-all">
             Commencer
           </button>
         </div>
@@ -398,7 +404,7 @@
     </section>
 
     <!-- SCREEN: GAMEPLAY -->
-    <section id="screen-game" class="screen-view entering hidden w-full flex-col items-center gap-3 sm:gap-5 my-auto">
+    <section id="screen-game" class="screen-view entering hidden w-full flex-col items-center gap-3 sm:gap-4 my-auto">
       
       <!-- Minimal status header -->
       <div class="w-full max-w-2xl flex items-center justify-between border-b border-zinc-900 pb-2.5 sm:pb-3">
@@ -408,7 +414,7 @@
           <span id="game-round-indicator" class="text-[9px] sm:text-[10px] text-zinc-500 tracking-[0.15em] font-mono ml-1 sm:ml-2 border border-zinc-900 px-1.5 py-0.5 rounded">M 1/3</span>
         </div>
 
-        <div id="game-status-banner" class="text-[10px] sm:text-xs tracking-[0.15em] sm:tracking-[0.25em] text-zinc-500 uppercase text-center px-1 transition-all duration-1000 truncate max-w-[150px] sm:max-w-none">
+        <div id="game-status-banner" class="text-[10px] sm:text-xs tracking-[0.15em] sm:tracking-[0.25em] text-zinc-500 uppercase text-center px-2 transition-all duration-700 truncate max-w-[170px] sm:max-w-none">
           L'ombre attend...
         </div>
 
@@ -423,7 +429,7 @@
       </div>
 
       <!-- Player tracking tags -->
-      <div id="game-participants" class="w-full max-w-2xl flex flex-wrap gap-1.5 sm:gap-2 justify-center min-h-[22px] max-h-16 overflow-y-auto">
+      <div id="game-participants" class="w-full max-w-2xl flex flex-wrap gap-1.5 sm:gap-2 justify-center min-h-[24px] max-h-16 overflow-y-auto px-1">
       </div>
 
       <!-- In-Game Relics Inventory Bar -->
@@ -433,8 +439,8 @@
       </div>
 
       <!-- The 3 monolith portals with slow dissolving veils -->
-      <div class="w-full max-w-2xl py-1 sm:py-4">
-        <div class="grid grid-cols-3 gap-2 sm:gap-6">
+      <div class="w-full max-w-2xl py-2 sm:py-3 pt-2">
+        <div class="grid grid-cols-3 gap-2.5 sm:gap-6">
           
           <!-- MONOLITH 1 -->
           <div data-door-id="1" class="monolith-card group flex flex-col items-center cursor-pointer select-none">
@@ -494,8 +500,8 @@
     </section>
 
     <!-- SCREEN: SUSPENSE / RELIC DISTRIBUTION ORACLE -->
-    <section id="screen-suspense" class="screen-view entering hidden w-full max-w-md flex-col items-center justify-center text-center gap-7 my-auto py-10">
-      <div class="space-y-2">
+    <section id="screen-suspense" class="screen-view entering hidden w-full max-w-md flex-col items-center justify-center text-center gap-5 sm:gap-7 my-auto py-6">
+      <div class="space-y-1.5">
         <span class="text-[9px] tracking-[0.35em] uppercase text-zinc-600 font-mono">
           Entre les mondes
         </span>
@@ -504,8 +510,8 @@
         </h2>
       </div>
 
-      <!-- Réceptacle occulte fixe (sans rotation) -->
-      <div class="relative flex items-center justify-center my-4 w-44 h-44">
+      <!-- Réceptacle occulte fixe -->
+      <div class="relative flex items-center justify-center my-2 sm:my-4 w-36 h-36 sm:w-44 sm:h-44">
         <div id="suspense-orb-pulse" class="absolute inset-0 rounded-2xl border border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl pulse-ritual shadow-[0_0_40px_rgba(0,0,0,0.95)] transition-all duration-1000"></div>
         <div class="absolute inset-3 rounded-xl border border-zinc-900/90 pointer-events-none"></div>
 
@@ -515,41 +521,41 @@
         </div>
       </div>
 
-<!-- Texte de l'oracle -->
+      <!-- Texte de l'oracle -->
       <div class="flex flex-col items-center justify-center gap-3 max-w-sm px-4">
-        <div id="suspense-oracle-text" class="text-xs sm:text-sm font-mono text-zinc-400 tracking-wider text-center leading-relaxed min-h-[56px] flex flex-col items-center justify-center">
+        <div id="suspense-oracle-text" class="text-xs sm:text-sm font-mono text-zinc-400 tracking-wider text-center leading-relaxed min-h-[52px] flex flex-col items-center justify-center">
           Le néant scrute la profondeur de ton âme...
         </div>
         <div id="suspense-verdict-tag" class="hidden text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border"></div>
       </div>
 
-      <button id="btn-suspense-continue" type="button" class="hidden opacity-0 transition-opacity duration-1000 mt-2 px-6 py-3 rounded-xl border border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-bone text-xs uppercase tracking-[0.2em] font-bold active:scale-95">
+      <button id="btn-suspense-continue" type="button" class="hidden opacity-0 transition-opacity duration-1000 mt-2 px-6 py-2.5 rounded-xl border border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-bone text-xs uppercase tracking-[0.2em] font-bold active:scale-95">
         Contempler le Destin
       </button>
     </section>
 
     <!-- SCREEN: GAME OVER / ROUND SUMMARY -->
-    <section id="screen-gameover" class="screen-view entering hidden w-full max-w-md flex-col items-center gap-3 sm:gap-5 py-4 sm:py-6 text-center my-auto">
-      <div class="space-y-1.5 sm:space-y-2">
-        <h2 id="gameover-title" class="text-2xl sm:text-3xl font-cinzel font-black tracking-[0.2em] text-white uppercase">
+    <section id="screen-gameover" class="screen-view entering hidden w-full max-w-md flex-col items-center gap-3 sm:gap-4 py-2 sm:py-4 text-center my-auto max-h-[90vh]">
+      <div class="space-y-1">
+        <h2 id="gameover-title" class="text-xl sm:text-2xl font-cinzel font-black tracking-[0.2em] text-white uppercase">
           FIN DU VOYAGE
         </h2>
-        <p id="gameover-subtitle" class="text-zinc-600 text-[10px] sm:text-xs tracking-widest uppercase">
+        <p id="gameover-subtitle" class="text-zinc-600 text-[10px] tracking-widest uppercase">
           Le néant a réclamé ses dettes.
         </p>
-        <div id="gameover-round-status" class="text-[9px] sm:text-[10px] tracking-[0.25em] font-mono text-zinc-500 uppercase pt-0.5">
+        <div id="gameover-round-status" class="text-[9px] tracking-[0.25em] font-mono text-zinc-500 uppercase pt-0.5">
           Manche 1 terminée
         </div>
       </div>
 
       <!-- Dedicated Relic Distribution Announcement Box (Between Rounds) -->
-      <div id="gameover-relics-box" class="w-full hidden bg-ash/70 border border-zinc-800 rounded-2xl p-3 sm:p-4 text-left space-y-2.5 shadow-xl">
-        <div class="flex items-center justify-between border-b border-zinc-900 pb-1.5">
-          <div class="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-300">
+      <div id="gameover-relics-box" class="w-full hidden bg-ash/70 border border-zinc-800 rounded-2xl p-2.5 sm:p-3 text-left space-y-2 shadow-xl max-h-36 overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-zinc-900 pb-1">
+          <div class="flex items-center gap-1.5 text-[9px] font-bold tracking-[0.2em] uppercase text-zinc-300">
             <i class="fa-solid fa-wand-magic-sparkles text-zinc-400"></i>
             <span>Bénédiction des Reliques</span>
           </div>
-          <span class="text-[8px] text-zinc-600 uppercase font-mono tracking-wider">Pour Manche Suivante</span>
+          <span class="text-[8px] text-zinc-600 uppercase font-mono tracking-wider">Manche Suivante</span>
         </div>
         
         <!-- Personal outcome -->
@@ -560,28 +566,28 @@
       </div>
 
       <!-- Leaderboard & Presence Status -->
-      <div class="w-full bg-ash/40 border border-zinc-900 rounded-2xl p-3 sm:p-4 space-y-2">
-        <div class="flex justify-between text-[9px] sm:text-[10px] text-zinc-600 uppercase tracking-widest px-2 pb-1 border-b border-zinc-900">
+      <div class="w-full bg-ash/40 border border-zinc-900 rounded-2xl p-2.5 sm:p-3 space-y-1.5 flex-1 min-h-[110px] max-h-40 overflow-hidden flex flex-col">
+        <div class="flex justify-between text-[9px] text-zinc-600 uppercase tracking-widest px-1 pb-1 border-b border-zinc-900 flex-shrink-0">
           <span>Présence</span>
           <span>Score Total</span>
         </div>
-        <div id="gameover-leaderboard" class="space-y-1.5 max-h-40 overflow-y-auto pr-0.5"></div>
+        <div id="gameover-leaderboard" class="space-y-1 overflow-y-auto pr-0.5 flex-1"></div>
       </div>
 
       <!-- Inter-round Ready & Next Round Control -->
-      <div class="w-full flex flex-col gap-2">
+      <div class="w-full flex flex-col gap-2 pt-1 flex-shrink-0">
         <!-- Button: Player toggles readiness for the next round -->
-        <button id="btn-next-round-ready" class="hidden w-full py-3.5 border border-zinc-700 bg-zinc-900 active:scale-[0.98] text-xs uppercase tracking-[0.2em] text-zinc-300 font-bold rounded-xl transition-all">
+        <button id="btn-next-round-ready" class="hidden w-full py-3 border border-zinc-700 bg-zinc-900 active:scale-[0.98] text-xs uppercase tracking-[0.2em] text-zinc-300 font-bold rounded-xl transition-all">
           Se Préparer pour la Suite
         </button>
 
         <!-- Button: Host triggers next round once everyone is ready -->
-        <button id="btn-next-round" class="hidden w-full py-3.5 bg-void border border-zinc-900 text-zinc-600 text-xs tracking-[0.2em] uppercase font-bold rounded-xl cursor-not-allowed transition-all">
+        <button id="btn-next-round" class="hidden w-full py-3 bg-void border border-zinc-900 text-zinc-600 text-xs tracking-[0.2em] uppercase font-bold rounded-xl cursor-not-allowed transition-all">
           En attente des âmes...
         </button>
 
         <!-- Button: Replay tournament when whole match ends -->
-        <button id="btn-replay" class="w-full py-3.5 bg-zinc-900 active:scale-[0.98] hover:bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs tracking-[0.2em] uppercase font-bold rounded-xl transition-all">
+        <button id="btn-replay" class="w-full py-3 bg-zinc-900 active:scale-[0.98] hover:bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs tracking-[0.2em] uppercase font-bold rounded-xl transition-all">
           Recommencer la partie
         </button>
       </div>
@@ -590,7 +596,7 @@
     <!-- MODAL: GRIMOIRE DES RELIQUES -->
     <div id="modal-grimoire" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
       <div class="bg-ash border border-zinc-800 rounded-2xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
-        <div class="p-4 border-b border-zinc-900 flex items-center justify-between">
+        <div class="p-3.5 border-b border-zinc-900 flex items-center justify-between flex-shrink-0">
           <div class="flex items-center gap-2">
             <i class="fa-solid fa-book-skull text-zinc-400"></i>
             <h3 class="font-cinzel font-black tracking-widest text-sm text-bone uppercase">Grimoire des Reliques</h3>
@@ -600,14 +606,14 @@
           </button>
         </div>
         
-        <div class="p-4 overflow-y-auto space-y-3.5 text-xs font-mono">
+        <div class="p-4 overflow-y-auto space-y-3 text-xs font-mono">
          <div class="p-2.5 rounded-xl border border-zinc-900 bg-void space-y-1">
             <div class="text-red-400 font-bold flex items-center gap-1.5">
               <i class="fa-solid fa-heart"></i>
               <span>Cœur de Sursis</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              Attribué d'office à l'âme qui est allée le plus loin dans la manche écoulée (dès la manche 2). Ne se cumule pas (max 1). Si plusieurs joueurs périssent au même palier maximal, le cœur n'est pas accordé. Il absorbe une mort fatale.
+              Attribué à l'âme qui est allée le plus loin dans la manche écoulée (dès la manche 2). Si plusieurs joueurs sont ex-æquo au palier le plus haut, un tirage au sort désigne qui reçoit le cœur. Ne se cumule pas (max 1). Absorbe une mort fatale.
             </p>
           </div>
 
@@ -617,7 +623,7 @@
               <span>Miroir d’Augure</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              Attribué dès la moitié du tournoi à un seul des premiers perdants (tirage au sort en cas d'égalité au score le plus bas). Il révèle en secret une porte sûre pour ce palier.
+              Attribué dès la moitié du tournoi à un seul des premiers perdants (tirage au sort en cas d'égalité au score le plus bas). Révèle en secret une porte sûre.
             </p>
           </div>
 
@@ -627,7 +633,7 @@
               <span>Malédiction</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              1 chance sur 3 d'être obtenue. Cible un adversaire vivant : son sablier s'écroule immédiatement et il n'a plus que 3 secondes pour fixer sa porte.
+              1 chance sur 3. Cible un rival vivant : son sablier s'effondre et il n'a plus que 3 secondes pour fixer sa porte.
             </p>
           </div>
 
@@ -637,7 +643,7 @@
               <span>Chaîne des Damnés</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              1 chance sur 3 d'être obtenue. Lie le destin du joueur à un rival. Si l'erreur fatale est commise par le porteur, le rival est sacrifié à sa place.
+              1 chance sur 3. Lie ton destin à un rival. Si tu choisis la mauvaise porte, le rival est sacrifié à ta place.
             </p>
           </div>
 
@@ -647,7 +653,7 @@
               <span>Voile d’Ombre</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              1 chance sur 3 d'être obtenue. Masque totalement la présence et le choix du joueur en direct jusqu'à l'ouverture finale. <em class="text-zinc-400">(Actif si la Révélation est activée)</em>.
+              1 chance sur 3. Masque totalement ta présence et ton choix en direct. <em class="text-zinc-400">(Actif si Révélation est cochée)</em>.
             </p>
           </div>
 
@@ -657,7 +663,7 @@
               <span>Fétiche d’Échange</span>
             </div>
             <p class="text-[11px] text-zinc-500">
-              1 chance sur 3 d'être obtenue. Échange secrètement et instantanément la porte choisie avec celle d'un rival.
+              1 chance sur 3. Échange instantanément ta porte choisie avec celle d'un rival vivant.
             </p>
           </div>
         </div>
@@ -729,7 +735,7 @@
           osc1.start();
           osc2.start();
 
-          // Dissonant tension pad activated during monolith veil dissolutions & suspense
+          // Dissonant tension pad
           this.tensionGain = this.ctx.createGain();
           this.tensionGain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
 
@@ -829,6 +835,21 @@
       }
     };
 
+    const BOT_NAMES_POOL = [
+      "Le Muet", "L'Égaré", "Le Vagabond", "L'Oublié", "Le Veilleur",
+      "Le Pénitent", "L'Inconnu", "Le Spectre", "L'Ombre Blanche", "Le Cendreux",
+      "Le Réprouvé", "Le Traqué", "L'Exilé", "Le Fugitif", "L'Insomniaque",
+      "Le Silencieux", "L'Aveugle", "Le Sans-Nom", "Le Guetteur", "Le Déchu",
+      "L'Errant", "Le Maudit", "Le Fanatique", "Le Condamné", "L'Anonyme"
+    ];
+
+    function getRandomBotName(existingPlayers = {}) {
+      const usedNames = Object.values(existingPlayers).map(p => p.name);
+      const available = BOT_NAMES_POOL.filter(n => !usedNames.includes(n));
+      const pool = available.length > 0 ? available : BOT_NAMES_POOL;
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
     let myId = 'soul_' + Math.random().toString(36).substring(2, 7);
     let myName = 'Âme';
     let isHost = true;
@@ -915,7 +936,7 @@
           });
 
           currentActiveScreen = screenId;
-        }, 800);
+        }, 500);
       } else if (newScreen) {
         newScreen.classList.remove('hidden', 'entering');
         newScreen.classList.add('flex', 'active');
@@ -1082,7 +1103,6 @@
       }
     }
 
-    /* DISTRIBUTION DES RELIQUES CONFORME AUX NOUVELLES RÈGLES */
     /* DISTRIBUTION DES RELIQUES CONFORME AUX RÈGLES DE PALIER DE MANCHE */
     function distributeBetweenRoundsRelics() {
       if (!gameState.itemsEnabled) {
@@ -1096,39 +1116,41 @@
       const rewardsLog = {};
       players.forEach(p => { rewardsLog[p.id] = []; });
 
-      // Calcul du palier atteint spécifiquement dans CETTE manche pour chaque âme :
-      // - Si le joueur est mort : p.deathFloor
-      // - S'il a survécu jusqu'à la fin de la manche : gameState.floor
+      // Palier atteint dans la manche écoulée :
+      // - Si le joueur est mort : deathFloor
+      // - S'il a survécu : gameState.floor
       const roundFloorReached = (p) => {
-        return p.deathFloor !== null && p.deathFloor !== undefined ? p.deathFloor : gameState.floor;
+        return (p.deathFloor !== null && p.deathFloor !== undefined) ? p.deathFloor : gameState.floor;
       };
 
       const sortedByFloor = [...players].sort((a, b) => roundFloorReached(b) - roundFloorReached(a));
       const highestFloor = roundFloorReached(sortedByFloor[0]);
 
-      // Tri par score cumulé global pour le miroir (les derniers au classement)
-      const sortedByScore = [...players].sort((a, b) => (b.score || 0) - (a.score || 0));
-      const lowestScore = sortedByScore[sortedByScore.length - 1].score || 0;
-
-      // 1. Cœur de Sursis : attribué UNIQUEMENT à l'unique joueur ayant atteint le plus haut palier dans la manche.
-      // Si plusieurs joueurs sont morts au même palier maximal (égalité), aucun cœur n'est attribué.
+      // 1. Cœur de Sursis : attribué au joueur ayant atteint le palier le plus haut.
+      // Si égalité entre plusieurs joueurs, tirage au sort parmi ces ex-æquo.
       if (upcomingRound >= 2 && gameState.allowedItems.includes('heart')) {
         const floorLeaders = sortedByFloor.filter(p => roundFloorReached(p) === highestFloor);
-        if (floorLeaders.length === 1) {
-          const leader = floorLeaders[0];
-          leader.items = leader.items || [];
-          if (!leader.items.includes('heart')) {
-            leader.items.push('heart');
-            rewardsLog[leader.id].push({ 
-              item: 'heart', 
-              reason: `Maître du Palier (Seul à atteindre le Palier ${getRoman(highestFloor)})` 
-            });
+        if (floorLeaders.length > 0) {
+          const chosenLeader = floorLeaders.length === 1 
+            ? floorLeaders[0] 
+            : floorLeaders[Math.floor(Math.random() * floorLeaders.length)];
+
+          chosenLeader.items = chosenLeader.items || [];
+          if (!chosenLeader.items.includes('heart')) {
+            chosenLeader.items.push('heart');
+            const reasonText = floorLeaders.length === 1
+              ? `Maître du Palier (Seul au Palier ${getRoman(highestFloor)})`
+              : `Maître du Palier (Tiré au sort parmi les ex-æquo du Palier ${getRoman(highestFloor)})`;
+            rewardsLog[chosenLeader.id].push({ item: 'heart', reason: reasonText });
           }
         }
       }
 
-      // 2. Miroir d’Augure : accordé dès la moitié du tournoi à UN SEUL des premiers perdants (tirage au sort parmi les ex-æquo au plus bas score)
+      // 2. Miroir d’Augure : accordé dès la moitié du tournoi à UN SEUL des premiers perdants (tirage au sort parmi le score le plus bas)
+      const sortedByScore = [...players].sort((a, b) => (b.score || 0) - (a.score || 0));
+      const lowestScore = sortedByScore[sortedByScore.length - 1].score || 0;
       const halfRounds = Math.ceil(gameState.totalRounds / 2);
+
       if (upcomingRound >= halfRounds && gameState.allowedItems.includes('mirror')) {
         const lastPlayers = sortedByScore.filter(p => (p.score || 0) === lowestScore);
         if (lastPlayers.length > 0) {
@@ -1144,7 +1166,7 @@
         }
       }
 
-      // 3. Reste des items (curse, chain, veil, swap) : chaque joueur a strictement 1 chance sur 3 (1/3)
+      // 3. Reste des items (curse, chain, veil, swap) : chaque joueur a 1 chance sur 3 (1/3)
       const randomPool = ['curse', 'chain', 'veil', 'swap'].filter(k => 
         gameState.allowedItems.includes(k) && (k !== 'veil' || gameState.revealPicksLive)
       );
@@ -1313,11 +1335,25 @@
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
           if (isHost && gameState.status === 'picking') {
+            // Les bots choisissent obligatoirement une porte s'ils n'en ont pas encore fixé une
             Object.values(gameState.players).forEach(p => {
-              if (p.isAlive && p.chosenDoor === null) {
+              if (p.isBot && p.isAlive && p.chosenDoor === null) {
                 p.chosenDoor = Math.floor(Math.random() * 3) + 1;
               }
             });
+
+            // Seuls les vrais joueurs n'ayant pas voté sont éliminés pour indécision
+            let someoneDiedByInaction = false;
+            Object.values(gameState.players).forEach(p => {
+              if (!p.isBot && p.isAlive && p.chosenDoor === null) {
+                p.isAlive = false;
+                p.deathFloor = gameState.floor;
+                someoneDiedByInaction = true;
+              }
+            });
+            if (someoneDiedByInaction) {
+              showToast("L'indécision a coûté la vie à ceux qui n'ont pas franchi le seuil.");
+            }
             triggerDoorReveal();
           }
         }
@@ -1378,18 +1414,19 @@
                 const victim = gameState.players[p.activeChainTarget];
                 victim.isAlive = false;
                 victim.deathFloor = currentFloor;
-                p.score = (p.score || 0) + 1;
+                p.score = (p.score || 0) + 1; // Strictement 1 pt par palier
                 showToast(`${p.name} sacrifie ${victim.name} via la Chaîne des Damnés !`);
               } else if (p.items && p.items.includes('heart')) {
                 const hIdx = p.items.indexOf('heart');
                 p.items.splice(hIdx, 1);
-                p.score = (p.score || 0) + 1;
+                p.score = (p.score || 0) + 1; // Strictement 1 pt par palier
                 showToast(`Le cœur de ${p.name} s'est brisé mais son âme demeure.`);
               } else {
                 p.isAlive = false;
                 p.deathFloor = currentFloor;
               }
-            } else {
+            } else if (p.chosenDoor !== null) {
+              // Réussite : strictement 1 point par palier franchi
               p.score = (p.score || 0) + 1;
             }
           }
@@ -1404,15 +1441,11 @@
         const survivors = Object.values(gameState.players).filter(p => p.isAlive);
 
         if (survivors.length <= 1) {
-          if (survivors.length === 1) {
-            survivors[0].score = (survivors[0].score || 0) + 2;
-          }
-          
+          // AUCUN point bonus au survivant final
           const isInterRound = gameState.currentRound < gameState.totalRounds;
 
           if (isInterRound) {
             distributeBetweenRoundsRelics();
-            // Reset player readiness for the next round
             Object.values(gameState.players).forEach(p => {
               p.isReady = p.isBot ? true : false;
             });
@@ -1434,17 +1467,22 @@
 
     function simulateBotChoices() {
       if (!isHost) return;
+      const totalDuration = gameState.choiceDuration || 20;
       const bots = Object.values(gameState.players).filter(p => p.isBot && p.isAlive);
+
       bots.forEach(bot => {
-        const initialDelay = Math.floor(Math.random() * 5000) + 3000;
+        // Vote rapide garanti : entre 1s et la moitié du temps imparti (max 4s)
+        const maxInitial = Math.min(4000, Math.max(1200, (totalDuration * 1000) * 0.4));
+        const initialDelay = Math.floor(Math.random() * (maxInitial - 1000)) + 1000;
+
         setTimeout(() => {
           if (gameState.status === 'picking' && bot.isAlive) {
             bot.chosenDoor = Math.floor(Math.random() * 3) + 1;
             broadcastState();
 
-            const totalDuration = gameState.choiceDuration || 20;
-            if (Math.random() < 0.45 && totalDuration >= 7) {
-              const switchDelay = Math.max(1000, ((totalDuration - (Math.random() * 2 + 1.2)) * 1000) - initialDelay);
+            // Changement d'avis occasionnel si la manche est assez longue
+            if (Math.random() < 0.45 && totalDuration >= 8) {
+              const switchDelay = Math.max(800, ((totalDuration - 2.5) * 1000) - initialDelay);
               setTimeout(() => {
                 if (gameState.status === 'picking' && bot.isAlive && bot.chosenDoor !== null) {
                   const otherDoors = [1, 2, 3].filter(d => d !== bot.chosenDoor);
@@ -1458,7 +1496,7 @@
       });
     }
 
-    /* RITUEL DE SUSPENSE INTER-MANCHES SANS ROTATION ET DURANT 10 SECONDES */
+    /* RITUEL DE SUSPENSE INTER-MANCHES */
     function triggerSuspenseRitual() {
       showScreen('screen-suspense');
 
@@ -1474,10 +1512,8 @@
 
       if (!oracleText || !icon || !iconContainer || !verdictTag || !continueBtn) return;
 
-      // État initial (0s)
-      // 1. Dans l'état initial (remplace la ligne oracleText.className) :
       oracleText.innerText = "Le néant scrute les profondeurs de ton âme...";
-      oracleText.className = "text-xs sm:text-sm font-mono text-zinc-500 tracking-wider text-center leading-relaxed min-h-[56px] flex flex-col items-center justify-center transition-all duration-700";
+      oracleText.className = "text-xs sm:text-sm font-mono text-zinc-500 tracking-wider text-center leading-relaxed min-h-[52px] flex flex-col items-center justify-center transition-all duration-700";
       icon.className = "fa-solid fa-eye-slash text-3xl sm:text-4xl text-zinc-800 transition-all duration-700";
       iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-90";
       verdictTag.className = "hidden";
@@ -1489,7 +1525,7 @@
 
       clearTimeout(suspenseAnimationTimeout);
 
-      // Étape 1 : 3,0 secondes
+      // Étape 1 : 3,0s
       suspenseAnimationTimeout = setTimeout(() => {
         audio.heartbeat(false);
         oracleText.innerText = "Les voix anciennes délibèrent dans le silence...";
@@ -1497,7 +1533,7 @@
         oracleText.classList.add('text-zinc-300');
         icon.className = "fa-solid fa-hand-holding text-3xl sm:text-4xl text-zinc-700 transition-all duration-700";
 
-        // Étape 2 : 6,5 secondes
+        // Étape 2 : 6,5s
         suspenseAnimationTimeout = setTimeout(() => {
           audio.heartbeat(true);
           oracleText.innerText = "Le gouffre tranche. Ton offrande se dessine...";
@@ -1505,7 +1541,7 @@
           oracleText.classList.add('text-bone');
           icon.className = "fa-solid fa-circle text-2xl text-zinc-600 transition-all duration-700 opacity-60";
 
-          // Étape 3 : 10,0 secondes totales (Révélation)
+          // Étape 3 : 10,0s (Révélation)
           suspenseAnimationTimeout = setTimeout(() => {
             audio.heartbeat(true);
             audio.setTension(false);
@@ -1514,39 +1550,39 @@
             const hasRelic = myRewards.length > 0;
 
             if (hasRelic) {
-    const firstRelic = myRewards[0];
-    const def = RELIC_DEFINITIONS[firstRelic.item];
-    const relicName = def ? def.name : firstRelic.item;
-    const relicIcon = def ? def.icon : 'fa-solid fa-wand-magic-sparkles text-zinc-200';
+              const firstRelic = myRewards[0];
+              const def = RELIC_DEFINITIONS[firstRelic.item];
+              const relicName = def ? def.name : firstRelic.item;
+              const relicIcon = def ? def.icon : 'fa-solid fa-wand-magic-sparkles text-zinc-200';
 
-    oracleText.innerHTML = `
-      <span class="text-zinc-400 text-xs tracking-widest block mb-1">L'abysse t'accorde une faveur :</span>
-      <span class="text-bone font-cinzel text-xl sm:text-2xl font-black tracking-[0.2em] uppercase drop-shadow-[0_0_12px_rgba(255,255,255,0.2)] block">${relicName}</span>
-    `;
-    icon.className = `${relicIcon} text-4xl sm:text-5xl transition-all duration-700 animate-pulse`;
-    iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-125";
-    
-    verdictTag.innerText = "Relique Accordée";
-    verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-400 bg-zinc-900/90 text-bone shadow-[0_0_20px_rgba(255,255,255,0.2)]";
+              oracleText.innerHTML = `
+                <span class="text-zinc-400 text-xs tracking-widest block mb-1">L'abysse t'accorde une faveur :</span>
+                <span class="text-bone font-cinzel text-xl sm:text-2xl font-black tracking-[0.2em] uppercase drop-shadow-[0_0_12px_rgba(255,255,255,0.2)] block">${relicName}</span>
+              `;
+              icon.className = `${relicIcon} text-4xl sm:text-5xl transition-all duration-700 animate-pulse`;
+              iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-125";
+              
+              verdictTag.innerText = "Relique Accordée";
+              verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-400 bg-zinc-900/90 text-bone shadow-[0_0_20px_rgba(255,255,255,0.2)]";
 
-    if (orbPulse) {
-      orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-600 bg-zinc-900/60 backdrop-blur-xl shadow-[0_0_60px_rgba(255,255,255,0.15)] transition-all duration-1000";
-    }
-  } else {
-    oracleText.innerHTML = `
-      <span class="text-zinc-300 text-xs tracking-wider block mb-1">Le néant s'est détourné.</span>
-      <span class="text-zinc-600 text-[11px] italic block">Aucune relique ne t'est accordée pour ce palier.</span>
-    `;
-    icon.className = "fa-solid fa-ban text-4xl text-zinc-700 transition-all duration-700";
-    iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-100 opacity-50";
-    
-    verdictTag.innerText = "Refus du Silence";
-    verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-900 bg-void text-zinc-600";
+              if (orbPulse) {
+                orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-600 bg-zinc-900/60 backdrop-blur-xl shadow-[0_0_60px_rgba(255,255,255,0.15)] transition-all duration-1000";
+              }
+            } else {
+              oracleText.innerHTML = `
+                <span class="text-zinc-300 text-xs tracking-wider block mb-1">Le néant s'est détourné.</span>
+                <span class="text-zinc-600 text-[11px] italic block">Aucune relique ne t'est accordée pour ce palier.</span>
+              `;
+              icon.className = "fa-solid fa-ban text-4xl text-zinc-700 transition-all duration-700";
+              iconContainer.className = "relative z-10 flex flex-col items-center justify-center transition-all duration-1000 scale-100 opacity-50";
+              
+              verdictTag.innerText = "Refus du Silence";
+              verdictTag.className = "inline-block text-[10px] tracking-[0.25em] uppercase font-bold py-1 px-3 rounded-full border border-zinc-900 bg-void text-zinc-600";
 
-    if (orbPulse) {
-      orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-900 bg-void backdrop-blur-xl shadow-[0_0_25px_rgba(0,0,0,0.8)] transition-all duration-1000";
-    }
-  }
+              if (orbPulse) {
+                orbPulse.className = "absolute inset-0 rounded-2xl border border-zinc-900 bg-void backdrop-blur-xl shadow-[0_0_25px_rgba(0,0,0,0.8)] transition-all duration-1000";
+              }
+            }
 
             continueBtn.classList.remove('hidden');
             requestAnimationFrame(() => {
@@ -1554,7 +1590,7 @@
               continueBtn.classList.add('opacity-100');
             });
 
-          }, 3500); // 3,0s + 3,5s + 3,5s = 10,0 secondes
+          }, 3500);
         }, 3500);
       }, 3000);
     }
@@ -1608,6 +1644,26 @@
       }
     }
 
+    function updateDurationSliderVisuals(duration) {
+      document.querySelectorAll('.dur-tick').forEach(btn => {
+        const val = parseInt(btn.getAttribute('data-dur'), 10);
+        const bar = btn.querySelector('span:first-child');
+        const txt = btn.querySelector('span:last-child');
+        if (val === duration) {
+          bar.className = 'w-[2px] h-1.5 bg-white mb-0.5';
+          txt.className = 'text-[8px] font-mono text-white font-bold scale-110';
+        } else {
+          bar.className = 'w-[1px] h-1 bg-zinc-800 group-hover:bg-zinc-500 mb-0.5';
+          txt.className = 'text-[8px] font-mono text-zinc-600 group-hover:text-zinc-300';
+        }
+      });
+      const slider = document.getElementById('slider-duration');
+      if (slider) {
+        const pct = ((duration - 5) / 40) * 100;
+        slider.style.setProperty('--slider-pct', `${pct}%`);
+      }
+    }
+
     function renderLobbyUI(me) {
       const codeDisplay = document.getElementById('lobby-code-display');
       if (codeDisplay) codeDisplay.innerText = gameState.code;
@@ -1630,8 +1686,7 @@
       if (durationSlider && durationVal) {
         durationSlider.value = currentDuration;
         durationVal.innerText = currentDuration;
-        const durPct = ((currentDuration - 5) / 40) * 100;
-        durationSlider.style.setProperty('--slider-pct', `${durPct}%`);
+        updateDurationSliderVisuals(currentDuration);
       }
 
       // Render Live Picks illuminated button
@@ -1640,11 +1695,11 @@
       const liveTxt = document.getElementById('live-picks-text');
       if (liveBtn) {
         if (gameState.revealPicksLive) {
-          liveBtn.className = "px-3 py-1.5 rounded-xl border border-zinc-300 bg-zinc-200 text-black text-[10px] uppercase tracking-wider font-bold shadow-[0_0_15px_rgba(255,255,255,0.25)] transition-all flex items-center gap-1.5 focus:outline-none";
+          liveBtn.className = "px-2.5 py-1 rounded-xl border border-zinc-300 bg-zinc-200 text-black text-[10px] uppercase tracking-wider font-bold shadow-[0_0_15px_rgba(255,255,255,0.25)] transition-all flex items-center gap-1.5 focus:outline-none";
           if (liveInd) liveInd.className = "w-1.5 h-1.5 rounded-full bg-black";
           if (liveTxt) liveTxt.innerText = "Visible";
         } else {
-          liveBtn.className = "px-3 py-1.5 rounded-xl border border-zinc-800 bg-void text-zinc-500 hover:text-zinc-300 hover:border-zinc-700 text-[10px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 focus:outline-none";
+          liveBtn.className = "px-2.5 py-1 rounded-xl border border-zinc-800 bg-void text-zinc-500 hover:text-zinc-300 hover:border-zinc-700 text-[10px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 focus:outline-none";
           if (liveInd) liveInd.className = "w-1.5 h-1.5 rounded-full bg-zinc-800";
           if (liveTxt) liveTxt.innerText = "Secret";
         }
@@ -1657,12 +1712,12 @@
       const itemsBox = document.getElementById('items-selection-box');
       if (itemsBtn) {
         if (gameState.itemsEnabled) {
-          itemsBtn.className = "px-3 py-1.5 rounded-xl border border-zinc-300 bg-zinc-200 text-black text-[10px] uppercase tracking-wider font-bold shadow-[0_0_15px_rgba(255,255,255,0.25)] transition-all flex items-center gap-1.5 focus:outline-none";
+          itemsBtn.className = "px-2.5 py-1 rounded-xl border border-zinc-300 bg-zinc-200 text-black text-[10px] uppercase tracking-wider font-bold shadow-[0_0_15px_rgba(255,255,255,0.25)] transition-all flex items-center gap-1.5 focus:outline-none";
           if (itemsInd) itemsInd.className = "w-1.5 h-1.5 rounded-full bg-black";
           if (itemsTxt) itemsTxt.innerText = "Actif";
           if (itemsBox) itemsBox.classList.remove('hidden');
         } else {
-          itemsBtn.className = "px-3 py-1.5 rounded-xl border border-zinc-800 bg-void text-zinc-500 hover:text-zinc-300 hover:border-zinc-700 text-[10px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 focus:outline-none";
+          itemsBtn.className = "px-2.5 py-1 rounded-xl border border-zinc-800 bg-void text-zinc-500 hover:text-zinc-300 hover:border-zinc-700 text-[10px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 focus:outline-none";
           if (itemsInd) itemsInd.className = "w-1.5 h-1.5 rounded-full bg-zinc-800";
           if (itemsTxt) itemsTxt.innerText = "Désactivé";
           if (itemsBox) itemsBox.classList.add('hidden');
@@ -1724,7 +1779,7 @@
         playerList.forEach(p => {
           const isCurrent = p.id === myId;
           const row = document.createElement('div');
-          row.className = `p-3 rounded-xl border flex items-center justify-between text-xs ${
+          row.className = `p-2 sm:p-2.5 rounded-xl border flex items-center justify-between text-xs ${
             p.isReady ? 'border-zinc-600 bg-zinc-900/60 text-bone' : 'border-zinc-900 bg-void text-zinc-600'
           }`;
 
@@ -1737,14 +1792,14 @@
           }
 
           row.innerHTML = `
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-2">
               <span class="w-1.5 h-1.5 rounded-full ${p.isReady ? 'bg-zinc-300' : 'bg-zinc-800'}"></span>
               <span class="font-bold">${p.name} ${isCurrent ? '<span class="text-[9px] text-zinc-500">(Toi)</span>' : ''}</span>
               <div class="flex items-center gap-1 ml-1">${relicsHtml}</div>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
               <span class="text-[9px] text-zinc-500 tracking-wider font-mono">${p.score || 0} pts</span>
-              <span class="text-[10px] tracking-widest uppercase font-bold ${p.isReady ? 'text-zinc-200' : 'text-zinc-600'}">${p.isReady ? 'Prêt' : 'En attente'}</span>
+              <span class="text-[10px] tracking-widest uppercase font-bold ${p.isReady ? 'text-zinc-200' : 'text-zinc-600'}">${p.isReady ? 'Prêt' : 'Attente'}</span>
             </div>
           `;
           grid.appendChild(row);
@@ -1754,10 +1809,10 @@
       const btnReady = document.getElementById('btn-toggle-ready');
       if (btnReady) {
         if (me && me.isReady) {
-          btnReady.className = "flex-1 py-3 rounded-xl border border-zinc-400 bg-zinc-200 text-black text-xs uppercase tracking-widest font-black transition-all";
+          btnReady.className = "flex-1 py-2.5 rounded-xl border border-zinc-400 bg-zinc-200 text-black text-xs uppercase tracking-widest font-black transition-all";
           btnReady.innerText = "Prêt ✓";
         } else {
-          btnReady.className = "flex-1 py-3 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white text-xs uppercase tracking-widest font-bold transition-all";
+          btnReady.className = "flex-1 py-2.5 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white text-xs uppercase tracking-widest font-bold transition-all";
           btnReady.innerText = "Se Préparer";
         }
       }
@@ -1768,11 +1823,11 @@
         if (isHost && allReady) {
           btnStart.disabled = false;
           btnStart.innerText = gameState.currentRound > 1 ? `Lancer Manche ${gameState.currentRound}` : "Commencer";
-          btnStart.className = "flex-1 py-3 rounded-xl border border-zinc-600 bg-zinc-900 hover:bg-zinc-800 text-bone text-xs uppercase tracking-widest font-bold cursor-pointer transition-all";
+          btnStart.className = "flex-1 py-2.5 rounded-xl border border-zinc-600 bg-zinc-900 hover:bg-zinc-800 text-bone text-xs uppercase tracking-widest font-bold cursor-pointer transition-all";
         } else {
           btnStart.disabled = true;
           btnStart.innerText = allReady ? "Commencer" : "En attente...";
-          btnStart.className = "flex-1 py-3 rounded-xl border border-zinc-900 bg-void text-zinc-700 text-xs uppercase tracking-widest font-bold cursor-not-allowed transition-all";
+          btnStart.className = "flex-1 py-2.5 rounded-xl border border-zinc-900 bg-void text-zinc-700 text-xs uppercase tracking-widest font-bold cursor-not-allowed transition-all";
         }
       }
     }
@@ -2059,10 +2114,10 @@
         if (btnNextRoundReady) {
           btnNextRoundReady.classList.remove('hidden');
           if (me && me.isReady) {
-            btnNextRoundReady.className = "w-full py-3.5 border border-zinc-400 bg-zinc-200 text-black text-xs uppercase tracking-[0.2em] font-black rounded-xl transition-all";
+            btnNextRoundReady.className = "w-full py-3 border border-zinc-400 bg-zinc-200 text-black text-xs uppercase tracking-[0.2em] font-black rounded-xl transition-all";
             btnNextRoundReady.innerText = "Prêt pour la Suite ✓";
           } else {
-            btnNextRoundReady.className = "w-full py-3.5 border border-zinc-700 bg-zinc-900 active:scale-[0.98] text-xs uppercase tracking-[0.2em] text-zinc-300 hover:text-white font-bold rounded-xl transition-all";
+            btnNextRoundReady.className = "w-full py-3 border border-zinc-700 bg-zinc-900 active:scale-[0.98] text-xs uppercase tracking-[0.2em] text-zinc-300 hover:text-white font-bold rounded-xl transition-all";
             btnNextRoundReady.innerText = "Se Préparer pour la Suite";
           }
         }
@@ -2073,17 +2128,17 @@
             if (allPlayersReady) {
               btnNextRound.disabled = false;
               btnNextRound.innerText = `Lancer Manche ${gameState.currentRound + 1}`;
-              btnNextRound.className = "w-full py-3.5 bg-zinc-200 active:scale-[0.98] hover:bg-white text-black text-xs tracking-[0.2em] uppercase font-bold rounded-xl cursor-pointer shadow-lg transition-all";
+              btnNextRound.className = "w-full py-3 bg-zinc-200 active:scale-[0.98] hover:bg-white text-black text-xs tracking-[0.2em] uppercase font-bold rounded-xl cursor-pointer shadow-lg transition-all";
             } else {
               btnNextRound.disabled = true;
               btnNextRound.innerText = "En attente des âmes prêtes...";
-              btnNextRound.className = "w-full py-3.5 bg-void border border-zinc-900 text-zinc-600 text-xs tracking-[0.2em] uppercase font-bold rounded-xl cursor-not-allowed transition-all";
+              btnNextRound.className = "w-full py-3 bg-void border border-zinc-900 text-zinc-600 text-xs tracking-[0.2em] uppercase font-bold rounded-xl cursor-not-allowed transition-all";
             }
           } else {
             btnNextRound.classList.remove('hidden');
             btnNextRound.disabled = true;
             btnNextRound.innerText = allPlayersReady ? "En attente du Maître du Sanctuaire..." : "En attente des autres âmes...";
-            btnNextRound.className = "w-full py-3.5 bg-void border border-zinc-900 text-zinc-600 text-xs tracking-[0.2em] uppercase font-bold rounded-xl cursor-not-allowed transition-all";
+            btnNextRound.className = "w-full py-3 bg-void border border-zinc-900 text-zinc-600 text-xs tracking-[0.2em] uppercase font-bold rounded-xl cursor-not-allowed transition-all";
           }
         }
 
@@ -2102,17 +2157,17 @@
           const myRewards = gameState.lastRoundRewards[myId] || [];
           if (myRewards.length > 0) {
             myRelicEl.innerHTML = `
-              <div class="space-y-1.5">
+              <div class="space-y-1">
                 <span class="text-[9px] tracking-wider uppercase text-zinc-400">Pour toi :</span>
                 ${myRewards.map(rw => {
                   const def = RELIC_DEFINITIONS[rw.item];
                   return `
-                    <div class="p-2 sm:p-2.5 rounded-xl border border-zinc-700/80 bg-zinc-900/80 flex items-center justify-between">
+                    <div class="p-2 rounded-xl border border-zinc-700/80 bg-zinc-900/80 flex items-center justify-between">
                       <div class="flex items-center gap-2">
                         <i class="${def ? def.icon : 'fa-solid fa-sparkles'} text-sm"></i>
                         <div>
                           <div class="text-bone font-bold text-[11px]">${def ? def.name : rw.item}</div>
-                          <div class="text-[9px] text-zinc-500 font-mono">${rw.reason}</div>
+                          <div class="text-[8px] text-zinc-500 font-mono">${rw.reason}</div>
                         </div>
                       </div>
                       <span class="text-[8px] uppercase tracking-wider text-emerald-400 font-bold border border-emerald-950 bg-emerald-950/30 px-1.5 py-0.5 rounded">Reçu</span>
@@ -2123,7 +2178,7 @@
             `;
           } else {
             myRelicEl.innerHTML = `
-              <div class="p-2.5 rounded-xl border border-zinc-900 bg-void/60 text-zinc-500 text-[11px] text-center italic">
+              <div class="p-2 rounded-xl border border-zinc-900 bg-void/60 text-zinc-500 text-[10px] text-center italic">
                 Le néant ne t'accorde aucun item pour cette manche.
               </div>
             `;
@@ -2133,15 +2188,15 @@
           const otherEntries = Object.entries(gameState.lastRoundRewards).filter(([pId]) => pId !== myId);
           if (otherEntries.length > 0) {
             allRelicsEl.innerHTML = `
-              <div class="pt-1 text-[9px] text-zinc-500 uppercase tracking-wider mb-1">Âmes rivales :</div>
+              <div class="pt-1 text-[8px] text-zinc-500 uppercase tracking-wider mb-1">Âmes rivales :</div>
               <div class="space-y-1">
                 ${otherEntries.map(([pId, rws]) => {
                   const pName = gameState.players[pId] ? gameState.players[pId].name : 'Âme';
                   if (rws && rws.length > 0) {
                     const itemNames = rws.map(r => RELIC_DEFINITIONS[r.item] ? RELIC_DEFINITIONS[r.item].name : r.item).join(', ');
-                    return `<div class="flex justify-between items-center text-[10px]"><span>${pName} :</span><span class="text-zinc-300 font-bold">${itemNames}</span></div>`;
+                    return `<div class="flex justify-between items-center text-[9px]"><span>${pName} :</span><span class="text-zinc-300 font-bold">${itemNames}</span></div>`;
                   } else {
-                    return `<div class="flex justify-between items-center text-[10px] text-zinc-600"><span>${pName} :</span><span>Aucun item</span></div>`;
+                    return `<div class="flex justify-between items-center text-[9px] text-zinc-600"><span>${pName} :</span><span>Aucun item</span></div>`;
                   }
                 }).join('')}
               </div>
@@ -2161,7 +2216,7 @@
         leaderboard.innerHTML = '';
         sorted.forEach((p, idx) => {
           const row = document.createElement('div');
-          row.className = 'flex items-center justify-between text-xs px-2.5 py-1.5 rounded-lg bg-void/50 border border-zinc-900';
+          row.className = 'flex items-center justify-between text-xs px-2 py-1 rounded-lg bg-void/50 border border-zinc-900';
           
           let relicsIcons = '';
           if (gameState.itemsEnabled && p.items && p.items.length > 0) {
@@ -2172,20 +2227,20 @@
           }
 
           const readyBadge = !isTournamentEnd ? `
-            <span class="text-[9px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wider ${p.isReady ? 'text-zinc-300 border border-zinc-700 bg-zinc-900' : 'text-zinc-600 border border-zinc-950'}">
+            <span class="text-[8px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wider ${p.isReady ? 'text-zinc-300 border border-zinc-700 bg-zinc-900' : 'text-zinc-600 border border-zinc-950'}">
               ${p.isReady ? 'Prêt' : 'Attente'}
             </span>
           ` : '';
 
           row.innerHTML = `
-            <div class="flex items-center gap-2">
-              <span class="font-mono text-zinc-600 font-bold">${idx + 1}.</span>
-              <span class="font-bold text-bone">${p.name} ${p.id === myId ? '<span class="text-[9px] text-zinc-500 font-normal">(Toi)</span>' : ''}</span>
+            <div class="flex items-center gap-1.5">
+              <span class="font-mono text-zinc-600 font-bold text-[10px]">${idx + 1}.</span>
+              <span class="font-bold text-bone text-[11px]">${p.name} ${p.id === myId ? '<span class="text-[9px] text-zinc-500 font-normal">(Toi)</span>' : ''}</span>
               <div class="flex items-center gap-1 ml-1">${relicsIcons}</div>
             </div>
             <div class="flex items-center gap-2">
               ${readyBadge}
-              <span class="font-mono text-zinc-400 font-bold">${p.score || 0} pts</span>
+              <span class="font-mono text-zinc-400 font-bold text-[11px]">${p.score || 0} pts</span>
             </div>
           `;
           leaderboard.appendChild(row);
@@ -2216,6 +2271,21 @@
         sendToHost({ type: 'SET_ROUNDS', totalRounds: val });
       });
     }
+
+    // Durations ticks click listeners
+    document.querySelectorAll('.dur-tick').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!isHost) return;
+        const dur = parseInt(btn.getAttribute('data-dur'), 10);
+        const slider = document.getElementById('slider-duration');
+        const durValEl = document.getElementById('lobby-duration-value');
+        if (slider) slider.value = dur;
+        if (durValEl) durValEl.innerText = dur;
+        gameState.choiceDuration = dur;
+        updateDurationSliderVisuals(dur);
+        sendToHost({ type: 'SET_DURATION', duration: dur });
+      });
+    });
 
     // Grimoire Modal listeners
     const grimoireBtn = document.getElementById('btn-open-grimoire');
@@ -2286,8 +2356,7 @@
         const durValEl = document.getElementById('lobby-duration-value');
         if (durValEl) durValEl.innerText = dur;
         gameState.choiceDuration = dur;
-        const durPct = ((dur - 5) / 40) * 100;
-        e.target.style.setProperty('--slider-pct', `${durPct}%`);
+        updateDurationSliderVisuals(dur);
         sendToHost({ type: 'SET_DURATION', duration: dur });
       });
     }
@@ -2366,7 +2435,6 @@
     const leaveBtnEl = document.getElementById('btn-leave-room');
     if (leaveBtnEl) leaveBtnEl.addEventListener('click', leaveRoom);
 
-    // Button to mark readiness between rounds
     const btnNextRoundReady = document.getElementById('btn-next-round-ready');
     if (btnNextRoundReady) {
       btnNextRoundReady.addEventListener('click', () => {
@@ -2430,11 +2498,16 @@
         gameState.currentRound = 1;
         localSuspenseCompletedForRound = 0;
 
-        gameState.players = {
-          [myId]: { id: myId, name: myName, isBot: false, isReady: false, isAlive: true, score: 0, chosenDoor: null, deathFloor: null, items: [] },
-          'bot_1': { id: 'bot_1', name: 'Le Muet', isBot: true, isReady: true, isAlive: true, score: 0, chosenDoor: null, deathFloor: null, items: [] },
-          'bot_2': { id: 'bot_2', name: 'L’Égaré', isBot: true, isReady: true, isAlive: true, score: 0, chosenDoor: null, deathFloor: null, items: [] }
+        const tempPlayers = {
+          [myId]: { id: myId, name: myName, isBot: false, isReady: false, isAlive: true, score: 0, chosenDoor: null, deathFloor: null, items: [] }
         };
+        const botName1 = getRandomBotName(tempPlayers);
+        tempPlayers['bot_1'] = { id: 'bot_1', name: botName1, isBot: true, isReady: true, isAlive: true, score: 0, chosenDoor: null, deathFloor: null, items: [] };
+        
+        const botName2 = getRandomBotName(tempPlayers);
+        tempPlayers['bot_2'] = { id: 'bot_2', name: botName2, isBot: true, isReady: true, isAlive: true, score: 0, chosenDoor: null, deathFloor: null, items: [] };
+
+        gameState.players = tempPlayers;
 
         const badge = document.getElementById('badge-room-code');
         if (badge) badge.innerText = 'SOLO';
@@ -2453,9 +2526,8 @@
     if (addBotBtn) {
       addBotBtn.addEventListener('click', () => {
         if (!isHost) return;
-        const botNames = ['Le Vagabond', 'L’Oublié', 'Le Veilleur', 'Le Pénitent', 'L’Inconnu'];
         const botId = 'bot_' + Math.random().toString(36).substring(2, 6);
-        const name = botNames[Math.floor(Math.random() * botNames.length)];
+        const name = getRandomBotName(gameState.players);
         
         gameState.players[botId] = {
           id: botId,
