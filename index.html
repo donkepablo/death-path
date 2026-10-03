@@ -1965,8 +1965,8 @@
               triggerExecution(targetPlayer, `La chambre ${risk}/6 a fait feu.`);
             } else {
               audio.dryHammerClick();
-              ticker.innerText = "CLIC. Chambre vide.";
-              showToast(`Clic à vide. ${targetPlayer.name} reste en jeu.`);
+              ticker.innerText = "C'est pas pour cette fois.";
+              showToast(`${targetPlayer.name} reste en jeu.`);
               
               targetPlayer.cylinderRisk = Math.min(6, risk + 1);
               gameState.feltTicker = `${targetPlayer.name} survit. Risque augmenté à ${targetPlayer.cylinderRisk}/6.`;
