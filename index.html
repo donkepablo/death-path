@@ -5,21 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>BLUFF PROUT</title>
 
+  <!-- Tailwind CDN & Bibliothèques -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+  <!-- Polices Google : Alata (Titres) + Syne (Cartes/Numéro) + Amiko (Interface/Mono) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Syne:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Alata&family=Amiko:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            title: ['Syne', 'sans-serif'],
-            mono: ['"DM Mono"', 'monospace'],
+            title: ['Alata', 'sans-serif'],
+            card: ['Syne', 'sans-serif'],
+            mono: ['Amiko', 'sans-serif'],
           },
           colors: {
             noir: '#111311',
@@ -163,30 +166,67 @@
     ::-webkit-scrollbar-track { background: rgba(0,0,0,0.4); }
     ::-webkit-scrollbar-thumb { background: #3c5240; border-radius: 4px; }
 
-    @keyframes diceJiggle {
-      0% { transform: translateY(0) rotate(0deg) scale(1); }
-      25% { transform: translateY(-2px) rotate(-6deg) scale(1.04); }
-      50% { transform: translateY(2px) rotate(5deg) scale(0.96); }
-      75% { transform: translateY(-2px) rotate(-6deg) scale(1.04); }
-      100% { transform: translateY(0) rotate(0deg) scale(1); }
+    /* ====== SLIDER VOLUME AVEC BOUTON DISCRET ====== */
+    #audio-volume-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
     }
-    .dice-rolling {
-      opacity: 0.9;
-    }
-    
-    /* Style de la barre de volume élargie */
+
     #audio-volume-slider::-webkit-slider-runnable-track {
-      height: 6px;
-      background: #233126;
+      height: 4px;
+      background: #1c261f;
       border-radius: 9999px;
-      border: 1px solid #324636;
+      border: 1px solid #2b392d;
     }
+
     #audio-volume-slider::-webkit-slider-thumb {
-      margin-top: -5px;
-      width: 16px;
-      height: 16px;
+      -webkit-appearance: none;
+      appearance: none;
+      width: 10px;
+      height: 10px;
+      margin-top: -3.5px;
+      border-radius: 50%;
+      background: #d4af37;
+      border: 1px solid #1c1407;
+      box-shadow: 0 0 4px rgba(212, 175, 55, 0.35);
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
     }
-    
+
+    #audio-volume-slider::-webkit-slider-thumb:hover,
+    #audio-volume-slider:active::-webkit-slider-thumb {
+      transform: scale(1.15);
+      background: #e2c050;
+      box-shadow: 0 0 6px rgba(212, 175, 55, 0.55);
+    }
+
+    #audio-volume-slider::-moz-range-track {
+      height: 4px;
+      background: #1c261f;
+      border-radius: 9999px;
+      border: 1px solid #2b392d;
+    }
+
+    #audio-volume-slider::-moz-range-thumb {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #d4af37;
+      border: 1px solid #1c1407;
+      box-shadow: 0 0 4px rgba(212, 175, 55, 0.35);
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    #audio-volume-slider::-moz-range-thumb:hover,
+    #audio-volume-slider:active::-moz-range-thumb {
+      transform: scale(1.15);
+      background: #e2c050;
+      box-shadow: 0 0 6px rgba(212, 175, 55, 0.55);
+    }
   </style>
 </head>
 <body class="h-[100dvh] max-h-[100dvh] overflow-hidden text-[#e8ece9] flex flex-col justify-between font-mono">
@@ -199,7 +239,7 @@
       <div class="w-16 h-16 rounded-full border border-red-700 bg-red-950/60 flex items-center justify-center text-red-500 text-3xl mb-3 shadow-[0_0_35px_rgba(185,28,28,0.7)]">
         <i class="fa-solid fa-skull"></i>
       </div>
-      <h2 id="exec-title" class="font-title text-2xl text-red-500 font-black tracking-widest uppercase">
+      <h2 id="exec-title" class="font-title text-2xl text-red-500 font-bold tracking-widest uppercase">
         ÉLIMINÉ
       </h2>
       <p id="exec-desc" class="font-mono text-xs text-stone-300 mt-2 max-w-xs">
@@ -208,36 +248,49 @@
     </div>
   </div>
 
-  <header class="w-full flex-shrink-0 border-b border-[#212923] bg-[#121614]/95 px-4 py-2 flex items-center justify-between z-40">
-    <div class="flex items-center gap-2.5">
-      <span class="text-dore font-title text-lg font-black">♠</span>
-      <h1 class="text-xs sm:text-sm font-title font-black tracking-[0.2em] text-[#f7f6f2] uppercase">
+  <!-- HEADER -->
+  <header class="w-full flex-shrink-0 border-b border-[#212923] bg-[#121614]/95 px-3 sm:px-4 py-2 flex items-center justify-between z-40">
+    <div class="flex items-center gap-2">
+      <span class="text-dore font-title text-lg font-bold">♠</span>
+      <h1 class="text-xs sm:text-sm font-title font-bold tracking-[0.2em] text-[#f7f6f2] uppercase">
         BLUFF PROUT
       </h1>
-      <span id="header-mode-tag" class="text-[9px] font-mono text-[#8a998e] border-l border-[#243327] pl-2 uppercase hidden sm:inline">MODE : CARTES</span>
+      <span id="header-mode-tag" class="text-[9px] font-mono text-[#8a998e] border-l border-[#243327] pl-2 uppercase hidden md:inline">MODE : CARTES</span>
     </div>
 
-      <div class="flex items-center gap-2 bg-[#171e19] border border-[#2b3a2e] rounded-lg px-2.5 py-1 z-50">
-        <button id="btn-audio-toggle" type="button" class="text-dore hover:text-white text-xs transition-colors flex items-center justify-center p-0.5" title="Couper / Activer le son">
-          <i id="audio-icon" class="fa-solid fa-volume-high"></i>
+    <div class="flex items-center gap-2">
+      <!-- CONTRÔLEUR DE VOLUME -->
+      <div class="h-8 min-w-[130px] sm:min-w-[150px] flex items-center gap-2 bg-[#171e19] border border-[#2b3a2e] rounded-lg px-2.5 z-50">
+        <button id="btn-audio-toggle" type="button" class="w-4 h-4 flex items-center justify-center text-dore hover:text-white transition-colors flex-shrink-0" title="Couper / Activer le son">
+          <i id="audio-icon" class="fa-solid fa-volume-high text-xs fa-fw"></i>
         </button>
-        <input 
-          id="audio-volume-slider" 
-          type="range" 
-          min="0" 
-          max="1" 
-          step="0.05" 
-          value="0.3" 
-          class="w-24 sm:w-28 h-5 bg-transparent cursor-pointer accent-[#d4af37]"
-          style="touch-action: pan-x; user-select: auto;"
-          title="Volume"
-        />
+        <div class="flex-1 flex items-center">
+          <input 
+            id="audio-volume-slider" 
+            type="range" 
+            min="0" 
+            max="1" 
+            step="0.02" 
+            value="0.3" 
+            class="h-4 cursor-pointer"
+            style="touch-action: pan-x; user-select: auto;"
+            title="Volume"
+          />
+        </div>
       </div>
-      <button id="btn-open-rules" class="px-2.5 py-1 border border-[#304234] rounded text-[#d6dfd8] hover:text-white bg-[#171e19] text-[11px] font-mono tracking-wider uppercase transition-colors">
-        Règles
+
+      <!-- BOUTON RÈGLES AVEC SVG SCROLL -->
+      <button id="btn-open-rules" class="h-8 px-3 border border-[#2b3a2e] rounded-lg text-[#d6dfd8] hover:text-white bg-[#171e19] text-[11px] font-mono tracking-wider uppercase transition-colors flex items-center gap-1.5 flex-shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-dore flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 12h-5"/>
+          <path d="M15 8h-5"/>
+          <path d="M19 17V5a2 2 0 0 0-2-2H4"/>
+          <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/>
+        </svg>
       </button>
 
-      <div id="room-badge" class="hidden items-center gap-1.5 border border-[#304234] bg-[#101411] rounded px-2 py-1 text-xs font-mono">
+      <!-- BADGE TABLE -->
+      <div id="room-badge" class="hidden h-8 items-center gap-1.5 border border-[#2b3a2e] bg-[#101411] rounded-lg px-2.5 text-xs font-mono flex-shrink-0">
         <span class="text-[#728577] text-[10px]">TABLE:</span>
         <span id="badge-room-code" class="text-dore font-title font-bold tracking-widest cursor-pointer hover:underline" title="Copier le code">----</span>
       </div>
@@ -249,8 +302,8 @@
     <!-- SCREEN 1: AUTH -->
     <section id="screen-auth" class="screen-view active w-full max-w-sm flex flex-col gap-4 my-auto p-4 z-20">
       <div class="text-center space-y-1">
-        <div class="text-2xl text-dore mb-1 tracking-widest font-title font-black">♠</div>
-        <h2 class="text-3xl font-title font-black tracking-[0.2em] text-[#f7f6f2] uppercase">
+        <div class="text-2xl text-dore mb-1 tracking-widest font-title font-bold">♠</div>
+        <h2 class="text-3xl font-title font-bold tracking-[0.2em] text-[#f7f6f2] uppercase">
           BLUFF PROUT
         </h2>
         <p class="text-[#899c8e] text-xs font-mono">Bluff ou fdp</p>
@@ -263,7 +316,6 @@
             class="w-full bg-[#0f1411] border border-[#233126] focus:border-dore rounded-lg py-2 px-3 text-[#e8ece9] placeholder-[#4f6154] text-sm focus:outline-none transition-colors font-mono" />
         </div>
 
-        <!-- SÉLECTEUR DE MODE -->
         <div>
           <label class="block text-[10px] font-mono tracking-widest text-[#95a89b] uppercase mb-1">Mode de jeu</label>
           <div class="grid grid-cols-2 gap-2">
@@ -318,7 +370,7 @@
           <div>
             <div class="text-[9px] font-mono tracking-widest text-[#899b8e] uppercase">Code de la Table</div>
             <div class="flex items-center gap-2 mt-0.5">
-              <span id="lobby-code-display" class="font-title text-2xl font-black text-dore tracking-widest">----</span>
+              <span id="lobby-code-display" class="font-title text-2xl font-bold text-dore tracking-widest">----</span>
               <button id="btn-copy-code" class="text-xs text-dore hover:text-white p-1" title="Copier">
                 <i class="fa-regular fa-copy"></i>
               </button>
@@ -378,20 +430,20 @@
         <div class="table-wood-rim w-full h-[62vh] sm:h-[65vh] max-h-[460px] p-2 sm:p-3 flex items-center justify-center">
           <div class="table-brass-rim w-full h-full flex items-center justify-center">
             <div id="poker-felt" class="table-felt w-full h-full flex flex-col items-center justify-between p-3 relative overflow-hidden">
-              <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04] font-title text-9xl text-white select-none">
+              <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04] font-title text-8xl text-white select-none">
                 ♠
               </div>
 
               <!-- Siège du haut -->
               <div id="seat-top" class="vip-seat relative z-10 flex flex-col items-center"></div>
 
-              <!-- Ligne des sièges latéraux (gauche et droite uniquement) -->
+              <!-- Sièges latéraux -->
               <div class="w-full flex items-center justify-between z-10 px-2 sm:px-6">
                 <div id="seat-left" class="vip-seat flex flex-col items-center"></div>
                 <div id="seat-right" class="vip-seat flex flex-col items-center"></div>
               </div>
 
-              <!-- CENTRE DU FEUTRE : PARFAITEMENT CENTRÉ EN ABSOLU SUR LA TABLE -->
+              <!-- CENTRE DU FEUTRE -->
               <div id="table-felt-center" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10 flex flex-col items-center justify-center">
                 
                 <!-- MODE CARTES -->
@@ -399,23 +451,22 @@
                   <div class="absolute w-full h-full rounded-lg border border-[#1b3b22] bg-[#0c1810] shadow-md rotate-[-4deg] opacity-75"></div>
                   <div class="absolute w-full h-full rounded-lg border border-[#1b3b22] bg-[#0c1810] shadow-md rotate-[2.5deg] opacity-85"></div>
                   <div id="center-pile-card" class="relative w-full h-full rounded-lg border border-[#3e5644] bg-[#142419] p-2 flex flex-col items-center justify-between shadow-2xl transition-transform">
-                    <div class="w-full flex justify-between text-[9px] text-dore opacity-70 font-title">
+                    <div class="w-full flex justify-between text-[9px] text-dore opacity-70 font-card font-bold">
                       <span>♠</span><span>♥</span>
                     </div>
                     <div class="flex flex-col items-center">
                       <i class="fa-solid fa-layer-group text-2xl text-dore/70 mb-1"></i>
                       <span id="center-pile-count" class="font-mono text-xs font-bold text-[#e8ece9]">0</span>
                     </div>
-                    <div class="w-full flex justify-between text-[9px] text-dore opacity-70 font-title">
+                    <div class="w-full flex justify-between text-[9px] text-dore opacity-70 font-card font-bold">
                       <span>♦</span><span>♣</span>
                     </div>
                   </div>
                 </div>
 
-                <!-- MODE DÉS (QUINTO) : CHIFFRE ET PSEUDO CENTRÉS -->
+                <!-- MODE DÉS (QUINTO) -->
                 <div id="center-dice-display" class="hidden flex-col items-center justify-center text-center select-none">
-                  <div id="quinto-table-number" class="font-title text-6xl sm:text-7xl font-black text-dore tracking-widest drop-shadow-[0_0_25px_rgba(212,175,55,0.45)] leading-none text-center">
-                    --
+                  <div id="quinto-table-number" style="font-family: 'Syne', sans-serif !important;" class="text-6xl sm:text-9xl font-bold text-dore tracking-widest drop-shadow-[0_0_25px_rgba(212,175,55,0.45)] leading-none text-center">                    --
                   </div>
                   <div id="quinto-table-player" class="font-title text-xs sm:text-sm font-bold text-[#f7f6f2] tracking-wider uppercase mt-1.5 text-center whitespace-nowrap">
                     En attente
@@ -431,26 +482,27 @@
           </div>
         </div>
 
-        <!-- LOTTERY MODAL (POUR LE MODE CARTES) -->
+        <!-- LOTTERY MODAL -->
         <div id="lottery-modal" class="hidden absolute inset-0 z-40 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-4">
           <div class="max-w-xs w-full bg-[#161c18] border-2 border-[#3b4e40] rounded-xl p-5 shadow-2xl flex flex-col items-center gap-3 text-center">
             <div>
               <div class="text-[9px] font-mono text-[#8b9c90] uppercase tracking-widest">Règle de la manche</div>
-              <h3 class="font-title text-base sm:text-lg text-[#f7f6f2] font-black uppercase mt-0.5">
+              <h3 class="font-title text-base sm:text-lg text-[#f7f6f2] font-bold uppercase mt-0.5">
                 Figure Exigée
               </h3>
             </div>
 
+            <!-- CARTE LOTERIE -->
             <div id="lottery-card-frame" class="w-32 h-44 playing-card p-2 flex flex-col justify-between border border-[#304435] shadow-2xl overflow-hidden">
               <div class="card-inner-frame"></div>
-              <div class="w-full flex justify-between items-center text-xs font-title font-bold px-1 text-noir">
+              <div class="w-full flex justify-between items-center text-xs font-card font-bold px-1 text-noir">
                 <span id="lottery-card-top-name" class="truncate max-w-[85px]">...</span>
                 <span id="lottery-card-top-suit">♠</span>
               </div>
 
-              <div id="lottery-card-center-rank" class="flex flex-col items-center justify-center my-auto font-title font-black text-5xl"></div>
+              <div id="lottery-card-center-rank" class="flex flex-col items-center justify-center my-auto font-card font-black text-5xl"></div>
 
-              <div class="w-full flex justify-between items-center text-xs font-title font-bold px-1 text-noir rotate-180">
+              <div class="w-full flex justify-between items-center text-xs font-card font-bold px-1 text-noir rotate-180">
                 <span id="lottery-card-bottom-name" class="truncate max-w-[85px]">...</span>
                 <span id="lottery-card-bottom-suit">♠</span>
               </div>
@@ -470,9 +522,6 @@
               <div class="inline-block text-[10px] font-mono text-dore tracking-widest uppercase px-2.5 py-0.5 border border-[#485d4d] bg-[#1a231d] rounded">
                 Il y a un fdp parmis nous !
               </div>
-              <h3 id="denounce-headline" class="font-title text-base sm:text-lg text-[#f7f6f2] font-black uppercase mt-1">
-                Vérification
-              </h3>
             </div>
 
             <div id="denounce-cards-row" class="flex gap-2 items-center justify-center py-2 flex-wrap min-h-[110px]"></div>
@@ -534,16 +583,14 @@
           </button>
         </div>
 
-        <!-- INTERFACE DÉS (QUINTO) SANS ESPACE AU-DESSUS ET BOUTONS PLUS GROS -->
+        <!-- INTERFACE DÉS (QUINTO) -->
         <div id="quinto-action-controls" class="hidden w-full max-w-lg flex-col items-center p-0 mb-auto mt-2.5">          
-          <!-- Vue résultat des dés (affichée uniquement après avoir secoué) -->
           <div id="quinto-my-dice-view" class="hidden items-center gap-3 bg-[#0d120f] px-5 py-2 rounded-xl border border-[#2b3a2e] shadow-inner mb-2">
             <span class="text-[11px] uppercase tracking-wider font-mono text-[#7f9284]">Ton tirage :</span>
             <div id="quinto-dice-pair" class="flex gap-2"></div>
-            <span id="quinto-real-val-tag" class="text-sm font-mono font-black text-dore"></span>
+            <span id="quinto-real-val-tag" class="text-sm font-mono font-bold text-dore"></span>
           </div>
 
-          <!-- ÉTAPE 1 : BOUTONS SECOUER & MENTEUR CÔTE À CÔTE, PLUS GROS AVEC LE MÊME DÉGRADÉ -->
           <div id="quinto-step-roll" class="w-full grid grid-cols-2 gap-3">
             <button id="btn-quinto-roll" class="w-full h-14 sm:h-16 rounded-xl border border-dore/80 bg-gradient-to-b from-[#25392b] to-[#16241b] hover:from-[#2f4837] hover:to-[#1c2c21] text-dore font-mono text-sm sm:text-base font-semibold tracking-wide transition-all shadow-[0_4px_16px_rgba(0,0,0,0.5)] active:scale-[0.98] flex items-center justify-center gap-2.5">
               <i class="fa-solid fa-dice text-base sm:text-lg"></i>
@@ -555,7 +602,6 @@
             </button>
           </div>
 
-          <!-- ÉTAPE 2 : CHOIX VÉRITÉ OU MENTIR -->
           <div id="quinto-step-choice" class="hidden w-full flex-col gap-2.5">
             <div class="grid grid-cols-2 gap-3">
               <button id="btn-quinto-truth" class="h-14 sm:h-16 rounded-xl border border-[#3e5644] bg-[#1c2920] hover:bg-[#25392b] text-[#f7f6f2] font-mono text-sm sm:text-base font-semibold tracking-wide transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2">
@@ -568,7 +614,6 @@
               </button>
             </div>
 
-            <!-- Saisie du bluff -->
             <div id="quinto-lie-input-panel" class="hidden flex-col gap-2 p-2.5 rounded-xl bg-[#0f1411] border border-[#36483a]">
               <span class="text-[10px] font-mono uppercase tracking-wider text-[#7f9284]">Choisir l'annonce supérieure :</span>
               <div class="flex gap-2">
@@ -590,8 +635,8 @@
     <!-- SCREEN 4: GAME OVER -->
     <section id="screen-gameover" class="screen-view entering hidden w-full max-w-sm flex-col items-center gap-3.5 py-4 text-center my-auto p-4 z-20">
       <div class="space-y-0.5">
-        <div class="text-3xl text-dore mb-1 font-title font-black">♠</div>
-        <h2 id="gameover-title" class="text-xl sm:text-2xl font-title font-black tracking-widest text-[#f7f6f2] uppercase">
+        <div class="text-3xl text-dore mb-1 font-title font-bold">♠</div>
+        <h2 id="gameover-title" class="text-xl sm:text-2xl font-title font-bold tracking-widest text-[#f7f6f2] uppercase">
           VAINQUEUR
         </h2>
         <p id="gameover-desc" class="font-mono text-[#8a9d8f] text-xs">
@@ -615,7 +660,15 @@
     <div id="modal-rules" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
       <div class="bg-[#161c18] border border-[#2b3a2e] rounded-xl max-w-sm w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
         <div class="p-3 border-b border-[#212b23] flex items-center justify-between">
-          <span class="text-dore font-title text-xs font-black uppercase tracking-wider">♠ RÈGLES DU JEU</span>
+          <span class="text-dore font-title text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-dore flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 12h-5"/>
+              <path d="M15 8h-5"/>
+              <path d="M19 17V5a2 2 0 0 0-2-2H4"/>
+              <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/>
+            </svg>
+            RÈGLES DU JEU
+          </span>
           <button id="btn-close-rules" type="button" class="text-[#889b8d] hover:text-white p-1">
             <i class="fa-solid fa-xmark"></i>
           </button>
@@ -625,15 +678,25 @@
           <div class="p-2.5 rounded border border-[#233126] bg-[#101411] space-y-1">
             <span class="font-title font-bold text-dore text-xs">Mode Cartes</span>
             <p>
-              On tire au sort la figure requise (A, K, Q, V). Tu poses 1 à 3 cartes en annonçant cette figure. Les Jokers aident, le 10 maudit élimine direct à 100% si grillé en bluff.
+            À chaque manche, un tirage au sort désigne la figure exigée parmi l’As, le Roi, la Dame ou le Valet[cite: 1]. À votre tour, 
+            posez de une à trois cartes face cachée en affirmant respecter cette valeur, ou dénoncez le joueur précédent avant de jouer[cite: 1]. 
+            Les Jokers se substituent à n’importe quelle figure, tandis que les autres valeurs constituent un bluff[cite: 1]. En cas d’accusation 
+            infondée, l’accusateur actionne le barillet : si le mensonge est avéré, le tricheur s’y soumet, augmentant son risque létal à 
+            chaque tentative infructueuse[cite: 1]. Attention toutefois au 10 : tout joueur démasqué avec cette carte en jeu subit une 
+            élimination immédiate sans mise à l’épreuve du barillet[cite: 1].
             </p>
           </div>
 
           <div class="p-2.5 rounded border border-[#233126] bg-[#101411] space-y-1">
-            <span class="font-title font-bold text-dore text-xs">Mode Dés (Quinto)</span>
+            <span class="font-title font-bold text-dore text-xs">Mode Dés</span>
             <p>
-              Tu lances 2 dés en secret. Hiérarchie : 31 à 65 &lt; Doubles (11 à 66) &lt; <strong>21 (Quinto absolu)</strong>.<br>
-              Chaque annonce doit être strictement supérieure à la précédente. Choisis la vérité si ton tirage bat l'annonce, ou mens avec un chiffre supérieur !
+            Lancez secrètement deux dés pour former un score à deux chiffres, le dé le plus élevé constituant toujours la dizaine 
+            (par exemple, 2 et 4 donnent 42). La hiérarchie progresse des valeurs simples (de 31 à 65) aux paires (de 11 à 66), 
+            pour culminer avec le 21, combinaison suprême[cite: 1]. À votre tour, vous devez soit accuser le joueur précédent 
+            de mensonge, soit secouer les dés et faire une annonce strictement supérieure à la sienne en optant pour la vérité si 
+            votre score le permet, ou en bluffant avec une valeur plus forte[cite: 1]. En cas de contestation, les dés sont révélés : si 
+            l’annonce était légitime, l’accusateur actionne le barillet[cite: 1]. Si le joueur a menti, c’est le menteur qui s’y soumet, 
+            augmentant son risque fatal d’un cran en cas de survie[cite: 1].
             </p>
           </div>
         </div>
@@ -643,49 +706,113 @@
   </main>
 
   <script>
+    
     const audio = {
       ctx: null,
       enabled: true,
       volume: 0.3,
       masterGain: null,
+      bgmGain: null,
+      bgmElement: null,
+      bgmSource: null,
       initialized: false,
-      
+
       init() {
         if (this.initialized && this.ctx) {
-          if (this.ctx.state === 'suspended' && this.enabled) this.ctx.resume().catch(() => {});
+          if (this.ctx.state === 'suspended' && this.enabled) {
+            this.ctx.resume().catch(() => {});
+          }
+          if (this.bgmElement && this.enabled && this.bgmElement.paused) {
+            this.bgmElement.play().catch(() => {});
+          }
           return;
         }
+
         try {
           const AudioContextClass = window.AudioContext || window.webkitAudioContext;
           if (!AudioContextClass) return;
           this.ctx = new AudioContextClass();
+
+          // Master Gain relié aux haut-parleurs
           this.masterGain = this.ctx.createGain();
           this.masterGain.gain.setValueAtTime(this.enabled ? this.volume : 0, this.ctx.currentTime);
           this.masterGain.connect(this.ctx.destination);
+
+          // Gain dédié à la musique de fond (atténuation discrète de 0.20)
+          this.bgmGain = this.ctx.createGain();
+          this.bgmGain.gain.setValueAtTime(0.10, this.ctx.currentTime);
+          this.bgmGain.connect(this.masterGain);
+
+          // Chargement et routage de la musique dans le Web Audio
+          this.bgmElement = new Audio('./bgm.mp3');
+          this.bgmElement.loop = true;
+          this.bgmSource = this.ctx.createMediaElementSource(this.bgmElement);
+          this.bgmSource.connect(this.bgmGain);
+
+          if (this.enabled) {
+            this.bgmElement.play().catch(() => {});
+          }
+
           this.initialized = true;
-          if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+
+          if (this.ctx.state === 'suspended') {
+            this.ctx.resume().catch(() => {});
+          }
         } catch (e) {}
       },
 
       setVolume(val) {
-        this.volume = parseFloat(val);
+        this.volume = Math.max(0, Math.min(1, parseFloat(val)));
         this.enabled = this.volume > 0;
-        if (!this.initialized) this.init();
+
+        if (!this.initialized) {
+          this.init();
+        }
+
         if (this.ctx && this.masterGain) {
-          if (this.ctx.state === 'suspended' && this.enabled) this.ctx.resume().catch(() => {});
+          if (this.ctx.state === 'suspended' && this.enabled) {
+            this.ctx.resume().catch(() => {});
+          }
+          // Ajuste le volume global (bruitages + musique connectée) instantanément
           this.masterGain.gain.setValueAtTime(this.volume, this.ctx.currentTime);
         }
+
+        // Gestion de la lecture si on remonte le son depuis 0
+        if (this.bgmElement) {
+          if (this.enabled && this.bgmElement.paused) {
+            this.bgmElement.play().catch(() => {});
+          } else if (!this.enabled && !this.bgmElement.paused) {
+            this.bgmElement.pause();
+          }
+        }
+
         this.updateIcon();
       },
 
       toggle() {
         this.enabled = !this.enabled;
-        if (!this.initialized) this.init();
-        if (this.ctx && this.masterGain) {
-          if (this.ctx.state === 'suspended' && this.enabled) this.ctx.resume().catch(() => {});
-          const target = this.enabled ? (this.volume > 0 ? this.volume : 0.3) : 0;
-          this.masterGain.gain.setValueAtTime(target, this.ctx.currentTime);
+
+        if (!this.initialized) {
+          this.init();
         }
+
+        const targetGain = this.enabled ? (this.volume > 0 ? this.volume : 0.3) : 0;
+
+        if (this.ctx && this.masterGain) {
+          if (this.ctx.state === 'suspended' && this.enabled) {
+            this.ctx.resume().catch(() => {});
+          }
+          this.masterGain.gain.setValueAtTime(targetGain, this.ctx.currentTime);
+        }
+
+        if (this.bgmElement) {
+          if (this.enabled) {
+            this.bgmElement.play().catch(() => {});
+          } else {
+            this.bgmElement.pause();
+          }
+        }
+
         this.updateIcon();
         return this.enabled;
       },
@@ -712,19 +839,19 @@
         const icon = document.getElementById('audio-icon');
         if (!icon) return;
         if (!this.enabled || this.volume === 0) {
-          icon.className = 'fa-solid fa-volume-xmark text-[#6e8073]';
+          icon.className = 'fa-solid fa-volume-xmark text-[#6e8073] text-xs fa-fw';
         } else if (this.volume < 0.4) {
-          icon.className = 'fa-solid fa-volume-low text-dore';
+          icon.className = 'fa-solid fa-volume-low text-dore text-xs fa-fw';
         } else {
-          icon.className = 'fa-solid fa-volume-high text-dore';
+          icon.className = 'fa-solid fa-volume-high text-dore text-xs fa-fw';
         }
       },
 
       playFaaah() {
-        if (!this.enabled || this.volume === 0) return;
+        if (!this.enabled || !this.volume) return;
         try {
-          const sound = new Audio('faaah.mp3');
-          sound.volume = this.volume; // S'aligne automatiquement sur le slider
+          const sound = new Audio('./faaah.mp3');
+          sound.volume = Math.max(0, Math.min(1, this.volume * 0.25));
           sound.play().catch(() => {});
         } catch (e) {}
       },
@@ -775,10 +902,10 @@
           const now = this.ctx.currentTime;
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(1400, now);
-          osc.frequency.exponentialRampToValueAtTime(450, now + 0.02);
-          gain.gain.setValueAtTime(0.28, now);
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(1200, now);
+          osc.frequency.exponentialRampToValueAtTime(350, now + 0.02);
+          gain.gain.setValueAtTime(0.10, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
           osc.connect(gain);
           gain.connect(this.masterGain);
@@ -834,7 +961,7 @@
     const QUINTO_ORDER = [
       31, 32, 41, 42, 43, 51, 52, 53, 54, 61, 62, 63, 64, 65,
       11, 22, 33, 44, 55, 66,
-      21 // Quinto suprême
+      21
     ];
 
     function getQuintoScore(d1, d2) {
@@ -996,7 +1123,7 @@
 
     let gameState = {
       code: 'SOLO',
-      gameMode: 'cards', // 'cards' ou 'dice'
+      gameMode: 'cards',
       status: 'auth',
       requiredCard: null,
       activePlayerIndex: 0,
@@ -1004,8 +1131,8 @@
       players: {},
       tableCardsCount: 0,
       lastClaim: null,
-      quintoClaim: null, // { playerId, playerName, score }
-      quintoRealDice: null, // [d1, d2]
+      quintoClaim: null,
+      quintoRealDice: null,
       quintoHasRolled: false,
       feltTicker: "Silence à la table."
     };
@@ -1293,7 +1420,7 @@
         if (bottomNameEl) bottomNameEl.innerText = def.title;
         if (topSuitEl) { topSuitEl.innerText = def.suit; topSuitEl.className = def.color; }
         if (bottomSuitEl) { bottomSuitEl.innerText = def.suit; bottomSuitEl.className = def.color; }
-        if (centerRankEl) { centerRankEl.innerText = def.letter; centerRankEl.className = `flex flex-col items-center justify-center my-auto font-title font-black text-5xl ${def.color}`; }
+        if (centerRankEl) { centerRankEl.innerText = def.letter; centerRankEl.className = `flex flex-col items-center justify-center my-auto font-card font-black text-5xl ${def.color}`; }
 
         audio.chip();
 
@@ -1310,7 +1437,7 @@
               if (bottomNameEl) bottomNameEl.innerText = defChosen.title;
               if (topSuitEl) { topSuitEl.innerText = defChosen.suit; topSuitEl.className = defChosen.color; }
               if (bottomSuitEl) { bottomSuitEl.innerText = defChosen.suit; bottomSuitEl.className = defChosen.color; }
-              if (centerRankEl) { centerRankEl.innerText = defChosen.letter; centerRankEl.className = `flex flex-col items-center justify-center my-auto font-title font-black text-5xl ${defChosen.color}`; }
+              if (centerRankEl) { centerRankEl.innerText = defChosen.letter; centerRankEl.className = `flex flex-col items-center justify-center my-auto font-card font-black text-5xl ${defChosen.color}`; }
 
               audio.revolverClick();
 
@@ -1430,7 +1557,7 @@
       for (let i = 0; i < cardCount; i++) {
         const thrown = document.createElement('div');
         thrown.className = 'thrown-card-anim w-11 h-16 rounded border border-[#2c3d2f] bg-[#faf8f5] shadow-2xl flex items-center justify-center';
-        thrown.innerHTML = `<span class="text-noir font-title text-xs font-bold">♠</span>`;
+        thrown.innerHTML = `<span class="text-noir font-card text-xs font-bold">♠</span>`;
 
         const offsetX = (i - (cardCount - 1) / 2) * 16;
         thrown.style.left = `${sRect.left + sRect.width / 2 - 22 + offsetX}px`;
@@ -1544,8 +1671,8 @@
         <div class="flex flex-col items-center gap-2">
           <span class="text-xs font-mono text-[#8a9d8f] uppercase">Tirage réel :</span>
           <div class="flex gap-3">
-            <span class="w-12 h-12 bg-[#faf8f5] text-noir font-black text-2xl rounded-lg flex items-center justify-center shadow-2xl border border-dore">${claim.realDice[0]}</span>
-            <span class="w-12 h-12 bg-[#faf8f5] text-noir font-black text-2xl rounded-lg flex items-center justify-center shadow-2xl border border-dore">${claim.realDice[1]}</span>
+            <span class="w-12 h-12 bg-[#faf8f5] text-noir font-bold text-2xl rounded-lg flex items-center justify-center shadow-2xl border border-dore">${claim.realDice[0]}</span>
+            <span class="w-12 h-12 bg-[#faf8f5] text-noir font-bold text-2xl rounded-lg flex items-center justify-center shadow-2xl border border-dore">${claim.realDice[1]}</span>
           </div>
           <span class="text-sm font-title font-bold text-dore">Score réel : ${realScore}</span>
         </div>
@@ -1561,7 +1688,6 @@
       const bot = gameState.players[activeId];
       if (!bot || !bot.isBot || !bot.isAlive) return;
 
-      // Phase 1 : Réflexion initiale avant action (2,2s à 3,4s)
       const thinkTime = Math.floor(Math.random() * 1200) + 2200;
 
       setTimeout(() => {
@@ -1570,14 +1696,12 @@
         if (currentActive !== bot.id) return;
 
         if (gameState.gameMode === 'dice') {
-          // Décision d'accuser avant de secouer si l'annonce précédente est suspecte
           if (gameState.quintoClaim) {
             const currentRank = getQuintoRank(gameState.quintoClaim.score);
-            // Risque progressif : doute faible au début, fort sur les gros scores/doubles
             let doubtChance = 0.08;
-            if (currentRank >= 10) doubtChance = 0.25; // Vers 61+
-            if (currentRank >= 14) doubtChance = 0.50; // Doubles
-            if (currentRank >= 19) doubtChance = 0.85; // 55, 66, 21
+            if (currentRank >= 10) doubtChance = 0.25;
+            if (currentRank >= 14) doubtChance = 0.50;
+            if (currentRank >= 19) doubtChance = 0.85;
 
             if (Math.random() < doubtChance) {
               gameState.feltTicker = `${bot.name} soupçonne un bluff...`;
@@ -1587,12 +1711,10 @@
             }
           }
 
-          // Le bot secoue les dés
           handleQuintoRoll(bot.id);
           gameState.feltTicker = `${bot.name} jauge discrètement ses dés...`;
           broadcastState();
 
-          // Phase 2 : Temps d'analyse de ses dés avant d'annoncer (2,0s à 3,0s)
           const decisionDelay = Math.floor(Math.random() * 1000) + 2000;
 
           setTimeout(() => {
@@ -1611,25 +1733,17 @@
             const realRank = getQuintoRank(realScore);
             let chosenScore;
 
-            // CAS 1 : VÉRITÉ (son vrai tirage bat le précédent)
-            // 80% du temps il annonce son vrai score, créant des sauts naturels (ex: de 42 direct à 63)
             if (realRank > prevRank && Math.random() < 0.80) {
               chosenScore = realScore;
-            } 
-            // CAS 2 : BLUFF VARIÉ (ne fait pas bêtement +1)
-            else {
+            } else {
               const roll = Math.random();
-              
               if (roll < 0.45) {
-                // Petit saut : +1 ou +2 crans
                 const step = Math.min(possibleScores.length - 1, Math.random() < 0.6 ? 0 : 1);
                 chosenScore = possibleScores[step];
               } else if (roll < 0.80) {
-                // Saut moyen franc : +2 à +4 crans (évite le simple +1)
                 const step = Math.min(possibleScores.length - 1, Math.floor(Math.random() * 3) + 1);
                 chosenScore = possibleScores[step];
               } else {
-                // Coup d'intimidation : saut vers un double ou score haut
                 const highOptions = possibleScores.filter(s => s >= 55 || s === 21);
                 if (highOptions.length > 0 && Math.random() < 0.5) {
                   chosenScore = highOptions[0];
@@ -1644,7 +1758,6 @@
           }, decisionDelay);
 
         } else {
-          // IA Cartes
           if (gameState.lastClaim && shouldBotAccuseCards(bot, gameState.lastClaim)) {
             handleCallBluff(bot.id);
           } else {
@@ -1755,7 +1868,7 @@
         const wrap = document.createElement('div');
         wrap.className = 'w-16 h-24 sm:w-20 sm:h-28 rounded-lg border border-[#2b3a2e] bg-[#111613] p-1.5 flex flex-col items-center justify-between shadow-xl';
         wrap.innerHTML = `
-          <span class="text-dore font-title text-xs">♠</span>
+          <span class="text-dore font-card text-xs">♠</span>
           <i class="fa-solid fa-lock text-xl text-[#4a5f50] my-auto"></i>
           <span class="text-[8px] font-mono text-[#748778] uppercase">Cachée</span>
         `;
@@ -1778,14 +1891,14 @@
           item.el.className = 'w-16 h-24 sm:w-20 sm:h-28 playing-card p-1.5 flex flex-col justify-between border border-[#d4af37] shadow-2xl overflow-hidden';
           item.el.innerHTML = `
             <div class="card-inner-frame"></div>
-            <div class="w-full flex justify-between items-center text-[9px] font-title font-bold ${def.color} px-0.5">
+            <div class="w-full flex justify-between items-center text-[9px] font-card font-bold ${def.color} px-0.5">
               <span>${def.letter}</span>
               <span>${def.suit}</span>
             </div>
-            <div class="flex flex-col items-center justify-center my-auto font-title font-black text-2xl sm:text-3xl ${def.color}">
+            <div class="flex flex-col items-center justify-center my-auto font-card font-black text-2xl sm:text-3xl ${def.color}">
               ${def.letter}
             </div>
-            <div class="w-full flex justify-between items-center text-[9px] font-title font-bold ${def.color} rotate-180 px-0.5">
+            <div class="w-full flex justify-between items-center text-[9px] font-card font-bold ${def.color} rotate-180 px-0.5">
               <span>${def.letter}</span>
               <span>${def.suit}</span>
             </div>
@@ -1838,7 +1951,7 @@
           if (step > 18) delay += 75;
           if (step > 21) {
             delay += 140;
-            ticker.innerText = "Le percuteur se tend...";
+            ticker.innerText = "Il sue du cul...";
           }
           setTimeout(spinStep, delay);
         } else {
@@ -1970,8 +2083,8 @@
 
       const btnReady = document.getElementById('btn-toggle-ready');
       if (me && me.isReady) {
-        btnReady.className = "flex-1 py-2 rounded border border-dore bg-dore text-[#111311] text-xs font-title uppercase tracking-widest font-black";
-        btnReady.innerText = "Prêt ✓";
+        btnReady.className = "flex-1 py-2 rounded border border-dore bg-dore text-[#111311] text-xs font-title uppercase tracking-widest font-bold";
+        btnReady.innerText = "Prêt";
       } else {
         btnReady.className = "flex-1 py-2 rounded border border-[#445b49] bg-[#1a251e] text-dore text-xs font-title uppercase tracking-widest font-bold";
         btnReady.innerText = "Se Préparer";
@@ -1981,7 +2094,7 @@
       const allReady = list.length >= 2 && list.every(p => p.isReady);
       if (isHost && allReady) {
         btnStart.disabled = false;
-        btnStart.className = "flex-1 py-2 rounded border border-[#8f7734] bg-[#2d4233] hover:bg-[#395340] text-[#f7f6f2] text-xs font-title uppercase tracking-widest font-black cursor-pointer shadow-lg";
+        btnStart.className = "flex-1 py-2 rounded border border-[#8f7734] bg-[#2d4233] hover:bg-[#395340] text-[#f7f6f2] text-xs font-title uppercase tracking-widest font-bold cursor-pointer shadow-lg";
       } else {
         btnStart.disabled = true;
         btnStart.className = "flex-1 py-2 rounded border border-[#233126] bg-[#101411] text-[#4f5f53] text-xs font-title uppercase tracking-widest font-bold cursor-not-allowed";
@@ -2020,7 +2133,6 @@
         document.getElementById('center-pile-count').innerText = `${gameState.tableCardsCount}`;
       }
 
-      // AFFICHAGE DU CENTRE DU FEUTRE
       const centerCards = document.getElementById('center-cards-display');
       const centerDice = document.getElementById('center-dice-display');
       if (isDice) {
@@ -2150,14 +2262,14 @@
 
         card.innerHTML = `
           <div class="card-inner-frame"></div>
-          <div class="w-full flex justify-between items-center text-[10px] sm:text-xs font-title font-bold ${def.color} px-0.5">
+          <div class="w-full flex justify-between items-center text-[10px] sm:text-xs font-card font-bold ${def.color} px-0.5">
             <span>${def.letter}</span>
             <span>${def.suit}</span>
           </div>
-          <div class="flex flex-col items-center justify-center my-auto font-title font-black text-2xl sm:text-3xl ${def.color}">
+          <div class="flex flex-col items-center justify-center my-auto font-card font-black text-2xl sm:text-3xl ${def.color}">
             ${def.letter}
           </div>
-          <div class="w-full flex justify-between items-center text-[10px] sm:text-xs font-title font-bold ${def.color} rotate-180 px-0.5">
+          <div class="w-full flex justify-between items-center text-[10px] sm:text-xs font-card font-bold ${def.color} rotate-180 px-0.5">
             <span>${def.letter}</span>
             <span>${def.suit}</span>
           </div>
@@ -2216,13 +2328,12 @@
       const activeId = gameState.playerOrder[gameState.activePlayerIndex];
       const isMyTurn = activeId === myId && me && me.isAlive && gameState.status === 'in_round';
 
-      // Affichage du résultat obtenu après le lancer
       if (me && me.isAlive && gameState.quintoRealDice && gameState.quintoHasRolled && isMyTurn) {
         myDiceView.classList.remove('hidden');
         myDiceView.classList.add('flex');
         dicePairEl.innerHTML = `
-          <span class="w-6 h-6 bg-[#faf8f5] text-noir font-black rounded flex items-center justify-center text-xs shadow border border-dore">${gameState.quintoRealDice[0]}</span>
-          <span class="w-6 h-6 bg-[#faf8f5] text-noir font-black rounded flex items-center justify-center text-xs shadow border border-dore">${gameState.quintoRealDice[1]}</span>
+          <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-xs shadow border border-dore">${gameState.quintoRealDice[0]}</span>
+          <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-xs shadow border border-dore">${gameState.quintoRealDice[1]}</span>
         `;
         const rScore = getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1]);
         realValTag.innerText = `(${rScore})`;
@@ -2242,7 +2353,6 @@
       const prevScore = gameState.quintoClaim ? gameState.quintoClaim.score : 0;
       const prevRank = getQuintoRank(prevScore);
 
-      // Si c'est notre tour et qu'on n'a pas encore secoué
       if (isMyTurn && !gameState.quintoHasRolled) {
         stepRoll.classList.remove('hidden');
         stepChoice.classList.add('hidden');
@@ -2260,7 +2370,6 @@
           btnBluffEarly.className = "w-full h-12 py-2.5 px-3 rounded-xl border border-[#233126] bg-[#131915] text-[#546658] cursor-not-allowed font-mono text-xs sm:text-sm font-normal tracking-wide transition-all flex items-center justify-center gap-2";
         }
       }
-      // Si c'est notre tour et qu'on a secoué : on propose Vérité ou Mentir
       else if (isMyTurn && gameState.quintoHasRolled) {
         stepRoll.classList.add('hidden');
         stepChoice.classList.remove('hidden');
@@ -2280,7 +2389,6 @@
           btnTruth.className = "h-14 sm:h-16 rounded-xl border border-[#233026] bg-[#131915] text-[#57685a] font-mono text-sm sm:text-base tracking-wide cursor-not-allowed flex items-center justify-center gap-2";
         }
 
-        // Remplir les scores possibles pour le bluff
         selectClaim.innerHTML = '';
         QUINTO_ORDER.forEach((sc, idx) => {
           if (idx > prevRank) {
@@ -2291,7 +2399,6 @@
           }
         });
       } 
-      // Pas notre tour
       else {
         stepRoll.classList.remove('hidden');
         stepChoice.classList.add('hidden');
@@ -2341,7 +2448,7 @@
       });
     }
 
-    // ÉCOUTEURS SÉLECTION MODE (ÉCRAN ACCUEIL)
+    // ÉCOUTEURS SÉLECTION MODE
     const btnModeCards = document.getElementById('btn-mode-cards');
     const btnModeDice = document.getElementById('btn-mode-dice');
 
@@ -2371,13 +2478,11 @@
       if (myDiceView && dicePairEl && realValTag) {
         myDiceView.classList.remove('hidden');
         myDiceView.classList.add('flex');
-        dicePairEl.classList.add('dice-rolling');
         realValTag.innerText = "(...)";
       }
 
       audio.diceShake();
 
-      // Défilement sur ~1,8 seconde (26 étapes espacées de 70ms)
       let ticks = 0;
       const totalTicks = 26;
 
@@ -2387,21 +2492,18 @@
         const r2 = Math.floor(Math.random() * 6) + 1;
 
         if (dicePairEl) {
-          // Les dés restent parfaitement immobiles, seuls les chiffres intérieurs changent
           dicePairEl.innerHTML = `
-            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-black rounded flex items-center justify-center text-xs shadow border border-dore/50">${r1}</span>
-            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-black rounded flex items-center justify-center text-xs shadow border border-dore/50">${r2}</span>
+            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-xs shadow border border-dore/50">${r1}</span>
+            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-xs shadow border border-dore/50">${r2}</span>
           `;
         }
 
-        // Bruitage léger répété pendant que ça tourne
         if (ticks % 8 === 0) {
           audio.diceShake();
         }
 
         if (ticks >= totalTicks) {
           clearInterval(rollInterval);
-          if (dicePairEl) dicePairEl.classList.remove('dice-rolling');
           audio.chip();
           sendToHost({ type: 'QUINTO_ROLL', id: myId });
         }
@@ -2598,6 +2700,7 @@
       document.getElementById('modal-rules').classList.remove('flex');
     });
 
+    // CONTRÔLES AUDIO & SLIDER
     const audioSlider = document.getElementById('audio-volume-slider');
     const btnAudioToggle = document.getElementById('btn-audio-toggle');
 
@@ -2612,7 +2715,6 @@
     }
 
     if (audioSlider) {
-      // Bloque la propagation pour ne pas déclencher le bouton toggle
       const stopEventBubble = (e) => e.stopPropagation();
       audioSlider.addEventListener('click', stopEventBubble);
       audioSlider.addEventListener('pointerdown', stopEventBubble);
@@ -2631,6 +2733,14 @@
 
     document.getElementById('btn-copy-code').addEventListener('click', () => {
       const text = gameState.code;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast(`Code ${text} copié.`)).catch(() => copyFallback(text));
+      } else {
+        copyFallback(text);
+      }
+    });
+
+    function copyFallback(text) {
       const dummy = document.createElement('textarea');
       dummy.value = text;
       document.body.appendChild(dummy);
@@ -2638,12 +2748,16 @@
       document.execCommand('copy');
       document.body.removeChild(dummy);
       showToast(`Code ${text} copié.`);
-    });
+    }
+
     document.getElementById('badge-room-code').addEventListener('click', () => {
       document.getElementById('btn-copy-code').click();
     });
 
-    window.addEventListener('click', () => audio.init(), { once: true });
+    ['click', 'touchstart', 'pointerdown'].forEach(evt => {
+      window.addEventListener(evt, () => audio.init(), { once: true });
+    });
+
     window.addEventListener('DOMContentLoaded', () => initAvatarSelector());
   </script>
 </body>
