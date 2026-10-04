@@ -601,7 +601,6 @@
 
         <!-- BARRE D'INVENTAIRE MULTI-ITEMS (ZBEUL) -->
         <div id="my-inventory-bar" class="hidden w-full max-w-2xl items-center justify-between bg-[#0c100e]/90 border border-[#233126] rounded-lg px-2.5 py-1 text-xs font-mono">
-          <!-- Coffre + émoticônes sur la même ligne -->
           <div class="flex items-center gap-2 overflow-x-auto py-0.5">
             <span class="text-dore flex items-center gap-1 flex-shrink-0 text-sm" title="Inventaire">
               <i class="fa-solid fa-briefcase"></i>
@@ -613,7 +612,6 @@
             <div id="my-inventory-items-container" class="flex items-center gap-1.5 overflow-x-auto py-0.5"></div>
           </div>
 
-          <!-- Message de statut à droite -->
           <span id="inventory-usage-state" class="text-[9px] font-mono text-[#8a9b8e] whitespace-nowrap pl-2 flex-shrink-0">
             1 seul item utilisable par tour
           </span>
@@ -1356,7 +1354,7 @@
       connections.forEach(conn => {
         try {
           if (conn && conn.open) {
-            const recipientId = conn.peerId || conn.label;
+            const recipientId = conn.userId || conn.peer;
             const sanitizedState = buildSanitizedStateFor(recipientId);
             conn.send({ type: 'SYNC_STATE', state: sanitizedState });
           }
@@ -1414,11 +1412,19 @@
       return false;
     }
 
-    function handleClientMessage(msg) {
+    function handleClientMessage(msg, senderConn = null) {
       if (!isHost || !msg) return;
 
       if (msg.type === 'PLAYER_JOIN') {
-        if (Object.keys(gameState.players).length >= 4) return;
+        if (senderConn && msg.player && msg.player.id) {
+          senderConn.userId = msg.player.id;
+        }
+        if (Object.keys(gameState.players).length >= 4) {
+          if (senderConn && senderConn.open) {
+            try { senderConn.send({ type: 'ROOM_FULL' }); } catch(e) {}
+          }
+          return;
+        }
         gameState.players[msg.player.id] = msg.player;
         if (!gameState.playerOrder.includes(msg.player.id)) {
           gameState.playerOrder.push(msg.player.id);
@@ -1476,9 +1482,9 @@
           broadcastState();
         }
       } else if (msg.type === 'DECIDE_IMMUNITY') {
-          handleImmunityDecision(msg.id, msg.useImmunity);
-      } else if (msg.type === 'DECIDE_PFC') { // <-- AJOUTÉ
-          handlePfcDecision(msg.id, msg.usePfc);
+        handleImmunityDecision(msg.id, msg.useImmunity);
+      } else if (msg.type === 'DECIDE_PFC') {
+        handlePfcDecision(msg.id, msg.usePfc);
       }
     }
 
@@ -1494,14 +1500,32 @@
 
       if (typeof Peer !== 'undefined') {
         try {
-          const peerId = 'liarsdeck-' + code.toLowerCase();
+          if (peer) {
+            try { peer.destroy(); } catch(e) {}
+          }
+          connections = [];
+          const peerId = 'proutbluff-' + code.toLowerCase();
           peer = new Peer(peerId);
+
           peer.on('connection', (conn) => {
-            connections.push(conn);
-            conn.on('data', (data) => handleClientMessage(data));
+            conn.on('open', () => {
+              if (!connections.includes(conn)) connections.push(conn);
+            });
+            conn.on('data', (data) => handleClientMessage(data, conn));
             conn.on('close', () => {
               connections = connections.filter(c => c !== conn);
             });
+            conn.on('error', () => {
+              connections = connections.filter(c => c !== conn);
+            });
+          });
+
+          peer.on('error', (err) => {
+            if (err && err.type === 'unavailable-id') {
+              initHostPeer();
+            } else {
+              showToast("Erreur serveur réseau.");
+            }
           });
         } catch (e) {}
       }
@@ -1532,21 +1556,39 @@
         }
       };
 
-      sendToHost(joinPayload);
-
       if (typeof Peer !== 'undefined') {
         try {
-          const targetPeerId = 'liarsdeck-' + cleanCode.toLowerCase();
+          if (peer) {
+            try { peer.destroy(); } catch(e) {}
+          }
+          const targetPeerId = 'proutbluff-' + cleanCode.toLowerCase();
           peer = new Peer();
+
           peer.on('open', () => {
-            hostConn = peer.connect(targetPeerId);
-            hostConn.on('open', () => hostConn.send(joinPayload));
+            hostConn = peer.connect(targetPeerId, { reliable: true });
+
+            hostConn.on('open', () => {
+              hostConn.send(joinPayload);
+            });
+
             hostConn.on('data', (data) => {
-              if (data && data.type === 'SYNC_STATE') {
+              if (!data) return;
+              if (data.type === 'SYNC_STATE') {
                 gameState = data.state;
                 renderUI();
+              } else if (data.type === 'ROOM_FULL') {
+                showToast("La table est complète.");
+                showScreen('screen-auth');
               }
             });
+
+            hostConn.on('close', () => {
+              showToast("Déconnecté de l'hôte.");
+            });
+          });
+
+          peer.on('error', (err) => {
+            showToast("Table introuvable ou erreur réseau.");
           });
         } catch (e) {}
       }
@@ -1785,14 +1827,12 @@
     }
 
     function advanceToNextLiving() {
-      // En mode cartes, un joueur qui n'a plus de cartes a gagné sa manche et ne joue plus
       const isCards = gameState.gameMode === 'cards';
       const activeInRound = gameState.playerOrder.filter(id => {
         const p = gameState.players[id];
         return p && p.isAlive && (!isCards || (p.hand && p.hand.length > 0));
       });
 
-      // S'il ne reste qu'un seul joueur ou moins avec des cartes en main, la manche est terminée
       if (isCards && activeInRound.length <= 1) {
         if (activeInRound.length === 1) {
           const lastPlayer = gameState.players[activeInRound[0]];
@@ -1813,7 +1853,6 @@
       while (count <= total) {
         const nextId = gameState.playerOrder[nextIdx];
         const p = gameState.players[nextId];
-        // Le joueur doit être en vie ET avoir des cartes (si mode cartes)
         if (p && p.isAlive && (!isCards || (p.hand && p.hand.length > 0))) {
           break;
         }
@@ -1830,7 +1869,6 @@
       checkBotTurnWithDelay();
     }
 
-    /* GESTION MODE CARTES */
     function handlePlayCards(playerId, cardIds) {
       if (!isHost || gameState.status !== 'in_round') return;
       const currentActiveId = gameState.playerOrder[gameState.activePlayerIndex];
@@ -1859,7 +1897,6 @@
         cardObjects: played
       };
 
-      // Si le joueur n'a plus de cartes, il a gagné sa manche !
       if (player.hand.length === 0) {
         gameState.feltTicker = `${player.name} a posé toutes ses cartes et gagne la manche ! 🎉`;
         showToast(`${player.name} a sauvé sa peau !`);
@@ -1917,7 +1954,6 @@
       }
     }
 
-    /* GESTION MODE DÉS (QUINTO) */
     function handleQuintoRoll(playerId) {
       if (!isHost || gameState.status !== 'in_round') return;
       const currentActiveId = gameState.playerOrder[gameState.activePlayerIndex];
@@ -1959,13 +1995,11 @@
       const accused = gameState.players[gameState.quintoClaim.playerId];
       if (!accuser || !accused || !accuser.isAlive || !accused.isAlive) return;
 
-      // 1. Totem d'immunité prioritaire
       if (gameState.isZbeul && accused.items && accused.items.includes('immunity')) {
         startImmunityPrompt(accuser, accused, 'dice');
         return;
       }
 
-      // 2. Pierre Feuille Ciseaux (interception avant de secouer/révéler les dés)
       if (gameState.isZbeul && accused.items && accused.items.includes('pfc')) {
         startPfcPrompt(accuser, accused, 'dice');
         return;
@@ -2081,9 +2115,9 @@
               if (verdict) {
                 verdict.className = "font-title text-base sm:text-lg font-bold text-dore tracking-wide text-center";
                 if (lied) {
-                  verdict.innerText = `${accused.name} s'est fait bz !`;
+                  verdict.innerText = `${accused.name} s'est fait avoir !`;
                 } else {
-                  verdict.innerText = `${accuser.name} s'est fait bz !`;
+                  verdict.innerText = `${accuser.name} s'est fait avoir !`;
                 }
               }
               audio.playFaaah();
@@ -2094,7 +2128,6 @@
       }, 1500);
     }
 
-    /* IA BOTS */
     function checkBotTurnWithDelay() {
       if (!isHost || gameState.status !== 'in_round') return;
       const activeId = gameState.playerOrder[gameState.activePlayerIndex];
@@ -2235,13 +2268,11 @@
       const accused = gameState.players[gameState.lastClaim.playerId];
       if (!accuser || !accused || !accuser.isAlive || !accused.isAlive) return;
 
-      // 1. Totem d'immunité prioritaire
       if (gameState.isZbeul && accused.items && accused.items.includes('immunity')) {
         startImmunityPrompt(accuser, accused, 'cards');
         return;
       }
 
-      // 2. Pierre Feuille Ciseaux (interception avant toute révélation de cartes !)
       if (gameState.isZbeul && accused.items && accused.items.includes('pfc')) {
         startPfcPrompt(accuser, accused, 'cards');
         return;
@@ -2279,7 +2310,7 @@
         }
       });
 
-    openDenounceModal(claim, cards, () => {
+      openDenounceModal(claim, cards, () => {
         if (lied && played10) {
           updateDenounceVerdict(`CARTE 10 ! ${accused.name} est éliminé immédiatement.`);
           setTimeout(() => {
@@ -2296,7 +2327,6 @@
       });
     }
 
-    /* GESTION DUEL PFC DIRECT (ZBEUL) */
     function launchPfcDuel(accuser, accused, onComplete) {
       gameState.pfcDuel = {
         accuserId: accuser.id,
@@ -2360,7 +2390,6 @@
       document.getElementById('pfc-p1-choice').innerHTML = icons[c1] || icons.rock;
       document.getElementById('pfc-p2-choice').innerHTML = icons[c2] || icons.scissors;
 
-      // Cas 1 : MATCH NUL -> on rejoue
       if (c1 === c2) {
         document.getElementById('pfc-status-banner').innerText = "Égalité ! On rejoue !";
         audio.chip();
@@ -2368,7 +2397,6 @@
         return;
       }
 
-      // Cas 2 : Victoire nette
       let winnerId = null;
       if (
         (c1 === 'rock' && c2 === 'scissors') ||
@@ -2386,7 +2414,6 @@
       setTimeout(() => {
         document.getElementById('modal-pfc').classList.add('hidden');
         
-        // Nettoie les éléments de dénonciation de cartes pour ne laisser que le barillet
         const row = document.getElementById('denounce-cards-row');
         const verdict = document.getElementById('denounce-verdict-banner');
         if (row) row.innerHTML = '';
@@ -2428,7 +2455,6 @@
       }
     }
 
-    /* FONCTIONNALITÉS ITEMS ZBEUL */
     function executeHandSwap() {
       const living = gameState.playerOrder.filter(id => gameState.players[id] && gameState.players[id].isAlive);
       if (living.length < 2) return;
@@ -2452,7 +2478,7 @@
       if (!target || !target.isAlive) return;
 
       target.hand.push({ id: `c_${Date.now()}`, rank: '10', isJoker: false, isRat: true });
-      gameState.feltTicker = `ARAAAAAAH ! Un 10 a été visser à ${target.name} !`;
+      gameState.feltTicker = `ARAAAAAAH ! Un 10 a été donné à ${target.name} !`;
       showToast(`${target.name} a reçu un 10 !`);
       audio.chip();
       broadcastState();
@@ -2566,7 +2592,7 @@
     }
 
     function triggerRevolverChamber(targetPlayer) {
-      const modal = document.getElementById('denounce-modal'); // <-- S'assurer d'avoir la modale parente
+      const modal = document.getElementById('denounce-modal');
       const cylinderBox = document.getElementById('denounce-cylinder-box');
       const wheel = document.getElementById('roulette-cylinder-wheel');
       const desc = document.getElementById('denounce-fate-desc');
@@ -2574,12 +2600,11 @@
 
       if (!cylinderBox || !wheel || !desc || !ticker) return;
 
-      if (modal) modal.classList.remove('hidden'); // <-- AJOUT OBLIGATOIRE : rend la fenêtre visible
+      if (modal) modal.classList.remove('hidden');
       cylinderBox.classList.remove('hidden');
       const risk = targetPlayer.cylinderRisk || 1;
       desc.innerText = `${targetPlayer.name} a ${risk} chambre(s) mortelle(s) sur 6`;
-      ticker.innerText = "Le gun est sur sa tempe...";
-      // ... suite inchangée
+      ticker.innerText = "Le canon est orienté...";
 
       let angle = 0;
       let step = 0;
@@ -2597,7 +2622,7 @@
           if (step > 18) delay += 75;
           if (step > 21) {
             delay += 140;
-            ticker.innerText = "Il sue du cul...";
+            ticker.innerText = "Tension maximale...";
           }
           setTimeout(spinStep, delay);
         } else {
@@ -2877,7 +2902,6 @@
         return;
       }
 
-      // Affichage individuel de chaque exemplaire d'item
       itemsList.forEach((itemId) => {
         const def = ZBEUL_ITEMS[itemId];
         if (!def) return;
@@ -3014,68 +3038,66 @@
 
     let immunityTimer = null;
 
-function startImmunityPrompt(accuser, accused, duelType) {
-  gameState.immunityPending = {
-    accuserId: accuser.id,
-    accusedId: accused.id,
-    duelType: duelType
-  };
+    function startImmunityPrompt(accuser, accused, duelType) {
+      gameState.immunityPending = {
+        accuserId: accuser.id,
+        accusedId: accused.id,
+        duelType: duelType
+      };
 
-  gameState.feltTicker = `${accuser.name} accuse ${accused.name}... En attente du Totem !`;
-  broadcastState();
+      gameState.feltTicker = `${accuser.name} accuse ${accused.name}... En attente du Totem !`;
+      broadcastState();
 
-  // Si l'accusé est un bot : décision automatique
-  if (accused.isBot) {
-    const willUse = Math.random() < 0.75; // Le bot utilise son totem 3 fois sur 4
-    setTimeout(() => {
-      handleImmunityDecision(accused.id, willUse);
-    }, 1400);
-    return;
-  }
+      if (accused.isBot) {
+        const willUse = Math.random() < 0.75;
+        setTimeout(() => {
+          handleImmunityDecision(accused.id, willUse);
+        }, 1400);
+        return;
+      }
 
-  // Si l'accusé est le joueur local
-  if (myId === accused.id) {
-    openImmunityPromptModal();
-  }
-}
-
-function openImmunityPromptModal() {
-  const modal = document.getElementById('modal-immunity-prompt');
-  const timerText = document.getElementById('immunity-timer-text');
-  if (!modal) return;
-
-  modal.classList.remove('hidden');
-  let timeLeft = 7;
-  if (timerText) timerText.innerText = `Temps restant : ${timeLeft}s`;
-
-  clearInterval(immunityTimer);
-  immunityTimer = setInterval(() => {
-    timeLeft--;
-    if (timerText) timerText.innerText = `Temps restant : ${timeLeft}s`;
-    if (timeLeft <= 0) {
-      clearInterval(immunityTimer);
-      closeImmunityPromptModal();
-      sendToHost({ type: 'DECIDE_IMMUNITY', id: myId, useImmunity: false });
+      if (myId === accused.id) {
+        openImmunityPromptModal();
+      }
     }
-  }, 1000);
 
-  document.getElementById('btn-accept-immunity').onclick = () => {
-    clearInterval(immunityTimer);
-    closeImmunityPromptModal();
-    sendToHost({ type: 'DECIDE_IMMUNITY', id: myId, useImmunity: true });
-  };
+    function openImmunityPromptModal() {
+      const modal = document.getElementById('modal-immunity-prompt');
+      const timerText = document.getElementById('immunity-timer-text');
+      if (!modal) return;
 
-  document.getElementById('btn-refuse-immunity').onclick = () => {
-    clearInterval(immunityTimer);
-    closeImmunityPromptModal();
-    sendToHost({ type: 'DECIDE_IMMUNITY', id: myId, useImmunity: false });
-  };
-}
+      modal.classList.remove('hidden');
+      let timeLeft = 7;
+      if (timerText) timerText.innerText = `Temps restant : ${timeLeft}s`;
 
-function closeImmunityPromptModal() {
-  const modal = document.getElementById('modal-immunity-prompt');
-  if (modal) modal.classList.add('hidden');
-}
+      clearInterval(immunityTimer);
+      immunityTimer = setInterval(() => {
+        timeLeft--;
+        if (timerText) timerText.innerText = `Temps restant : ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(immunityTimer);
+          closeImmunityPromptModal();
+          sendToHost({ type: 'DECIDE_IMMUNITY', id: myId, useImmunity: false });
+        }
+      }, 1000);
+
+      document.getElementById('btn-accept-immunity').onclick = () => {
+        clearInterval(immunityTimer);
+        closeImmunityPromptModal();
+        sendToHost({ type: 'DECIDE_IMMUNITY', id: myId, useImmunity: true });
+      };
+
+      document.getElementById('btn-refuse-immunity').onclick = () => {
+        clearInterval(immunityTimer);
+        closeImmunityPromptModal();
+        sendToHost({ type: 'DECIDE_IMMUNITY', id: myId, useImmunity: false });
+      };
+    }
+
+    function closeImmunityPromptModal() {
+      const modal = document.getElementById('modal-immunity-prompt');
+      if (modal) modal.classList.add('hidden');
+    }
 
     function handleImmunityDecision(playerId, useImmunity) {
       if (!isHost || !gameState.immunityPending) return;
@@ -3092,7 +3114,6 @@ function closeImmunityPromptModal() {
         showToast(`${accused.name} est sauvé par son Totem !`);
         audio.chip();
 
-        // On passe au joueur suivant après un court délai pour que tout le monde voie le message
         setTimeout(() => {
           gameState.quintoHasRolled = false;
           advanceToNextLiving();
@@ -3100,11 +3121,9 @@ function closeImmunityPromptModal() {
         return;
       }
 
-      // Si le joueur refuse d'utiliser son Totem :
       gameState.feltTicker = `${accused.name} garde son Totem.`;
       broadcastState();
 
-      // On vérifie s'il possède le PFC
       if (gameState.isZbeul && accused.items && accused.items.includes('pfc')) {
         startPfcPrompt(accuser, accused, duelType);
         return;
@@ -3204,7 +3223,7 @@ function closeImmunityPromptModal() {
 
     let pfcPromptTimer = null;
 
-function startPfcPrompt(accuser, accused, duelType) {
+    function startPfcPrompt(accuser, accused, duelType) {
       gameState.pfcPromptPending = {
         accuserId: accuser.id,
         accusedId: accused.id,
@@ -3214,7 +3233,6 @@ function startPfcPrompt(accuser, accused, duelType) {
       gameState.feltTicker = `${accuser.name} accuse ${accused.name}... En attente du PFC !`;
       broadcastState();
 
-      // Décision du bot
       if (accused.isBot) {
         const willUse = Math.random() < 0.75;
         setTimeout(() => {
@@ -3223,7 +3241,6 @@ function startPfcPrompt(accuser, accused, duelType) {
         return;
       }
 
-      // Joueur local
       if (myId === accused.id) {
         openPfcPromptModal();
       }
@@ -3245,7 +3262,6 @@ function startPfcPrompt(accuser, accused, duelType) {
         showToast(`${accused.name} déclenche le duel PFC !`);
         audio.chip();
 
-        // Le duel PFC remplace la vérification : le perdant va au barillet
         launchPfcDuel(accuser, accused, (winnerId) => {
           const loser = (winnerId === accused.id) ? accuser : accused;
           gameState.feltTicker = `${loser.name} perd le PFC et doit affronter le barillet !`;
@@ -3300,36 +3316,6 @@ function startPfcPrompt(accuser, accused, duelType) {
     function closePfcPromptModal() {
       const modal = document.getElementById('modal-pfc-prompt');
       if (modal) modal.classList.add('hidden');
-    }
-
-    function handlePfcDecision(playerId, usePfc) {
-      if (!isHost || !gameState.pfcPromptPending) return;
-      if (playerId !== gameState.pfcPromptPending.accusedId) return;
-
-      const { accuserId, accusedId, onRefuseCallback } = gameState.pfcPromptPending;
-      const accuser = gameState.players[accuserId];
-      const accused = gameState.players[accusedId];
-      gameState.pfcPromptPending = null;
-
-      if (usePfc) {
-        consumePlayerItem(accused, 'pfc');
-        gameState.feltTicker = `${accused.name} active son Pierre - Feuille - Ciseaux !`;
-        showToast(`${accused.name} déclenche le duel PFC !`);
-        audio.chip();
-
-        // Lancement du mini-jeu PFC
-        launchPfcDuel(accuser, accused, (winnerId) => {
-          const loser = (winnerId === accused.id) ? accuser : accused;
-          gameState.feltTicker = `${loser.name} perd le PFC et doit affronter le barillet !`;
-          setTimeout(() => triggerRevolverChamber(loser), 1400);
-        });
-      } else {
-        gameState.feltTicker = `${accused.name} garde son PFC en réserve.`;
-        broadcastState();
-        if (typeof onRefuseCallback === 'function') {
-          onRefuseCallback();
-        }
-      }
     }
 
     function renderQuintoPlayerConsole(me) {
@@ -3472,7 +3458,6 @@ function startPfcPrompt(accuser, accused, duelType) {
       });
     }
 
-    // ÉCOUTEURS MODES
     const btnModeCards = document.getElementById('btn-mode-cards');
     const btnModeDice = document.getElementById('btn-mode-dice');
     const btnModeZbeul = document.getElementById('btn-mode-zbeul');
@@ -3500,7 +3485,6 @@ function startPfcPrompt(accuser, accused, duelType) {
       }
     });
 
-    // ÉCOUTEURS DÉS QUINTO
     document.getElementById('btn-quinto-roll').addEventListener('click', () => {
       const btnRoll = document.getElementById('btn-quinto-roll');
       const btnBluff = document.getElementById('btn-quinto-bluff-early');
@@ -3740,7 +3724,6 @@ function startPfcPrompt(accuser, accused, duelType) {
       document.getElementById('modal-rules').classList.remove('flex');
     });
 
-    // CONTRÔLES AUDIO & SLIDER
     const audioSlider = document.getElementById('audio-volume-slider');
     const btnAudioToggle = document.getElementById('btn-audio-toggle');
 
