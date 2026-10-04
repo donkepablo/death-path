@@ -166,7 +166,6 @@
     ::-webkit-scrollbar-track { background: rgba(0,0,0,0.4); }
     ::-webkit-scrollbar-thumb { background: #3c5240; border-radius: 4px; }
 
-    /* ====== SLIDER VOLUME AVEC BOUTON DISCRET ====== */
     #audio-volume-slider {
       -webkit-appearance: none;
       appearance: none;
@@ -235,7 +234,6 @@
     .card-slot-reel {
       animation: reelScroll 0.22s linear infinite;
     }
-
   </style>
 </head>
 <body class="h-[100dvh] max-h-[100dvh] overflow-hidden text-[#e8ece9] flex flex-col justify-between font-mono">
@@ -265,10 +263,10 @@
         PROUT BLUFF
       </h1>
       <span id="header-mode-tag" class="text-[9px] font-mono text-[#8a998e] border-l border-[#243327] pl-2 uppercase hidden md:inline">MODE : CARTES</span>
+      <span id="header-zbeul-tag" class="text-[9px] font-mono text-dore px-1.5 py-0.5 rounded border border-dore/40 uppercase hidden">ZBEUL</span>
     </div>
 
     <div class="flex items-center gap-2">
-      <!-- CONTRÔLEUR DE VOLUME -->
       <div class="h-8 min-w-[130px] sm:min-w-[150px] flex items-center gap-2 bg-[#171e19] border border-[#2b3a2e] rounded-lg px-2.5 z-50">
         <button id="btn-audio-toggle" type="button" class="w-4 h-4 flex items-center justify-center text-dore hover:text-white transition-colors flex-shrink-0" title="Couper / Activer le son">
           <i id="audio-icon" class="fa-solid fa-volume-high text-xs fa-fw"></i>
@@ -288,7 +286,6 @@
         </div>
       </div>
 
-      <!-- BOUTON RÈGLES AVEC SVG SCROLL -->
       <button id="btn-open-rules" class="h-8 px-3 border border-[#2b3a2e] rounded-lg text-[#d6dfd8] hover:text-white bg-[#171e19] text-[11px] font-mono tracking-wider uppercase transition-colors flex items-center gap-1.5 flex-shrink-0">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-dore flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M15 12h-5"/>
@@ -298,7 +295,6 @@
         </svg>
       </button>
 
-      <!-- BADGE TABLE -->
       <div id="room-badge" class="hidden h-8 items-center gap-1.5 border border-[#2b3a2e] bg-[#101411] rounded-lg px-2.5 text-xs font-mono flex-shrink-0">
         <span class="text-[#728577] text-[10px]">TABLE:</span>
         <span id="badge-room-code" class="text-dore font-title font-bold tracking-widest cursor-pointer hover:underline" title="Copier le code">----</span>
@@ -337,6 +333,11 @@
               <span>Dés</span>
             </button>
           </div>
+
+          <button type="button" id="btn-mode-zbeul" class="mt-2 w-full p-2 rounded border border-[#2b3a2e] bg-[#121613] text-[#788a7c] text-xs font-title font-bold flex items-center justify-center gap-2 transition-all">
+            <i class="fa-solid fa-fire text-sm"></i>
+            <span>Zbeul</span>
+          </button>
         </div>
 
         <div>
@@ -346,7 +347,7 @@
 
         <button id="btn-solo-bots" class="w-full py-2.5 bg-[#1e2a21] hover:bg-[#28382d] border border-[#364b3c] hover:border-[#8f7734] rounded-lg text-[#faf8f5] font-title text-xs tracking-wider uppercase font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md">
           <i class="fa-solid fa-gamepad text-dore"></i>
-          <span>Jouer Seul (vs 3 Bots)</span>
+          <span>Jouer Solo</span>
         </button>
 
         <div class="relative flex items-center py-0.5">
@@ -443,10 +444,9 @@
                 ♠
               </div>
 
-              <!-- Siège du haut -->
+              <!-- Sièges -->
               <div id="seat-top" class="vip-seat relative z-10 flex flex-col items-center"></div>
 
-              <!-- Sièges latéraux -->
               <div class="w-full flex items-center justify-between z-10 px-2 sm:px-6">
                 <div id="seat-left" class="vip-seat flex flex-col items-center"></div>
                 <div id="seat-right" class="vip-seat flex flex-col items-center"></div>
@@ -455,7 +455,6 @@
               <!-- CENTRE DU FEUTRE -->
               <div id="table-felt-center" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10 flex flex-col items-center justify-center">
                 
-                <!-- MODE CARTES -->
                 <div id="center-cards-display" class="relative w-20 h-28 sm:w-24 sm:h-32 flex items-center justify-center">
                   <div class="absolute w-full h-full rounded-lg border border-[#1b3b22] bg-[#0c1810] shadow-md rotate-[-4deg] opacity-75"></div>
                   <div class="absolute w-full h-full rounded-lg border border-[#1b3b22] bg-[#0c1810] shadow-md rotate-[2.5deg] opacity-85"></div>
@@ -473,9 +472,9 @@
                   </div>
                 </div>
 
-                <!-- MODE DÉS (QUINTO) -->
                 <div id="center-dice-display" class="hidden flex-col items-center justify-center text-center select-none">
-                  <div id="quinto-table-number" style="font-family: 'Syne', sans-serif !important;" class="text-6xl sm:text-9xl font-bold text-dore tracking-widest drop-shadow-[0_0_25px_rgba(212,175,55,0.45)] leading-none text-center">                    --
+                  <div id="quinto-table-number" style="font-family: 'Syne', sans-serif !important;" class="text-6xl sm:text-9xl font-bold text-dore tracking-widest drop-shadow-[0_0_25px_rgba(212,175,55,0.45)] leading-none text-center">
+                    --
                   </div>
                   <div id="quinto-table-player" class="font-title text-xs sm:text-sm font-bold text-[#f7f6f2] tracking-wider uppercase mt-1.5 text-center whitespace-nowrap">
                     En attente
@@ -484,7 +483,6 @@
 
               </div>
 
-              <!-- Siège du bas -->
               <div id="seat-bottom" class="vip-seat relative z-10 flex flex-col items-center"></div>
 
             </div>
@@ -501,7 +499,6 @@
               </h3>
             </div>
 
-            <!-- CARTE LOTERIE -->
             <div id="lottery-card-frame" class="w-32 h-44 playing-card p-2 flex flex-col justify-between border border-[#304435] shadow-2xl overflow-hidden">
               <div class="card-inner-frame"></div>
               <div class="w-full flex justify-between items-center text-xs font-card font-bold px-1 text-noir">
@@ -519,6 +516,30 @@
 
             <div id="lottery-status-text" class="font-mono text-xs text-dore animate-pulse">
               Mélange des cartes...
+            </div>
+          </div>
+        </div>
+
+        <!-- MODALE PROMPT PFC (ZBEUL) -->
+        <div id="modal-pfc-prompt" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4">
+          <div class="max-w-xs w-full bg-[#161c18] border-2 border-dore rounded-xl p-5 shadow-2xl flex flex-col items-center gap-3 text-center">
+            <div class="w-12 h-12 rounded-full border border-dore bg-[#223326] flex items-center justify-center text-dore text-2xl shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+              <i class="fa-solid fa-hand-back-fist"></i>
+            </div>
+            <div class="font-title text-sm font-bold text-[#f7f6f2] uppercase tracking-wider">
+              On t'accuse.
+            </div>
+            <p class="font-mono text-xs text-[#a4b8aa]">
+              Déclencher le Pierre - Feuille - Ciseaux ?
+            </p>
+            <div class="font-mono text-[10px] text-dore" id="pfc-prompt-timer-text">Temps restant : 7s</div>
+            <div class="grid grid-cols-2 gap-2 w-full mt-2">
+              <button id="btn-refuse-pfc" class="py-2.5 rounded-lg border border-[#3b4e40] bg-[#101411] hover:bg-[#18201a] text-xs font-title uppercase tracking-wider font-bold text-stone-300 active:scale-95 transition-all">
+                Garder
+              </button>
+              <button id="btn-accept-pfc" class="py-2.5 rounded-lg border border-dore bg-[#273a2c] hover:bg-[#334c3a] text-xs font-title uppercase tracking-wider font-bold text-dore active:scale-95 transition-all shadow-md">
+                Activer
+              </button>
             </div>
           </div>
         </div>
@@ -564,7 +585,8 @@
       </div>
 
       <!-- HAND / DICE CONSOLE (Bas de l'écran) -->
-      <div class="w-full bg-[#141a16]/95 border-t border-[#243327] px-4 pt-2 pb-4 min-h-[170px] flex flex-col items-center justify-start gap-1 z-30 shadow-2xl flex-shrink-0">        
+      <div class="w-full bg-[#141a16]/95 border-t border-[#243327] px-4 pt-2 pb-4 min-h-[170px] flex flex-col items-center justify-start gap-1.5 z-30 shadow-2xl flex-shrink-0">        
+        
         <div class="w-full max-w-2xl flex items-center justify-between text-xs font-mono">
           <div class="flex items-center gap-2">
             <span id="hand-console-title" class="text-dore font-title text-[11px] font-bold uppercase tracking-wider">Ta main</span>
@@ -577,8 +599,28 @@
           </div>
         </div>
 
+        <!-- BARRE D'INVENTAIRE MULTI-ITEMS (ZBEUL) -->
+        <div id="my-inventory-bar" class="hidden w-full max-w-2xl items-center justify-between bg-[#0c100e]/90 border border-[#233126] rounded-lg px-2.5 py-1 text-xs font-mono">
+          <!-- Coffre + émoticônes sur la même ligne -->
+          <div class="flex items-center gap-2 overflow-x-auto py-0.5">
+            <span class="text-dore flex items-center gap-1 flex-shrink-0 text-sm" title="Inventaire">
+              <i class="fa-solid fa-briefcase"></i>
+              <span id="inventory-count-tag" class="text-[10px] font-bold text-stone-300">0</span>
+            </span>
+
+            <div class="h-3.5 w-px bg-[#233126] mx-0.5 flex-shrink-0"></div>
+
+            <div id="my-inventory-items-container" class="flex items-center gap-1.5 overflow-x-auto py-0.5"></div>
+          </div>
+
+          <!-- Message de statut à droite -->
+          <span id="inventory-usage-state" class="text-[9px] font-mono text-[#8a9b8e] whitespace-nowrap pl-2 flex-shrink-0">
+            1 seul item utilisable par tour
+          </span>
+        </div>
+
         <!-- INTERFACE CARTES -->
-        <div id="my-hand-container" class="w-full max-w-2xl flex gap-1.5 sm:gap-2.5 justify-center items-center py-2 overflow-visible min-h-[120px]"></div>
+        <div id="my-hand-container" class="w-full max-w-2xl flex gap-1.5 sm:gap-2.5 justify-center items-center py-1 overflow-visible min-h-[120px]"></div>
 
         <div id="cards-action-controls" class="w-full max-w-xs grid grid-cols-2 gap-2 pb-0.5">
           <button id="btn-play-selection" disabled class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
@@ -665,6 +707,105 @@
       </button>
     </section>
 
+    <!-- MODALE ITEM DRAFT -->
+    <div id="modal-item-draft" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4">
+      <div class="max-w-md w-full bg-[#161c18] border border-[#3b4e40] rounded-xl p-5 shadow-2xl flex flex-col items-center gap-3 text-center">
+        <div class="text-dore font-title font-bold tracking-widest uppercase text-sm flex items-center gap-2">
+          <span>ITEMS</span>
+        </div>
+        <p class="font-mono text-xs text-[#a4b8aa]">Choisis un item pour cette manche :</p>
+
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#101511] border border-[#2b3a2e] text-[11px] font-mono text-dore">
+          <span>Choix validés :</span>
+          <span id="draft-ready-count" class="font-bold">0</span>
+          <span>/</span>
+          <span id="draft-total-count" class="text-stone-400">0</span>
+        </div>
+
+        <div id="item-draft-cards" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full mt-1"></div>
+
+        <div id="draft-waiting-notice" class="hidden font-mono text-[11px] text-[#7f9284] animate-pulse mt-1">
+          Choix enregistré. En attente des autres joueurs...
+        </div>
+      </div>
+    </div>
+
+    <!-- MODALE DIRECT PIERRE FEUILLE CISEAUX (PFC) -->
+    <div id="modal-pfc" class="hidden fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-4">
+      <div class="max-w-md w-full bg-[#161c18] border-2 border-dore rounded-xl p-6 shadow-2xl flex flex-col items-center gap-4 text-center">
+        <div class="text-xs font-mono uppercase text-dore tracking-widest flex items-center gap-2">
+          <span>⚔️</span> DUEL PIERRE - FEUILLE - CISEAUX <span>⚔️</span>
+        </div>
+        <div id="pfc-status-banner" class="text-sm font-title font-bold text-[#f7f6f2]">
+          Les joueurs font leur choix...
+        </div>
+        
+        <div id="pfc-duel-stage" class="flex items-center justify-around w-full py-4 min-h-[90px]">
+          <div class="flex flex-col items-center gap-2">
+            <span id="pfc-p1-name" class="font-title text-xs text-dore truncate max-w-[120px]">Accusateur</span>
+            <div id="pfc-p1-choice" class="w-16 h-16 rounded-xl border border-[#3b4e40] bg-[#101411] flex items-center justify-center text-3xl shadow-inner">
+              ⏳
+            </div>
+          </div>
+          <span class="font-title text-xl text-stone-500 font-bold">VS</span>
+          <div class="flex flex-col items-center gap-2">
+            <span id="pfc-p2-name" class="font-title text-xs text-dore truncate max-w-[120px]">Accusé</span>
+            <div id="pfc-p2-choice" class="w-16 h-16 rounded-xl border border-[#3b4e40] bg-[#101411] flex items-center justify-center text-3xl shadow-inner">
+              ⏳
+            </div>
+          </div>
+        </div>
+
+        <div id="pfc-input-actions" class="hidden grid grid-cols-3 gap-2 w-full mt-1">
+          <button onclick="submitMyPfcChoice('rock')" class="py-3 bg-[#1b251e] hover:bg-[#26372b] border border-[#3a4e3f] hover:border-dore text-dore rounded-lg text-2xl transition-all active:scale-95 shadow flex items-center justify-center" title="Pierre">
+            <i class="fa-solid fa-hand-back-fist"></i>
+          </button>
+          <button onclick="submitMyPfcChoice('paper')" class="py-3 bg-[#1b251e] hover:bg-[#26372b] border border-[#3a4e3f] hover:border-dore text-dore rounded-lg text-2xl transition-all active:scale-95 shadow flex items-center justify-center" title="Feuille">
+            <i class="fa-solid fa-hand"></i>
+          </button>
+          <button onclick="submitMyPfcChoice('scissors')" class="py-3 bg-[#1b251e] hover:bg-[#26372b] border border-[#3a4e3f] hover:border-dore text-dore rounded-lg text-2xl transition-all active:scale-95 shadow flex items-center justify-center" title="Ciseaux">
+            <i class="fa-solid fa-hand-scissors"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL CHOIX CIBLE POUR LE 10 MAUDIT -->
+    <div id="modal-curse10-target" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4">
+      <div class="max-w-xs w-full bg-[#161c18] border-2 border-red-700 rounded-xl p-4 shadow-2xl flex flex-col items-center gap-3 text-center">
+        <div class="text-red-500 font-title font-bold text-sm tracking-wider uppercase">Donner le 10 Maudit</div>
+        <p class="font-mono text-xs text-stone-300">Désigne la victime qui recevra le 10 dans sa main :</p>
+        <div id="curse10-target-list" class="space-y-2 w-full mt-1"></div>
+        <button onclick="document.getElementById('modal-curse10-target').classList.add('hidden')" class="text-[11px] font-mono text-stone-500 hover:text-white mt-1">
+          Annuler
+        </button>
+      </div>
+    </div>
+
+    <!-- MODALE PROMPT TOTEM IMMUNITÉ -->
+    <div id="modal-immunity-prompt" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4">
+      <div class="max-w-xs w-full bg-[#161c18] border-2 border-dore rounded-xl p-5 shadow-2xl flex flex-col items-center gap-3 text-center">
+        <div class="w-12 h-12 rounded-full border border-dore bg-[#223326] flex items-center justify-center text-dore text-2xl shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="font-title text-sm font-bold text-[#f7f6f2] uppercase tracking-wider">
+          On t'accuse.
+        </div>
+        <p id="immunity-prompt-desc" class="font-mono text-xs text-[#a4b8aa]">
+          Utiliser le Totem ?
+        </p>
+        <div class="font-mono text-[10px] text-dore" id="immunity-timer-text">Temps restant : 7s</div>
+        <div class="grid grid-cols-2 gap-2 w-full mt-2">
+          <button id="btn-refuse-immunity" class="py-2.5 rounded-lg border border-[#3b4e40] bg-[#101411] hover:bg-[#18201a] text-xs font-title uppercase tracking-wider font-bold text-stone-300 active:scale-95 transition-all">
+            Garder
+          </button>
+          <button id="btn-accept-immunity" class="py-2.5 rounded-lg border border-dore bg-[#273a2c] hover:bg-[#334c3a] text-xs font-title uppercase tracking-wider font-bold text-dore active:scale-95 transition-all shadow-md">
+            Activer
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- RULES MODAL -->
     <div id="modal-rules" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
       <div class="bg-[#161c18] border border-[#2b3a2e] rounded-xl max-w-sm w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
@@ -687,25 +828,23 @@
           <div class="p-2.5 rounded border border-[#233126] bg-[#101411] space-y-1">
             <span class="font-title font-bold text-dore text-xs">Mode Cartes</span>
             <p>
-            À chaque manche, un tirage au sort désigne la figure exigée parmi l’As, le Roi, la Dame ou le Valet. À votre tour, 
-            posez de une à trois cartes face cachée en affirmant respecter cette valeur, ou dénoncez le joueur précédent avant de jouer. 
-            Les Jokers se substituent à n’importe quelle figure, tandis que les autres valeurs constituent un bluff. En cas d’accusation 
-            infondée, l’accusateur actionne le barillet : si le mensonge est avéré, le tricheur s’y soumet, augmentant son risque létal à 
-            chaque tentative infructueuse. Attention toutefois au 10 : tout joueur démasqué avec cette carte en jeu subit une 
-            élimination immédiate sans mise à l’épreuve du barillet.
+            À chaque manche, un tirage au sort désigne la figure exigée. À votre tour, posez de une à trois cartes face cachée ou dénoncez le joueur précédent. Les Jokers se substituent à n'importe quelle figure, tandis que les autres valeurs constituent un bluff. En cas de contestation infondée, l'accusateur actionne le barillet. Attention au 10 : le joueur démasqué avec cette carte subit une élimination immédiate.
             </p>
           </div>
 
           <div class="p-2.5 rounded border border-[#233126] bg-[#101411] space-y-1">
             <span class="font-title font-bold text-dore text-xs">Mode Dés</span>
             <p>
-            Lancez secrètement deux dés pour former un score à deux chiffres, le dé le plus élevé constituant toujours la dizaine 
-            (par exemple, 2 et 4 donnent 42). La hiérarchie progresse des valeurs simples (de 31 à 65) aux paires (de 11 à 66), 
-            pour culminer avec le 21, combinaison suprême. À votre tour, vous devez soit accuser le joueur précédent 
-            de mensonge, soit secouer les dés et faire une annonce strictement supérieure à la sienne en optant pour la vérité si 
-            votre score le permet, ou en bluffant avec une valeur plus forte. En cas de contestation, les dés sont révélés : si 
-            l’annonce était légitime, l’accusateur actionne le barillet. Si le joueur a menti, c’est le menteur qui s’y soumet, 
-            augmentant son risque fatal d’un cran en cas de survie.
+            Lancez secrètement deux dés. La hiérarchie progresse des valeurs simples aux doubles, avec le 21 comme combinaison suprême. Dénoncez le joueur précédent ou secouez et annoncez strictement supérieur. En cas de contestation, l'accusateur ou le menteur tourne le barillet.
+            </p>
+          </div>
+
+          <div class="p-2.5 rounded border border-red-800/70 bg-[#160d0d] space-y-1">
+            <span class="font-title font-bold text-red-400 text-xs">Règles du Mode Zbeul</span>
+            <p class="text-stone-300">
+            • <strong>Arsenal d'items</strong> : Un item est choisi avant chaque manche et s'ajoute à votre inventaire. On ne peut utiliser qu'un seul item par tour.<br/>
+            • <strong>Pierre Feuille Ciseaux</strong> : En cas d'accusation, le duel se joue en direct à la vue de tous. Si l'accusé l'emporte, c'est l'autre qui prend la roulette ; s'il perd, l'accusé y passe.<br/>
+            • <strong>21 Quinto Maudit</strong> : En mode dés, une annonce de 21 oblige TOUTE la table vivante à passer tour à tour à la roulette russe !
             </p>
           </div>
         </div>
@@ -715,7 +854,6 @@
   </main>
 
   <script>
-    
     const audio = {
       ctx: null,
       enabled: true,
@@ -742,17 +880,14 @@
           if (!AudioContextClass) return;
           this.ctx = new AudioContextClass();
 
-          // Master Gain relié aux haut-parleurs
           this.masterGain = this.ctx.createGain();
           this.masterGain.gain.setValueAtTime(this.enabled ? this.volume : 0, this.ctx.currentTime);
           this.masterGain.connect(this.ctx.destination);
 
-          // Gain dédié à la musique de fond (atténuation discrète de 0.20)
           this.bgmGain = this.ctx.createGain();
           this.bgmGain.gain.setValueAtTime(0.10, this.ctx.currentTime);
           this.bgmGain.connect(this.masterGain);
 
-          // Chargement et routage de la musique dans le Web Audio
           this.bgmElement = new Audio('./bgm.mp3');
           this.bgmElement.loop = true;
           this.bgmSource = this.ctx.createMediaElementSource(this.bgmElement);
@@ -782,11 +917,9 @@
           if (this.ctx.state === 'suspended' && this.enabled) {
             this.ctx.resume().catch(() => {});
           }
-          // Ajuste le volume global (bruitages + musique connectée) instantanément
           this.masterGain.gain.setValueAtTime(this.volume, this.ctx.currentTime);
         }
 
-        // Gestion de la lecture si on remonte le son depuis 0
         if (this.bgmElement) {
           if (this.enabled && this.bgmElement.paused) {
             this.bgmElement.play().catch(() => {});
@@ -994,6 +1127,13 @@
       '10': { rank: '10', title: '10 MAUDIT', letter: '10', suit: '💀', color: 'text-rougeCarte' }
     };
 
+    const ZBEUL_ITEMS = {
+      pfc: { id: 'pfc', name: 'Pierre Feuille Ciseaux', icon: 'fa-hand-back-fist', desc: 'En cas d’accusation, un duel direct est déclenché. Le perdant prend le barillet.', modes: ['cards', 'dice'], passive: true },
+      swap_hands: { id: 'swap_hands', name: 'Échange de mains', icon: 'fa-shuffle', desc: 'Mélange et échange toutes les mains de la table (personne ne garde la sienne).', modes: ['cards'], passive: false },
+      immunity: { id: 'immunity', name: 'Totem d’immunité', icon: 'fa-shield-halved', desc: 'Annule immédiatement une accusation de mensonge portée contre toi.', modes: ['cards', 'dice'], passive: true },
+      curse_10: { id: 'curse_10', name: 'Le 10 Fatal', icon: 'fa-skull', desc: 'Donne un 10 maudit à un joueur ciblé. Toute la table en est informée.', modes: ['cards'], passive: false }
+    };
+
     const AVATAR_PRESETS = [
       { id: 'av_1', icon: 'fa-solid fa-user' },
       { id: 'av_2', icon: 'fa-solid fa-user-astronaut' },
@@ -1133,6 +1273,7 @@
     let gameState = {
       code: 'SOLO',
       gameMode: 'cards',
+      isZbeul: false,
       status: 'auth',
       requiredCard: null,
       activePlayerIndex: 0,
@@ -1143,7 +1284,11 @@
       quintoClaim: null,
       quintoRealDice: null,
       quintoHasRolled: false,
-      feltTicker: "Silence à la table."
+      hasUsedItemThisTurn: false,
+      feltTicker: "Silence à la table.",
+      pfcDuel: null,
+      immunityPending: null,
+      pfcPromptPending: null
     };
 
     function showToast(msg) {
@@ -1259,6 +1404,16 @@
       }
     }
 
+    function consumePlayerItem(player, itemId) {
+      if (!player || !Array.isArray(player.items)) return false;
+      const idx = player.items.indexOf(itemId);
+      if (idx !== -1) {
+        player.items.splice(idx, 1);
+        return true;
+      }
+      return false;
+    }
+
     function handleClientMessage(msg) {
       if (!isHost || !msg) return;
 
@@ -1291,12 +1446,39 @@
         handleQuintoBluff(msg.id);
       } else if (msg.type === 'REQUEST_REPLAY') {
         resetGame();
+      } else if (msg.type === 'CHOOSE_ITEM') {
+        if (gameState.players[msg.id]) {
+          const p = gameState.players[msg.id];
+          if (!Array.isArray(p.items)) p.items = [];
+          p.items.push(msg.item);
+          p.hasDraftedThisRound = true;
+          broadcastState();
+          checkIfDraftComplete();
+        }
+      } else if (msg.type === 'USE_ITEM_SWAP') {
+        const player = gameState.players[msg.id];
+        if (player && consumePlayerItem(player, 'swap_hands')) {
+          gameState.hasUsedItemThisTurn = true;
+          executeHandSwap();
+        }
+      } else if (msg.type === 'USE_ITEM_CURSE10') {
+        const player = gameState.players[msg.id];
+        if (player && consumePlayerItem(player, 'curse_10')) {
+          gameState.hasUsedItemThisTurn = true;
+          executeCurse10(msg.targetId);
+        }
+      } else if (msg.type === 'SUBMIT_PFC') {
+        handlePfcSubmission(msg.id, msg.choice);
       } else if (msg.type === 'PLAYER_LEAVE') {
         if (gameState.players[msg.id]) {
           delete gameState.players[msg.id];
           gameState.playerOrder = gameState.playerOrder.filter(id => id !== msg.id);
           broadcastState();
         }
+      } else if (msg.type === 'DECIDE_IMMUNITY') {
+          handleImmunityDecision(msg.id, msg.useImmunity);
+      } else if (msg.type === 'DECIDE_PFC') { // <-- AJOUTÉ
+          handlePfcDecision(msg.id, msg.usePfc);
       }
     }
 
@@ -1344,7 +1526,9 @@
           isReady: false,
           isAlive: true,
           cylinderRisk: 1,
-          hand: []
+          hand: [],
+          items: [],
+          hasDraftedThisRound: false
         }
       };
 
@@ -1378,6 +1562,18 @@
         return;
       }
 
+      gameState.hasUsedItemThisTurn = false;
+
+      if (gameState.isZbeul) {
+        triggerItemDraftPhase(() => {
+          proceedWithRoundStart(living);
+        });
+      } else {
+        proceedWithRoundStart(living);
+      }
+    }
+
+    function proceedWithRoundStart(living) {
       if (gameState.gameMode === 'dice') {
         const luckyFirstId = living[Math.floor(Math.random() * living.length)];
         gameState.activePlayerIndex = gameState.playerOrder.indexOf(luckyFirstId);
@@ -1400,6 +1596,102 @@
       }
     }
 
+    function triggerItemDraftPhase(callback) {
+      gameState.status = 'item_draft';
+      gameState.feltTicker = "Chacun choisit son item...";
+
+      const living = gameState.playerOrder.filter(id => gameState.players[id] && gameState.players[id].isAlive);
+      living.forEach(id => {
+        const p = gameState.players[id];
+        if (!Array.isArray(p.items)) p.items = [];
+        p.hasDraftedThisRound = false;
+      });
+
+      const availableItems = Object.values(ZBEUL_ITEMS).filter(it => it.modes.includes(gameState.gameMode));
+
+      living.forEach(id => {
+        const p = gameState.players[id];
+        if (p.isBot) {
+          const pick = availableItems[Math.floor(Math.random() * availableItems.length)];
+          p.items.push(pick.id);
+          p.hasDraftedThisRound = true;
+        }
+      });
+
+      broadcastState();
+      renderItemDraftModal(availableItems);
+
+      gameState.onDraftComplete = () => {
+        const modal = document.getElementById('modal-item-draft');
+        if (modal) modal.classList.add('hidden');
+        callback();
+      };
+
+      checkIfDraftComplete();
+    }
+
+    function renderItemDraftModal(availableItems) {
+      const modal = document.getElementById('modal-item-draft');
+      const container = document.getElementById('item-draft-cards');
+      const waitingNotice = document.getElementById('draft-waiting-notice');
+      if (!container || !modal) return;
+
+      container.innerHTML = '';
+      if (waitingNotice) waitingNotice.classList.add('hidden');
+
+      availableItems.forEach(it => {
+        const b = document.createElement('button');
+        b.className = 'p-3 bg-[#111613] hover:bg-[#1a241d] border border-[#2b3a2e] hover:border-dore rounded-xl text-left flex flex-col gap-1 transition-all active:scale-95 shadow-md';
+        b.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-title font-bold text-xs text-dore flex items-center gap-1.5">
+              <i class="fa-solid ${it.icon}"></i> ${it.name}
+            </span>
+            <span class="text-[9px] uppercase px-1.5 py-0.2 rounded border ${it.passive ? 'border-[#304435] text-[#7f9284]' : 'border-dore/40 text-dore'}">
+              ${it.passive ? 'Réactif' : 'Activable'}
+            </span>
+          </div>
+          <span class="font-mono text-[10px] text-[#93a697] leading-tight">${it.desc}</span>
+        `;
+        b.onclick = () => {
+          sendToHost({ type: 'CHOOSE_ITEM', id: myId, item: it.id });
+          container.classList.add('pointer-events-none', 'opacity-40');
+          if (waitingNotice) waitingNotice.classList.remove('hidden');
+        };
+        container.appendChild(b);
+      });
+
+      container.classList.remove('pointer-events-none', 'opacity-40');
+
+      const me = gameState.players[myId];
+      if (me && me.isAlive) {
+        modal.classList.remove('hidden');
+      }
+      updateDraftCounter();
+    }
+
+    function updateDraftCounter() {
+      const readyEl = document.getElementById('draft-ready-count');
+      const totalEl = document.getElementById('draft-total-count');
+      const living = gameState.playerOrder.filter(id => gameState.players[id] && gameState.players[id].isAlive);
+      const chosenCount = living.filter(id => gameState.players[id].hasDraftedThisRound).length;
+
+      if (readyEl) readyEl.innerText = chosenCount;
+      if (totalEl) totalEl.innerText = living.length;
+    }
+
+    function checkIfDraftComplete() {
+      if (!isHost || gameState.status !== 'item_draft') return;
+      const living = gameState.playerOrder.filter(id => gameState.players[id] && gameState.players[id].isAlive);
+      const allChosen = living.every(id => gameState.players[id].hasDraftedThisRound);
+
+      if (allChosen && typeof gameState.onDraftComplete === 'function') {
+        const completeCb = gameState.onDraftComplete;
+        gameState.onDraftComplete = null;
+        setTimeout(completeCb, 600);
+      }
+    }
+
     function runLotteryCardAnimation() {
       const modal = document.getElementById('lottery-modal');
       const cardFrame = document.getElementById('lottery-card-frame');
@@ -1413,7 +1705,6 @@
         statusEl.innerText = "Tirage de la figure...";
       }
 
-      // 1. Cadre propre et net avec le rouleau en mouvement continu au centre
       audio.chip();
       cardFrame.className = 'w-32 h-44 playing-card p-2 flex flex-col justify-between border border-[#304435] shadow-2xl overflow-hidden';
       cardFrame.innerHTML = `
@@ -1432,7 +1723,6 @@
         </div>
       `;
 
-      // 2. Durée du roulement avant l'arrêt sur la figure réelle (1400ms = 1.4s)
       setTimeout(() => {
         if (!isHost) {
           setTimeout(() => modal.classList.add('hidden'), 1500);
@@ -1442,7 +1732,6 @@
         const chosenRank = CARD_RANKS[Math.floor(Math.random() * CARD_RANKS.length)];
         const defChosen = CARD_DEFINITIONS[chosenRank];
 
-        // 3. Claquement net de la figure avec contour doré
         audio.revolverClick();
         cardFrame.className = 'w-32 h-44 playing-card p-2 flex flex-col justify-between border-2 border-dore shadow-2xl overflow-hidden scale-105 transition-transform duration-200';
         cardFrame.innerHTML = `
@@ -1484,7 +1773,6 @@
         }
         gameState.feltTicker = `Le sort désigne ${active.name} pour ouvrir la manche.`;
 
-        // 4. Fermeture propre de la modal
         setTimeout(() => {
           modal.classList.add('hidden');
           gameState.status = 'in_round';
@@ -1493,22 +1781,51 @@
           checkBotTurnWithDelay();
         }, 2200);
 
-      }, 5000); // <- Change ce temps (ex: 2000) si tu veux faire tourner le roulement plus longtemps
+      }, 4000);
     }
 
     function advanceToNextLiving() {
+      // En mode cartes, un joueur qui n'a plus de cartes a gagné sa manche et ne joue plus
+      const isCards = gameState.gameMode === 'cards';
+      const activeInRound = gameState.playerOrder.filter(id => {
+        const p = gameState.players[id];
+        return p && p.isAlive && (!isCards || (p.hand && p.hand.length > 0));
+      });
+
+      // S'il ne reste qu'un seul joueur ou moins avec des cartes en main, la manche est terminée
+      if (isCards && activeInRound.length <= 1) {
+        if (activeInRound.length === 1) {
+          const lastPlayer = gameState.players[activeInRound[0]];
+          gameState.feltTicker = `${lastPlayer.name} est le dernier avec des cartes ! Fin de manche.`;
+          showToast(`${lastPlayer.name} n'a pas réussi à poser ses cartes.`);
+        } else {
+          gameState.feltTicker = `Manche terminée ! Nouvelle donne...`;
+        }
+        broadcastState();
+        setTimeout(startNewRound, 2500);
+        return;
+      }
+
       const total = gameState.playerOrder.length;
       let nextIdx = (gameState.activePlayerIndex + 1) % total;
       let count = 0;
-      while (!gameState.players[gameState.playerOrder[nextIdx]] || !gameState.players[gameState.playerOrder[nextIdx]].isAlive) {
+
+      while (count <= total) {
+        const nextId = gameState.playerOrder[nextIdx];
+        const p = gameState.players[nextId];
+        // Le joueur doit être en vie ET avoir des cartes (si mode cartes)
+        if (p && p.isAlive && (!isCards || (p.hand && p.hand.length > 0))) {
+          break;
+        }
         nextIdx = (nextIdx + 1) % total;
         count++;
-        if (count > total) break;
       }
+
       gameState.activePlayerIndex = nextIdx;
       gameState.quintoHasRolled = false;
+      gameState.hasUsedItemThisTurn = false;
       const active = gameState.players[gameState.playerOrder[gameState.activePlayerIndex]];
-      gameState.feltTicker = `Tour de ${active.name}...`;
+      gameState.feltTicker = `Tour de ${active ? active.name : '...' }...`;
       broadcastState();
       checkBotTurnWithDelay();
     }
@@ -1542,7 +1859,14 @@
         cardObjects: played
       };
 
-      gameState.feltTicker = `${player.name} a posé ${played.length} carte(s).`;
+      // Si le joueur n'a plus de cartes, il a gagné sa manche !
+      if (player.hand.length === 0) {
+        gameState.feltTicker = `${player.name} a posé toutes ses cartes et gagne la manche ! 🎉`;
+        showToast(`${player.name} a sauvé sa peau !`);
+      } else {
+        gameState.feltTicker = `${player.name} a posé ${played.length} carte(s).`;
+      }
+
       audio.cardSlide();
       throwCardsVisualEffect(playerId, played.length);
 
@@ -1635,6 +1959,22 @@
       const accused = gameState.players[gameState.quintoClaim.playerId];
       if (!accuser || !accused || !accuser.isAlive || !accused.isAlive) return;
 
+      // 1. Totem d'immunité prioritaire
+      if (gameState.isZbeul && accused.items && accused.items.includes('immunity')) {
+        startImmunityPrompt(accuser, accused, 'dice');
+        return;
+      }
+
+      // 2. Pierre Feuille Ciseaux (interception avant de secouer/révéler les dés)
+      if (gameState.isZbeul && accused.items && accused.items.includes('pfc')) {
+        startPfcPrompt(accuser, accused, 'dice');
+        return;
+      }
+
+      proceedWithQuintoBluff(accuser, accused);
+    }
+
+    function proceedWithQuintoBluff(accuser, accused) {
       gameState.status = 'resolving_bluff';
       gameState.feltTicker = `${accuser.name} accuse ${accused.name} de mentir !`;
       broadcastState();
@@ -1648,21 +1988,44 @@
 
     function resolveQuintoDuel(accuser, accused) {
       const claim = gameState.quintoClaim;
+
+      if (gameState.isZbeul && claim.score === 21) {
+        gameState.feltTicker = "21 QUINTO ZBEUL ! Tout le monde joue à la roulette russe !";
+        showToast("QUINTO 21 ! Hécatombe générale !");
+        broadcastState();
+
+        const living = gameState.playerOrder
+          .map(id => gameState.players[id])
+          .filter(p => p && p.isAlive);
+
+        let vIdx = 0;
+        function runQuintoChain() {
+          if (vIdx >= living.length) {
+            setTimeout(startNewRound, 2000);
+            return;
+          }
+          const vic = living[vIdx++];
+          if (vic && vic.isAlive) {
+            triggerRevolverChamber(vic);
+            setTimeout(runQuintoChain, 4800);
+          } else {
+            runQuintoChain();
+          }
+        }
+        setTimeout(runQuintoChain, 1500);
+        return;
+      }
+
       const realScore = getQuintoScore(claim.realDice[0], claim.realDice[1]);
       const claimedScore = claim.score;
-
       const realRank = getQuintoRank(realScore);
       const claimedRank = getQuintoRank(claimedScore);
-
       const lied = realRank < claimedRank;
 
-      // On passe accuser et accused à la modal pour afficher la séquence exacte demandée
       openQuintoDenounceModal(accuser, accused, claim, lied, () => {
         if (lied) {
-          // Le joueur accusé a menti -> c'est lui qui prend le flingue
           setTimeout(() => triggerRevolverChamber(accused), 1400);
         } else {
-          // C'était la vérité -> l'accusateur s'est trompé, c'est lui qui prend le flingue
           setTimeout(() => triggerRevolverChamber(accuser), 1400);
         }
       });
@@ -1678,13 +2041,11 @@
       modal.classList.remove('hidden');
       if (cylinderBox) cylinderBox.classList.add('hidden');
 
-      // ÉTAPE 1 : Accusation directe (en doré text-dore)
       if (verdict) {
         verdict.className = "font-title text-sm sm:text-base font-bold text-dore text-center";
         verdict.innerText = `${accuser.name} accuse ${accused.name} de mentir !`;
       }
 
-      // Dés masqués au départ
       row.innerHTML = `
         <div class="flex gap-3 my-2">
           <span id="quinto-reveal-d1" class="w-14 h-14 bg-[#18201a] text-dore border border-[#304435] font-bold text-2xl rounded-xl flex items-center justify-center shadow-2xl">?</span>
@@ -1692,14 +2053,12 @@
         </div>
       `;
 
-      // PARAMÈTRE 1 : Temps d'attente avant le début du roulement (ici 1000ms = 1s)
       setTimeout(() => {
         audio.diceShake();
         let rollTicks = 0;
         const d1El = document.getElementById('quinto-reveal-d1');
         const d2El = document.getElementById('quinto-reveal-d2');
 
-        // PARAMÈTRE 2 : Roulement des dés (10 passages de 80ms chacun)
         const rollAnim = setInterval(() => {
           rollTicks++;
           if (d1El) d1El.innerText = Math.floor(Math.random() * 6) + 1;
@@ -1709,7 +2068,6 @@
             clearInterval(rollAnim);
             audio.chip();
 
-            // Révélation du tirage réel
             if (d1El) {
               d1El.innerText = claim.realDice[0];
               d1El.className = "w-14 h-14 bg-[#faf8f5] text-noir font-bold text-2xl rounded-xl flex items-center justify-center shadow-2xl border-2 border-dore";
@@ -1719,12 +2077,9 @@
               d2El.className = "w-14 h-14 bg-[#faf8f5] text-noir font-bold text-2xl rounded-xl flex items-center justify-center shadow-2xl border-2 border-dore";
             }
 
-            // PARAMÈTRE 3 : Pause sur les dés figés avant le verdict (ici 800ms)
             setTimeout(() => {
               if (verdict) {
-                // Remplacement de text-red-500 par text-dore (ou text-[#f7f6f2])
                 verdict.className = "font-title text-base sm:text-lg font-bold text-dore tracking-wide text-center";
-                
                 if (lied) {
                   verdict.innerText = `${accused.name} s'est fait bz !`;
                 } else {
@@ -1732,13 +2087,11 @@
                 }
               }
               audio.playFaaah();
-
-              // PARAMÈTRE 4 : Temps de lecture du verdict avant le barillet (ici 1400ms)
               setTimeout(onComplete, 3000);
             }, 1500);
           }
-        }, 200);
-      }, 2000);
+        }, 80);
+      }, 1500);
     }
 
     /* IA BOTS */
@@ -1748,7 +2101,23 @@
       const bot = gameState.players[activeId];
       if (!bot || !bot.isBot || !bot.isAlive) return;
 
-      const thinkTime = Math.floor(Math.random() * 1200) + 2200;
+      if (gameState.isZbeul && Array.isArray(bot.items) && bot.items.length > 0 && !gameState.hasUsedItemThisTurn) {
+        if (bot.items.includes('swap_hands') && gameState.gameMode === 'cards' && Math.random() < 0.4) {
+          consumePlayerItem(bot, 'swap_hands');
+          gameState.hasUsedItemThisTurn = true;
+          executeHandSwap();
+        } else if (bot.items.includes('curse_10') && gameState.gameMode === 'cards' && Math.random() < 0.5) {
+          const validTargets = gameState.playerOrder.filter(id => id !== bot.id && gameState.players[id] && gameState.players[id].isAlive);
+          if (validTargets.length > 0) {
+            consumePlayerItem(bot, 'curse_10');
+            gameState.hasUsedItemThisTurn = true;
+            const targetId = validTargets[Math.floor(Math.random() * validTargets.length)];
+            executeCurse10(targetId);
+          }
+        }
+      }
+
+      const thinkTime = Math.floor(Math.random() * 1200) + 2000;
 
       setTimeout(() => {
         if (gameState.status !== 'in_round') return;
@@ -1775,7 +2144,7 @@
           gameState.feltTicker = `${bot.name} jauge discrètement ses dés...`;
           broadcastState();
 
-          const decisionDelay = Math.floor(Math.random() * 1000) + 2000;
+          const decisionDelay = Math.floor(Math.random() * 1000) + 1800;
 
           setTimeout(() => {
             if (gameState.status !== 'in_round') return;
@@ -1866,6 +2235,22 @@
       const accused = gameState.players[gameState.lastClaim.playerId];
       if (!accuser || !accused || !accuser.isAlive || !accused.isAlive) return;
 
+      // 1. Totem d'immunité prioritaire
+      if (gameState.isZbeul && accused.items && accused.items.includes('immunity')) {
+        startImmunityPrompt(accuser, accused, 'cards');
+        return;
+      }
+
+      // 2. Pierre Feuille Ciseaux (interception avant toute révélation de cartes !)
+      if (gameState.isZbeul && accused.items && accused.items.includes('pfc')) {
+        startPfcPrompt(accuser, accused, 'cards');
+        return;
+      }
+
+      proceedWithBluffDuel(accuser, accused);
+    }
+
+    function proceedWithBluffDuel(accuser, accused) {
       gameState.status = 'resolving_bluff';
       gameState.feltTicker = `${accuser.name} : « Menteur ! »`;
       broadcastState();
@@ -1894,7 +2279,7 @@
         }
       });
 
-      openDenounceModal(claim, cards, () => {
+    openDenounceModal(claim, cards, () => {
         if (lied && played10) {
           updateDenounceVerdict(`CARTE 10 ! ${accused.name} est éliminé immédiatement.`);
           setTimeout(() => {
@@ -1909,6 +2294,168 @@
           setTimeout(() => triggerRevolverChamber(accuser), 1700);
         }
       });
+    }
+
+    /* GESTION DUEL PFC DIRECT (ZBEUL) */
+    function launchPfcDuel(accuser, accused, onComplete) {
+      gameState.pfcDuel = {
+        accuserId: accuser.id,
+        accusedId: accused.id,
+        c1: null,
+        c2: null,
+        onComplete
+      };
+
+      const modal = document.getElementById('modal-pfc');
+      modal.classList.remove('hidden');
+      document.getElementById('pfc-status-banner').innerText = "Les joueurs font leur choix...";
+      document.getElementById('pfc-p1-name').innerText = accuser.name;
+      document.getElementById('pfc-p2-name').innerText = accused.name;
+      document.getElementById('pfc-p1-choice').innerHTML = '<i class="fa-solid fa-hourglass-half text-stone-500 animate-pulse text-2xl"></i>';
+      document.getElementById('pfc-p2-choice').innerHTML = '<i class="fa-solid fa-hourglass-half text-stone-500 animate-pulse text-2xl"></i>';
+
+      const actions = document.getElementById('pfc-input-actions');
+      if (myId === accuser.id || myId === accused.id) {
+        actions.classList.remove('hidden');
+      } else {
+        actions.classList.add('hidden');
+      }
+
+      const moves = ['rock', 'paper', 'scissors'];
+      if (accuser.isBot) gameState.pfcDuel.c1 = moves[Math.floor(Math.random() * 3)];
+      if (accused.isBot) gameState.pfcDuel.c2 = moves[Math.floor(Math.random() * 3)];
+
+      broadcastState();
+
+      if (gameState.pfcDuel.c1 && gameState.pfcDuel.c2) {
+        setTimeout(revealPfcResults, 1600);
+      }
+    }
+
+    function submitMyPfcChoice(choice) {
+      document.getElementById('pfc-input-actions').classList.add('hidden');
+      sendToHost({ type: 'SUBMIT_PFC', id: myId, choice });
+    }
+
+    function handlePfcSubmission(id, choice) {
+      if (!gameState.pfcDuel) return;
+      if (id === gameState.pfcDuel.accuserId) gameState.pfcDuel.c1 = choice;
+      if (id === gameState.pfcDuel.accusedId) gameState.pfcDuel.c2 = choice;
+
+      if (gameState.pfcDuel.c1 && gameState.pfcDuel.c2) {
+        setTimeout(revealPfcResults, 1200);
+      }
+    }
+
+    function revealPfcResults() {
+      if (!gameState.pfcDuel) return;
+      const { accuserId, accusedId, c1, c2, onComplete } = gameState.pfcDuel;
+      
+      const icons = {
+        rock: '<i class="fa-solid fa-hand-back-fist text-dore text-3xl"></i>',
+        paper: '<i class="fa-solid fa-hand text-dore text-3xl"></i>',
+        scissors: '<i class="fa-solid fa-hand-scissors text-dore text-3xl"></i>'
+      };
+
+      document.getElementById('pfc-p1-choice').innerHTML = icons[c1] || icons.rock;
+      document.getElementById('pfc-p2-choice').innerHTML = icons[c2] || icons.scissors;
+
+      // Cas 1 : MATCH NUL -> on rejoue
+      if (c1 === c2) {
+        document.getElementById('pfc-status-banner').innerText = "Égalité ! On rejoue !";
+        audio.chip();
+        setTimeout(resetPfcRound, 1500);
+        return;
+      }
+
+      // Cas 2 : Victoire nette
+      let winnerId = null;
+      if (
+        (c1 === 'rock' && c2 === 'scissors') ||
+        (c1 === 'scissors' && c2 === 'paper') ||
+        (c1 === 'paper' && c2 === 'rock')
+      ) {
+        winnerId = accuserId;
+      } else {
+        winnerId = accusedId;
+      }
+
+      const winner = gameState.players[winnerId];
+      document.getElementById('pfc-status-banner').innerText = `Gagnant du PFC : ${winner ? winner.name : 'Inconnu'} !`;
+
+      setTimeout(() => {
+        document.getElementById('modal-pfc').classList.add('hidden');
+        
+        // Nettoie les éléments de dénonciation de cartes pour ne laisser que le barillet
+        const row = document.getElementById('denounce-cards-row');
+        const verdict = document.getElementById('denounce-verdict-banner');
+        if (row) row.innerHTML = '';
+        if (verdict) verdict.innerText = `${winner ? winner.name : 'Vainqueur'} a gagné le duel PFC !`;
+
+        gameState.pfcDuel = null;
+        if (onComplete) onComplete(winnerId);
+      }, 2600);
+    }
+
+    function resetPfcRound() {
+      if (!gameState.pfcDuel) return;
+
+      gameState.pfcDuel.c1 = null;
+      gameState.pfcDuel.c2 = null;
+
+      document.getElementById('pfc-status-banner').innerText = "Les joueurs font leur choix...";
+      document.getElementById('pfc-p1-choice').innerHTML = '<i class="fa-solid fa-hourglass-half text-stone-500 animate-pulse text-2xl"></i>';
+      document.getElementById('pfc-p2-choice').innerHTML = '<i class="fa-solid fa-hourglass-half text-stone-500 animate-pulse text-2xl"></i>';
+
+      const accuser = gameState.players[gameState.pfcDuel.accuserId];
+      const accused = gameState.players[gameState.pfcDuel.accusedId];
+
+      const actions = document.getElementById('pfc-input-actions');
+      if (myId === accuser.id || myId === accused.id) {
+        actions.classList.remove('hidden');
+      } else {
+        actions.classList.add('hidden');
+      }
+
+      const moves = ['rock', 'paper', 'scissors'];
+      if (accuser.isBot) gameState.pfcDuel.c1 = moves[Math.floor(Math.random() * 3)];
+      if (accused.isBot) gameState.pfcDuel.c2 = moves[Math.floor(Math.random() * 3)];
+
+      broadcastState();
+
+      if (gameState.pfcDuel.c1 && gameState.pfcDuel.c2) {
+        setTimeout(revealPfcResults, 1400);
+      }
+    }
+
+    /* FONCTIONNALITÉS ITEMS ZBEUL */
+    function executeHandSwap() {
+      const living = gameState.playerOrder.filter(id => gameState.players[id] && gameState.players[id].isAlive);
+      if (living.length < 2) return;
+
+      const hands = living.map(id => [...gameState.players[id].hand]);
+      const shift = Math.floor(Math.random() * (living.length - 1)) + 1;
+      
+      living.forEach((id, idx) => {
+        const targetIdx = (idx + shift) % living.length;
+        gameState.players[id].hand = hands[targetIdx];
+      });
+
+      gameState.feltTicker = "Les mains ont été échangées aléatoirement !";
+      showToast("Mains interverties !");
+      audio.cardSlide();
+      broadcastState();
+    }
+
+    function executeCurse10(targetId) {
+      const target = gameState.players[targetId];
+      if (!target || !target.isAlive) return;
+
+      target.hand.push({ id: `c_${Date.now()}`, rank: '10', isJoker: false, isRat: true });
+      gameState.feltTicker = `ARAAAAAAH ! Un 10 a été visser à ${target.name} !`;
+      showToast(`${target.name} a reçu un 10 !`);
+      audio.chip();
+      broadcastState();
     }
 
     function openDenounceModal(claim, cards, onComplete) {
@@ -1927,7 +2474,6 @@
       }
       row.innerHTML = '';
 
-      // Génère les cartes dos caché au départ
       const cardNodes = cards.map(c => {
         const wrap = document.createElement('div');
         wrap.className = 'w-16 h-24 sm:w-20 sm:h-28 rounded-lg border border-[#2b3a2e] bg-[#111613] p-1.5 flex flex-col items-center justify-between shadow-xl transition-all duration-200';
@@ -1945,7 +2491,6 @@
 
       function flipNextCard() {
         if (current >= cardNodes.length) {
-          // Toutes les cartes sont révélées, pause avant verdict
           setTimeout(onComplete, 900);
           return;
         }
@@ -1955,10 +2500,9 @@
         const realDef = CARD_DEFINITIONS[realCard.rank] || CARD_DEFINITIONS[realCard.isJoker ? 'JOKER' : '10'];
 
         let rollTicks = 0;
-        const totalRollTicks = 36; // Nombre de cartes floues qui défilent
-        const rollSpeed = 100;      // Vitesse de défilement (en ms)
+        const totalRollTicks = 36;
+        const rollSpeed = 100;
 
-        // PHASE 1 : Défilement flouté
         const rollInterval = setInterval(() => {
           rollTicks++;
           audio.chip();
@@ -1966,7 +2510,8 @@
           const randRank = allRanks[Math.floor(Math.random() * allRanks.length)];
           const fakeDef = CARD_DEFINITIONS[randRank];
 
-            item.el.className = 'w-16 h-24 sm:w-20 sm:h-28 playing-card p-1.5 flex flex-col justify-between border border-[#8f7734] shadow-xl overflow-hidden blur-[2px] opacity-75 scale-95 transition-none';          item.el.innerHTML = `
+          item.el.className = 'w-16 h-24 sm:w-20 sm:h-28 playing-card p-1.5 flex flex-col justify-between border border-[#8f7734] shadow-xl overflow-hidden blur-[2px] opacity-75 scale-95 transition-none';
+          item.el.innerHTML = `
             <div class="card-inner-frame"></div>
             <div class="w-full flex justify-between items-center text-[9px] font-card font-bold ${fakeDef.color} px-0.5">
               <span>${fakeDef.letter}</span>
@@ -1981,12 +2526,10 @@
             </div>
           `;
 
-          // PHASE 2 : Figeage net sur la vraie carte
           if (rollTicks >= totalRollTicks) {
             clearInterval(rollInterval);
             audio.cardSlide();
 
-            // Carte nette, pleine opacité, avec un petit pop visuel (scale-100)
             item.el.className = 'w-16 h-24 sm:w-20 sm:h-28 playing-card p-1.5 flex flex-col justify-between border-2 border-dore shadow-2xl overflow-hidden blur-0 opacity-100 scale-100 transition-all duration-150';
             item.el.innerHTML = `
               <div class="card-inner-frame"></div>
@@ -2004,13 +2547,11 @@
             `;
 
             current++;
-            // Temps de pause avant de lancer le défilement de la carte suivante (ici 450 ms)
             setTimeout(flipNextCard, 450);
           }
         }, rollSpeed);
       }
 
-      // Délai initial avant le premier défilement (600 ms)
       setTimeout(flipNextCard, 600);
     }
 
@@ -2025,6 +2566,7 @@
     }
 
     function triggerRevolverChamber(targetPlayer) {
+      const modal = document.getElementById('denounce-modal'); // <-- S'assurer d'avoir la modale parente
       const cylinderBox = document.getElementById('denounce-cylinder-box');
       const wheel = document.getElementById('roulette-cylinder-wheel');
       const desc = document.getElementById('denounce-fate-desc');
@@ -2032,10 +2574,12 @@
 
       if (!cylinderBox || !wheel || !desc || !ticker) return;
 
+      if (modal) modal.classList.remove('hidden'); // <-- AJOUT OBLIGATOIRE : rend la fenêtre visible
       cylinderBox.classList.remove('hidden');
       const risk = targetPlayer.cylinderRisk || 1;
       desc.innerText = `${targetPlayer.name} a ${risk} chambre(s) mortelle(s) sur 6`;
       ticker.innerText = "Le gun est sur sa tempe...";
+      // ... suite inchangée
 
       let angle = 0;
       let step = 0;
@@ -2127,10 +2671,16 @@
       gameState.quintoClaim = null;
       gameState.quintoRealDice = null;
       gameState.quintoHasRolled = false;
+      gameState.hasUsedItemThisTurn = false;
+      gameState.pfcDuel = null;
+      gameState.immunityPending = null;
+      gameState.pfcPromptPending = null;
       Object.values(gameState.players).forEach(p => {
         p.isAlive = true;
         p.cylinderRisk = 1;
         p.hand = [];
+        p.items = [];
+        p.hasDraftedThisRound = false;
         p.isReady = p.isBot ? true : false;
       });
       gameState.feltTicker = "Nouvelle donne ouverte.";
@@ -2145,9 +2695,10 @@
       } else if (gameState.status === 'lobby') {
         showScreen('screen-lobby');
         renderLobbyScreen(me);
-      } else if (gameState.status === 'lottery_draw' || gameState.status === 'in_round' || gameState.status === 'resolving_bluff') {
+      } else if (gameState.status === 'item_draft' || gameState.status === 'lottery_draw' || gameState.status === 'in_round' || gameState.status === 'resolving_bluff') {
         showScreen('screen-game');
         renderTableScreen(me);
+        updateDraftCounter();
       } else if (gameState.status === 'game_ended') {
         showScreen('screen-gameover');
         renderGameOverScreen();
@@ -2209,6 +2760,12 @@
       const modeTag = document.getElementById('header-mode-tag');
       if (modeTag) modeTag.innerText = isDice ? "MODE : DÉS" : "MODE : CARTES";
 
+      const zbeulTag = document.getElementById('header-zbeul-tag');
+      if (zbeulTag) {
+        if (gameState.isZbeul) zbeulTag.classList.remove('hidden');
+        else zbeulTag.classList.add('hidden');
+      }
+
       const badgeTitle = document.getElementById('game-target-title');
       if (isDice) {
         const lastClaimText = gameState.quintoClaim ? `${gameState.quintoClaim.score}` : 'AUCUNE';
@@ -2220,6 +2777,15 @@
         } else {
           badgeTitle.innerText = "TIRAGE EN COURS...";
         }
+      }
+
+      if (gameState.immunityPending && gameState.immunityPending.accusedId === myId) {
+        const modal = document.getElementById('modal-immunity-prompt');
+        if (modal && modal.classList.contains('hidden')) {
+          openImmunityPromptModal();
+        }
+      } else {
+        closeImmunityPromptModal();
       }
 
       document.getElementById('game-action-ticker').innerText = gameState.feltTicker;
@@ -2258,11 +2824,115 @@
       }
 
       renderSeatsAroundTable();
+      renderInventoryConsole(me);
 
       if (isDice) {
         renderQuintoPlayerConsole(me);
       } else {
         renderCardPlayerConsole(me);
+      }
+    }
+
+    function renderInventoryConsole(me) {
+      const invBar = document.getElementById('my-inventory-bar');
+      const invContainer = document.getElementById('my-inventory-items-container');
+      const countTag = document.getElementById('inventory-count-tag');
+      const stateNotice = document.getElementById('inventory-usage-state');
+
+      if (!gameState.isZbeul || !me || !me.isAlive) {
+        if (invBar) {
+          invBar.classList.add('hidden');
+          invBar.classList.remove('flex');
+        }
+        return;
+      }
+
+      invBar.classList.remove('hidden');
+      invBar.classList.add('flex');
+      const itemsList = Array.isArray(me.items) ? me.items : [];
+      if (countTag) countTag.innerText = itemsList.length;
+
+      const activeId = gameState.playerOrder[gameState.activePlayerIndex];
+      const isMyTurn = activeId === myId && gameState.status === 'in_round';
+      const hasUsed = gameState.hasUsedItemThisTurn;
+
+      if (stateNotice) {
+        if (!isMyTurn) {
+          stateNotice.innerText = "Activable à ton tour";
+          stateNotice.className = "text-[9px] font-mono text-[#637568]";
+        } else if (hasUsed) {
+          stateNotice.innerText = "Item déjà utilisé ce tour (limite 1/tour)";
+          stateNotice.className = "text-[9px] font-mono text-stone-400";
+        } else {
+          stateNotice.innerText = "1 seul item utilisable par tour";
+          stateNotice.className = "text-[9px] font-mono text-dore";
+        }
+      }
+
+      if (!invContainer) return;
+      invContainer.innerHTML = '';
+
+      if (itemsList.length === 0) {
+        invContainer.innerHTML = `<span class="text-[10px] text-[#55695a] font-mono italic">Aucun item</span>`;
+        return;
+      }
+
+      // Affichage individuel de chaque exemplaire d'item
+      itemsList.forEach((itemId) => {
+        const def = ZBEUL_ITEMS[itemId];
+        if (!def) return;
+
+        const canActivate = isMyTurn && !hasUsed && !def.passive && (itemId === 'swap_hands' || itemId === 'curse_10');
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.title = `${def.name} - ${def.desc}`;
+        btn.disabled = !canActivate;
+
+        btn.className = `w-7 h-7 rounded flex items-center justify-center text-sm transition-all flex-shrink-0 ${
+          canActivate
+            ? 'border border-dore bg-[#1e2e21] text-dore hover:bg-[#283f2d] active:scale-90 shadow-[0_0_8px_rgba(212,175,55,0.35)] cursor-pointer'
+            : def.passive
+              ? 'border border-[#233126] bg-[#0e1410] text-[#718575] cursor-default'
+              : 'border border-[#1e2720] bg-[#0e1410] text-stone-600 opacity-60 cursor-not-allowed'
+        }`;
+
+        btn.innerHTML = `<i class="fa-solid ${def.icon}"></i>`;
+
+        if (canActivate) {
+          btn.onclick = () => handleItemActivation(itemId);
+        }
+
+        invContainer.appendChild(btn);
+      });
+    }
+
+    function handleItemActivation(itemId) {
+      if (gameState.hasUsedItemThisTurn) {
+        showToast("Tu as déjà utilisé un item ce tour !");
+        return;
+      }
+
+      if (itemId === 'swap_hands') {
+        sendToHost({ type: 'USE_ITEM_SWAP', id: myId });
+      } else if (itemId === 'curse_10') {
+        const modal = document.getElementById('modal-curse10-target');
+        const list = document.getElementById('curse10-target-list');
+        list.innerHTML = '';
+        modal.classList.remove('hidden');
+
+        const targets = gameState.playerOrder.filter(id => id !== myId && gameState.players[id] && gameState.players[id].isAlive);
+        targets.forEach(tId => {
+          const tPlayer = gameState.players[tId];
+          const btn = document.createElement('button');
+          btn.className = 'w-full py-2 px-3 rounded bg-[#233126] hover:bg-[#2e4032] border border-[#3b4e40] text-dore text-xs font-title font-bold transition-all';
+          btn.innerText = tPlayer.name;
+          btn.onclick = () => {
+            sendToHost({ type: 'USE_ITEM_CURSE10', id: myId, targetId: tId });
+            modal.classList.add('hidden');
+          };
+          list.appendChild(btn);
+        });
       }
     }
 
@@ -2300,16 +2970,33 @@
         revolverPips += `<span class="w-1.5 h-1.5 rounded-full ${filled ? 'bg-dore shadow-[0_0_6px_rgba(212,175,55,0.6)]' : 'bg-[#29382d]'}"></span>`;
       }
 
-      const cardCountTxt = gameState.gameMode === 'dice' ? 'En jeu' : `${player.hand ? player.hand.length : 0}c`;
+      const itemCount = (gameState.isZbeul && Array.isArray(player.items)) ? player.items.length : 0;
+      const itemBadge = itemCount > 0 ? `
+        <span class="absolute -top-1 -right-1 min-w-[17px] h-4 px-1 bg-[#1d2b20] border border-dore rounded-full flex items-center justify-center text-[8px] font-bold text-dore shadow" title="${itemCount} item(s)">
+          <i class="fa-solid fa-briefcase text-[7px] mr-0.5"></i>${itemCount}
+        </span>
+      ` : '';
+
+      const isCards = gameState.gameMode === 'cards';
+      const hasWonRound = isCards && player.isAlive && (!player.hand || player.hand.length === 0) && gameState.status === 'in_round';
+
+      const cardCountTxt = !player.isAlive 
+        ? 'Éliminé' 
+        : hasWonRound 
+          ? 'Gagné' 
+          : isCards 
+            ? `${player.hand ? player.hand.length : 0}c` 
+            : 'En jeu';
 
       container.innerHTML = `
         <div class="flex flex-col items-center select-none">
-        <div class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 overflow-hidden ${
-          !player.isAlive ? 'border-[#223126] bg-[#111713] opacity-35' :
-          isActiveTurn ? 'border-dore bg-[#19271d] ring-2 ring-dore/60 shadow-[0_0_18px_rgba(212,175,55,0.65)]' : 'border-[#384c3c] bg-[#111713]'
-        } flex items-center justify-center shadow-lg transition-all duration-300">
-          ${player.isAlive ? avIcon : '<i class="fa-solid fa-skull text-[#506253]"></i>'}
-        </div>
+          <div class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 ${
+            !player.isAlive ? 'border-[#223126] bg-[#111713] opacity-35' :
+            isActiveTurn ? 'border-dore bg-[#19271d] ring-2 ring-dore/60 shadow-[0_0_18px_rgba(212,175,55,0.65)]' : 'border-[#384c3c] bg-[#111713]'
+          } flex items-center justify-center shadow-lg transition-all duration-300">
+            ${player.isAlive ? avIcon : '<i class="fa-solid fa-skull text-[#506253]"></i>'}
+            ${itemBadge}
+          </div>
 
           <div class="mt-1 w-full flex flex-col items-center justify-center text-center">
             <span class="font-title font-bold text-[10px] sm:text-[11px] text-[#f7f6f2] whitespace-nowrap block text-center ${!player.isAlive ? 'line-through text-red-400' : ''}">
@@ -2323,6 +3010,111 @@
           </div>
         </div>
       `;
+    }
+
+    let immunityTimer = null;
+
+function startImmunityPrompt(accuser, accused, duelType) {
+  gameState.immunityPending = {
+    accuserId: accuser.id,
+    accusedId: accused.id,
+    duelType: duelType
+  };
+
+  gameState.feltTicker = `${accuser.name} accuse ${accused.name}... En attente du Totem !`;
+  broadcastState();
+
+  // Si l'accusé est un bot : décision automatique
+  if (accused.isBot) {
+    const willUse = Math.random() < 0.75; // Le bot utilise son totem 3 fois sur 4
+    setTimeout(() => {
+      handleImmunityDecision(accused.id, willUse);
+    }, 1400);
+    return;
+  }
+
+  // Si l'accusé est le joueur local
+  if (myId === accused.id) {
+    openImmunityPromptModal();
+  }
+}
+
+function openImmunityPromptModal() {
+  const modal = document.getElementById('modal-immunity-prompt');
+  const timerText = document.getElementById('immunity-timer-text');
+  if (!modal) return;
+
+  modal.classList.remove('hidden');
+  let timeLeft = 7;
+  if (timerText) timerText.innerText = `Temps restant : ${timeLeft}s`;
+
+  clearInterval(immunityTimer);
+  immunityTimer = setInterval(() => {
+    timeLeft--;
+    if (timerText) timerText.innerText = `Temps restant : ${timeLeft}s`;
+    if (timeLeft <= 0) {
+      clearInterval(immunityTimer);
+      closeImmunityPromptModal();
+      sendToHost({ type: 'DECIDE_IMMUNITY', id: myId, useImmunity: false });
+    }
+  }, 1000);
+
+  document.getElementById('btn-accept-immunity').onclick = () => {
+    clearInterval(immunityTimer);
+    closeImmunityPromptModal();
+    sendToHost({ type: 'DECIDE_IMMUNITY', id: myId, useImmunity: true });
+  };
+
+  document.getElementById('btn-refuse-immunity').onclick = () => {
+    clearInterval(immunityTimer);
+    closeImmunityPromptModal();
+    sendToHost({ type: 'DECIDE_IMMUNITY', id: myId, useImmunity: false });
+  };
+}
+
+function closeImmunityPromptModal() {
+  const modal = document.getElementById('modal-immunity-prompt');
+  if (modal) modal.classList.add('hidden');
+}
+
+    function handleImmunityDecision(playerId, useImmunity) {
+      if (!isHost || !gameState.immunityPending) return;
+      if (playerId !== gameState.immunityPending.accusedId) return;
+
+      const { accuserId, accusedId, duelType } = gameState.immunityPending;
+      const accuser = gameState.players[accuserId];
+      const accused = gameState.players[accusedId];
+      gameState.immunityPending = null;
+
+      if (useImmunity) {
+        consumePlayerItem(accused, 'immunity');
+        gameState.feltTicker = `${accused.name} active son Totem d'immunité ! L'accusation de ${accuser.name} est annulée !`;
+        showToast(`${accused.name} est sauvé par son Totem !`);
+        audio.chip();
+
+        // On passe au joueur suivant après un court délai pour que tout le monde voie le message
+        setTimeout(() => {
+          gameState.quintoHasRolled = false;
+          advanceToNextLiving();
+        }, 1800);
+        return;
+      }
+
+      // Si le joueur refuse d'utiliser son Totem :
+      gameState.feltTicker = `${accused.name} garde son Totem.`;
+      broadcastState();
+
+      // On vérifie s'il possède le PFC
+      if (gameState.isZbeul && accused.items && accused.items.includes('pfc')) {
+        startPfcPrompt(accuser, accused, duelType);
+        return;
+      }
+
+      if (duelType === 'cards') {
+        proceedWithBluffDuel(accuser, accused);
+      } else {
+        proceedWithQuintoBluff(accuser, accused);
+      }
     }
 
     function renderCardPlayerConsole(me) {
@@ -2407,6 +3199,136 @@
       } else {
         btnCall.disabled = true;
         btnCall.className = "py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5";
+      }
+    }
+
+    let pfcPromptTimer = null;
+
+function startPfcPrompt(accuser, accused, duelType) {
+      gameState.pfcPromptPending = {
+        accuserId: accuser.id,
+        accusedId: accused.id,
+        duelType: duelType
+      };
+
+      gameState.feltTicker = `${accuser.name} accuse ${accused.name}... En attente du PFC !`;
+      broadcastState();
+
+      // Décision du bot
+      if (accused.isBot) {
+        const willUse = Math.random() < 0.75;
+        setTimeout(() => {
+          handlePfcDecision(accused.id, willUse);
+        }, 1400);
+        return;
+      }
+
+      // Joueur local
+      if (myId === accused.id) {
+        openPfcPromptModal();
+      }
+    }
+
+    function handlePfcDecision(playerId, usePfc) {
+      if (!isHost || !gameState.pfcPromptPending) return;
+      if (playerId !== gameState.pfcPromptPending.accusedId) return;
+
+      const { accuserId, accusedId, duelType } = gameState.pfcPromptPending;
+      const accuser = gameState.players[accuserId];
+      const accused = gameState.players[accusedId];
+      gameState.pfcPromptPending = null;
+
+      if (usePfc) {
+        consumePlayerItem(accused, 'pfc');
+        gameState.status = 'resolving_bluff';
+        gameState.feltTicker = `${accused.name} active son Pierre - Feuille - Ciseaux !`;
+        showToast(`${accused.name} déclenche le duel PFC !`);
+        audio.chip();
+
+        // Le duel PFC remplace la vérification : le perdant va au barillet
+        launchPfcDuel(accuser, accused, (winnerId) => {
+          const loser = (winnerId === accused.id) ? accuser : accused;
+          gameState.feltTicker = `${loser.name} perd le PFC et doit affronter le barillet !`;
+          broadcastState();
+          setTimeout(() => triggerRevolverChamber(loser), 1400);
+        });
+      } else {
+        gameState.feltTicker = `${accused.name} garde son PFC en réserve.`;
+        broadcastState();
+
+        if (duelType === 'cards') {
+          proceedWithBluffDuel(accuser, accused);
+        } else {
+          proceedWithQuintoBluff(accuser, accused);
+        }
+      }
+    }
+
+    function openPfcPromptModal() {
+      const modal = document.getElementById('modal-pfc-prompt');
+      const timerText = document.getElementById('pfc-prompt-timer-text');
+      if (!modal) return;
+
+      modal.classList.remove('hidden');
+      let timeLeft = 7;
+      if (timerText) timerText.innerText = `Temps restant : ${timeLeft}s`;
+
+      clearInterval(pfcPromptTimer);
+      pfcPromptTimer = setInterval(() => {
+        timeLeft--;
+        if (timerText) timerText.innerText = `Temps restant : ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(pfcPromptTimer);
+          closePfcPromptModal();
+          sendToHost({ type: 'DECIDE_PFC', id: myId, usePfc: false });
+        }
+      }, 1000);
+
+      document.getElementById('btn-accept-pfc').onclick = () => {
+        clearInterval(pfcPromptTimer);
+        closePfcPromptModal();
+        sendToHost({ type: 'DECIDE_PFC', id: myId, usePfc: true });
+      };
+
+      document.getElementById('btn-refuse-pfc').onclick = () => {
+        clearInterval(pfcPromptTimer);
+        closePfcPromptModal();
+        sendToHost({ type: 'DECIDE_PFC', id: myId, usePfc: false });
+      };
+    }
+
+    function closePfcPromptModal() {
+      const modal = document.getElementById('modal-pfc-prompt');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function handlePfcDecision(playerId, usePfc) {
+      if (!isHost || !gameState.pfcPromptPending) return;
+      if (playerId !== gameState.pfcPromptPending.accusedId) return;
+
+      const { accuserId, accusedId, onRefuseCallback } = gameState.pfcPromptPending;
+      const accuser = gameState.players[accuserId];
+      const accused = gameState.players[accusedId];
+      gameState.pfcPromptPending = null;
+
+      if (usePfc) {
+        consumePlayerItem(accused, 'pfc');
+        gameState.feltTicker = `${accused.name} active son Pierre - Feuille - Ciseaux !`;
+        showToast(`${accused.name} déclenche le duel PFC !`);
+        audio.chip();
+
+        // Lancement du mini-jeu PFC
+        launchPfcDuel(accuser, accused, (winnerId) => {
+          const loser = (winnerId === accused.id) ? accuser : accused;
+          gameState.feltTicker = `${loser.name} perd le PFC et doit affronter le barillet !`;
+          setTimeout(() => triggerRevolverChamber(loser), 1400);
+        });
+      } else {
+        gameState.feltTicker = `${accused.name} garde son PFC en réserve.`;
+        broadcastState();
+        if (typeof onRefuseCallback === 'function') {
+          onRefuseCallback();
+        }
       }
     }
 
@@ -2550,9 +3472,10 @@
       });
     }
 
-    // ÉCOUTEURS SÉLECTION MODE
+    // ÉCOUTEURS MODES
     const btnModeCards = document.getElementById('btn-mode-cards');
     const btnModeDice = document.getElementById('btn-mode-dice');
+    const btnModeZbeul = document.getElementById('btn-mode-zbeul');
 
     btnModeCards.addEventListener('click', () => {
       gameState.gameMode = 'cards';
@@ -2564,6 +3487,17 @@
       gameState.gameMode = 'dice';
       btnModeDice.className = "p-2 rounded border border-dore bg-[#1e2a21] text-dore text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-all";
       btnModeCards.className = "p-2 rounded border border-[#29392c] bg-[#111713] text-[#7b8f80] text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-all";
+    });
+
+    btnModeZbeul.addEventListener('click', () => {
+      gameState.isZbeul = !gameState.isZbeul;
+      if (gameState.isZbeul) {
+        btnModeZbeul.className = "mt-2 w-full p-2 rounded border border-dore bg-[#1e2a21] text-dore text-xs font-title font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_12px_rgba(212,175,55,0.25)]";
+        btnModeZbeul.innerHTML = `<i class="fa-solid fa-fire text-sm text-dore"></i><span>Zbeul</span>`;
+      } else {
+        btnModeZbeul.className = "mt-2 w-full p-2 rounded border border-[#2b3a2e] bg-[#121613] text-[#788a7c] text-xs font-title font-bold flex items-center justify-center gap-2 transition-all";
+        btnModeZbeul.innerHTML = `<i class="fa-solid fa-fire text-sm"></i><span>Zbeul</span>`;
+      }
     });
 
     // ÉCOUTEURS DÉS QUINTO
@@ -2645,7 +3579,7 @@
       gameState.code = 'SOLO';
 
       const tempPlayers = {
-        [myId]: { id: myId, name: myName, avatar: (selectedAvatarId === 'custom' && customAvatarBase64) ? customAvatarBase64 : selectedAvatarId, isBot: false, isReady: true, isAlive: true, cylinderRisk: 1, hand: [] }
+        [myId]: { id: myId, name: myName, avatar: (selectedAvatarId === 'custom' && customAvatarBase64) ? customAvatarBase64 : selectedAvatarId, isBot: false, isReady: true, isAlive: true, cylinderRisk: 1, hand: [], items: [], hasDraftedThisRound: false }
       };
 
       const usedNames = [myName];
@@ -2664,7 +3598,9 @@
           isReady: true,
           isAlive: true,
           cylinderRisk: 1,
-          hand: []
+          hand: [],
+          items: [],
+          hasDraftedThisRound: false
         };
       }
 
@@ -2687,7 +3623,7 @@
       isHost = true;
 
       gameState.players = {
-        [myId]: { id: myId, name: myName, avatar: (selectedAvatarId === 'custom' && customAvatarBase64) ? customAvatarBase64 : selectedAvatarId, isBot: false, isReady: false, isAlive: true, cylinderRisk: 1, hand: [] }
+        [myId]: { id: myId, name: myName, avatar: (selectedAvatarId === 'custom' && customAvatarBase64) ? customAvatarBase64 : selectedAvatarId, isBot: false, isReady: false, isAlive: true, cylinderRisk: 1, hand: [], items: [], hasDraftedThisRound: false }
       };
       gameState.playerOrder = [myId];
       gameState.status = 'lobby';
@@ -2732,7 +3668,9 @@
         isReady: true,
         isAlive: true,
         cylinderRisk: 1,
-        hand: []
+        hand: [],
+        items: [],
+        hasDraftedThisRound: false
       };
       gameState.playerOrder.push(botId);
       broadcastState();
