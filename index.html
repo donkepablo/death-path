@@ -553,57 +553,51 @@
         </div>
 
         <!-- INTERFACE DÉS (QUINTO) -->
-        <div id="quinto-action-controls" class="hidden w-full max-w-lg flex-col items-center p-0 mb-auto mt-2.5">          
-          <div id="quinto-my-dice-view" class="hidden items-center gap-3 bg-[#0d120f] px-5 py-2 rounded-xl border border-[#2b3a2e] shadow-inner mb-2">
-            <span class="text-[11px] uppercase tracking-wider font-mono text-[#7f9284]">Ton tirage :</span>
-            <div id="quinto-dice-pair" class="flex gap-2"></div>
-            <span id="quinto-real-val-tag" class="text-sm font-mono font-bold text-dore"></span>
+        <div id="quinto-action-controls" class="hidden w-full max-w-md flex-col items-center p-0 my-auto gap-1.5">          
+          <div id="quinto-my-dice-view" class="hidden items-center gap-2.5 bg-[#0d120f]/90 px-3.5 py-1.5 rounded-lg border border-[#2b3a2e] shadow-inner mb-1.5">
+            <span class="text-[10px] uppercase tracking-wider font-mono text-[#7f9284]">Ton tirage :</span>
+            <div id="quinto-dice-pair" class="flex gap-1.5"></div>
+            <span id="quinto-real-val-tag" class="text-xs font-mono font-bold text-dore"></span>
           </div>
 
-          <div id="quinto-step-roll" class="w-full grid grid-cols-2 gap-3">
-            <!-- Bouton Secouer -->
-            <button 
-              id="btn-quinto-roll" 
-              disabled 
-              class="relative group w-full h-14 sm:h-16 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 overflow-hidden border border-[#233126] bg-[#121613] text-[#4d5e51] cursor-not-allowed select-none">
-              <i class="fa-solid fa-dice text-base sm:text-lg"></i>
+          <div id="quinto-step-roll" class="w-full grid grid-cols-2 gap-2">
+            <button id="btn-quinto-roll" disabled class="relative group w-full h-11 sm:h-12 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-[#233126] bg-[#121613] text-[#4d5e51] cursor-not-allowed select-none">
+              <i class="fa-solid fa-dice text-base"></i>
               <span>Secouer</span>
             </button>
-
-            <!-- Bouton Menteur -->
-            <button 
-              id="btn-quinto-bluff-early" 
-              disabled 
-              class="relative group w-full h-14 sm:h-16 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 overflow-hidden border border-[#233126] bg-[#121613] text-[#4d5e51] cursor-not-allowed select-none">
-              <i class="fa-solid fa-bullhorn text-sm sm:text-base"></i>
+            <button id="btn-quinto-bluff-early" disabled class="relative group w-full h-11 sm:h-12 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-[#233126] bg-[#121613] text-[#4d5e51] cursor-not-allowed select-none">
+              <i class="fa-solid fa-bullhorn text-sm"></i>
               <span>Menteur !</span>
             </button>
           </div>
 
-          <div id="quinto-step-choice" class="hidden w-full flex-col gap-2.5">
-            <div class="grid grid-cols-2 gap-3">
-              <button id="btn-quinto-truth" class="h-14 sm:h-16 rounded-xl border border-[#3e5644] bg-[#1c2920] hover:bg-[#25392b] text-[#f7f6f2] font-mono text-sm sm:text-base font-semibold tracking-wide transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2">
+          <div id="quinto-step-choice" class="hidden w-full flex-col gap-1.5">
+            <div class="grid grid-cols-2 gap-2">
+              <button id="btn-quinto-truth" class="h-10 sm:h-11 rounded-lg border border-[#3e5644] bg-[#1c2920] hover:bg-[#25392b] text-[#f7f6f2] font-mono text-xs sm:text-sm font-semibold tracking-wide transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2">
                 <i class="fa-solid fa-check text-green-400"></i>
                 <span>Vérité</span>
               </button>
-              <button id="btn-quinto-lie" class="h-14 sm:h-16 rounded-xl border border-[#8f7734] bg-[#221f14] hover:bg-[#2f2a1b] text-dore font-mono text-sm sm:text-base font-semibold tracking-wide transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2">
+              <button id="btn-quinto-lie" class="h-10 sm:h-11 rounded-lg border border-[#8f7734] bg-[#221f14] hover:bg-[#2f2a1b] text-dore font-mono text-xs sm:text-sm font-semibold tracking-wide transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2">
                 <i class="fa-solid fa-mask text-dore"></i>
                 <span>Mentir</span>
               </button>
             </div>
 
-            <div id="quinto-lie-input-panel" class="hidden flex-col gap-2 p-2.5 rounded-xl bg-[#0f1411] border border-[#36483a]">
-              <span class="text-[10px] font-mono uppercase tracking-wider text-[#7f9284]">Choisir l'annonce supérieure :</span>
-              <div class="flex gap-2">
-                <select id="select-quinto-claim" class="flex-1 h-12 bg-[#171f1a] border border-[#36483a] text-dore font-mono font-semibold text-sm rounded-lg px-3 focus:outline-none focus:border-dore"></select>
-                <button id="btn-submit-lie" class="h-12 px-6 rounded-lg border border-dore bg-dore text-[#111311] font-mono text-sm uppercase font-bold tracking-wider transition-all active:scale-95 shadow">
+            <!-- Panneau de sélection du mensonge : compact et lisible -->
+            <div id="quinto-lie-input-panel" class="hidden flex-col gap-1 p-2 rounded-lg bg-[#0d120f] border border-[#3b4e40] shadow-lg">
+              <div class="flex items-center justify-between px-0.5">
+                <span class="text-[9px] font-mono uppercase tracking-wider text-[#8a9d8f]">Annonce supérieure :</span>
+              </div>
+              <div class="flex gap-1.5 items-center">
+                <select id="select-quinto-claim" class="flex-1 h-9 bg-[#162018] border border-[#3d5442] focus:border-dore text-dore font-mono font-bold text-xs rounded-md px-2.5 focus:outline-none">
+                </select>
+                <button id="btn-submit-lie" class="h-9 px-4 rounded-md border border-dore bg-dore hover:bg-[#e2c050] text-[#111311] font-mono text-xs uppercase font-bold tracking-wider transition-all active:scale-95 shadow">
                   Valider
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
     </section>
 
     <!-- SCREEN 4: GAME OVER -->
@@ -737,7 +731,7 @@
           </div>
           <div class="p-2.5 rounded border border-red-800/70 bg-[#160d0d] space-y-1">
             <span class="font-title font-bold text-red-400 text-xs">Mode Zbeul</span>
-            <p class="text-stone-300">Items de draft, contres en direct via Pierre-Feuille-Ciseaux, et un Quinto 21 fatal pour toute la table.</p>
+            <p class="text-stone-300">Ajout d'items pour déstabiliser les adversaires.</p>
           </div>
         </div>
       </div>
@@ -927,14 +921,16 @@
       'Q': { rank: 'Q', title: 'DAME', letter: 'Q', suit: '♦', color: 'text-rougeCarte' },
       'V': { rank: 'V', title: 'VALET', letter: 'V', suit: '♣', color: 'text-noir' },
       'JOKER': { rank: 'JOKER', title: 'JOKER', letter: 'J', suit: '★', color: 'text-dore' },
-      '10': { rank: '10', title: '10 MAUDIT', letter: '10', suit: '💀', color: 'text-rougeCarte' }
+      '10': { rank: '10', title: '10', letter: '10', suit: '💀', color: 'text-rougeCarte' }
     };
 
     const ZBEUL_ITEMS = {
-      pfc: { id: 'pfc', name: 'Pierre Feuille Ciseaux', icon: 'fa-hand-back-fist', desc: 'En cas d’accusation, duel direct. Le perdant prend le barillet.', modes: ['cards', 'dice'], passive: true },
-      swap_hands: { id: 'swap_hands', name: 'Échange de mains', icon: 'fa-shuffle', desc: 'Mélange et redistribue toutes les mains en jeu.', modes: ['cards'], passive: false },
-      immunity: { id: 'immunity', name: 'Totem d’immunité', icon: 'fa-shield-halved', desc: 'Annule immédiatement une accusation portée contre toi.', modes: ['cards', 'dice'], passive: true },
-      curse_10: { id: 'curse_10', name: 'Le 10', icon: 'fa-skull', desc: 'Donne un 10 maudit à une cible au choix.', modes: ['cards'], passive: false }
+      pfc: { id: 'pfc', name: 'Pierre Feuille Ciseaux', icon: 'fa-hand-back-fist', desc: 'En cas d’accusation, duel direct. Le perdant prend le barillet', modes: ['cards', 'dice'], passive: true },
+      swap_hands: { id: 'swap_hands', name: 'Échange de mains', icon: 'fa-shuffle', desc: 'Mélange et redistribue toutes les mains en jeu', modes: ['cards'], passive: false },
+      immunity: { id: 'immunity', name: 'Totem d’immunité', icon: 'fa-shield-halved', desc: 'Annule immédiatement une accusation portée contre toi', modes: ['cards', 'dice'], passive: true },
+      curse_10: { id: 'curse_10', name: 'Le 10 Fatal', icon: 'fa-skull', desc: 'Donne un 10 maudit à une cible au choix', modes: ['cards'], passive: false },
+      reroll: { id: 'reroll', name: 'Relance des dés', icon: 'fa-arrows-rotate', desc: 'Relance immédiatement tes deux dés si ton tirage ne te plaît pas', modes: ['dice'], passive: false },
+      force_prev_reroll: { id: 'force_prev_reroll', name: "Retour à l'envoyeur", icon: 'fa-rotate-left', desc: "Renvoie le gobelet au joueur précédent pour qu'il relance ses dés", modes: ['dice'], passive: false }
     };
 
     const AVATAR_PRESETS = [
@@ -1331,6 +1327,17 @@
         if (gameState.players[msg.id]) {
           const p = gameState.players[msg.id];
           if (!Array.isArray(p.items)) p.items = [];
+          if (typeof p.immunityCount !== 'number') p.immunityCount = 0;
+
+          // Si le joueur a déjà 2 totems, refuser le choix d'un 3ème
+          if (msg.item === 'immunity' && p.immunityCount >= 2) {
+            return;
+          }
+
+          if (msg.item === 'immunity') {
+            p.immunityCount++;
+          }
+
           p.items.push(msg.item);
           p.hasDraftedThisRound = true;
           broadcastState();
@@ -1360,7 +1367,34 @@
           gameState.playerOrder = gameState.playerOrder.filter(id => id !== msg.id);
           broadcastState();
         }
+      } else if (msg.type === 'USE_ITEM_REROLL') {
+        const player = gameState.players[msg.id];
+        if (player && consumePlayerItem(player, 'reroll')) {
+          gameState.hasUsedItemThisTurn = true;
+          executeDiceReroll(msg.id);
+        }
+      } else if (msg.type === 'USE_ITEM_FORCE_PREV_REROLL') {
+        const player = gameState.players[msg.id];
+        if (player && consumePlayerItem(player, 'force_prev_reroll')) {
+          gameState.hasUsedItemThisTurn = true;
+          executeForcePrevReroll(msg.id);
+        }
       }
+    }
+
+    function executeDiceReroll(playerId) {
+      const player = gameState.players[playerId];
+      if (!player || !player.isAlive) return;
+
+      const d1 = Math.floor(Math.random() * 6) + 1;
+      const d2 = Math.floor(Math.random() * 6) + 1;
+      gameState.quintoRealDice = [d1, d2];
+      gameState.quintoHasRolled = true;
+
+      audio.diceShake();
+      gameState.feltTicker = `${player.name} utilise sa Relance et rebrasse ses dés !`;
+      showToast(`${player.name} a relancé ses dés !`);
+      broadcastState();
     }
 
     function initHostPeer(customCode) {
@@ -1404,6 +1438,35 @@
           console.error(e);
         }
       }
+    }
+
+    function executeForcePrevReroll(activatorId) {
+      if (!gameState.quintoClaim) return;
+      const targetId = gameState.quintoClaim.playerId;
+      const targetPlayer = gameState.players[targetId];
+      const activator = gameState.players[activatorId];
+      if (!targetPlayer || !targetPlayer.isAlive) return;
+
+      // 1. Remettre les dés de la cible à zéro
+      const d1 = Math.floor(Math.random() * 6) + 1;
+      const d2 = Math.floor(Math.random() * 6) + 1;
+      gameState.quintoRealDice = [d1, d2];
+      gameState.quintoHasRolled = true;
+
+      // 2. Annuler la dernière annonce de la cible pour qu'il doive ré-annoncer
+      // L'annonce précédente devient celle qui précédait la cible
+      gameState.quintoClaim = gameState.previousQuintoClaim || null;
+
+      // 3. Replacer l'index du tour sur la cible
+      gameState.activePlayerIndex = gameState.playerOrder.indexOf(targetId);
+      gameState.hasUsedItemThisTurn = false;
+
+      audio.diceShake();
+      gameState.feltTicker = `${activator.name} force ${targetPlayer.name} à re-secouer ses dés !`;
+      showToast(`${targetPlayer.name} doit rejouer !`);
+
+      broadcastState();
+      checkBotTurnWithDelay();
     }
 
     function initClientPeer(roomCode) {
@@ -1496,13 +1559,18 @@
     }
 
     function proceedWithRoundStart(living) {
+      // S'assurer qu'aucune modale de duel ne traîne
+      closeDenounceModal();
+
       if (gameState.gameMode === 'dice') {
         const luckyFirstId = living[Math.floor(Math.random() * living.length)];
         gameState.activePlayerIndex = gameState.playerOrder.indexOf(luckyFirstId);
         gameState.quintoClaim = null;
+        gameState.previousQuintoClaim = null;
         gameState.quintoRealDice = null;
         gameState.quintoHasRolled = false;
         gameState.status = 'in_round';
+        
         const active = gameState.players[luckyFirstId];
         gameState.feltTicker = `${active.name} doit secouer...`;
         broadcastState();
@@ -1560,8 +1628,19 @@
 
       living.forEach(id => {
         const p = gameState.players[id];
+        if (typeof p.immunityCount !== 'number') p.immunityCount = 0;
+
         if (p.isBot) {
-          const pick = availableItems[Math.floor(Math.random() * availableItems.length)];
+          // Si le bot a déjà 2 totems, on retire le totem de ses options
+          let botAvailable = availableItems;
+          if (p.immunityCount >= 2) {
+            botAvailable = availableItems.filter(it => it.id !== 'immunity');
+          }
+
+          const pick = botAvailable[Math.floor(Math.random() * botAvailable.length)];
+          if (pick.id === 'immunity') {
+            p.immunityCount++;
+          }
           p.items.push(pick.id);
           p.hasDraftedThisRound = true;
         }
@@ -1595,28 +1674,45 @@
       container.innerHTML = '';
       if (waitingNotice) waitingNotice.classList.add('hidden');
 
+      const me = gameState.players[myId];
+      const myImmunityCount = (me && typeof me.immunityCount === 'number') ? me.immunityCount : 0;
+
       availableItems.forEach(it => {
+        const isLocked = (it.id === 'immunity' && myImmunityCount >= 2);
+
         const b = document.createElement('button');
-        b.className = 'p-3 bg-[#111613] hover:bg-[#1a241d] border border-[#2b3a2e] hover:border-dore rounded-xl text-left flex flex-col gap-1 transition-all active:scale-95 shadow-md';
+        b.disabled = isLocked;
+        b.className = `p-3 border rounded-xl text-left flex flex-col gap-1 transition-all shadow-md ${
+          isLocked 
+            ? 'bg-[#101411] border-[#222b24] opacity-40 cursor-not-allowed select-none' 
+            : 'bg-[#111613] hover:bg-[#1a241d] border-[#2b3a2e] hover:border-dore active:scale-95 cursor-pointer'
+        }`;
+
         b.innerHTML = `
           <div class="flex items-center justify-between">
-            <span class="font-title font-bold text-xs text-dore flex items-center gap-1.5">
+            <span class="font-title font-bold text-xs ${isLocked ? 'text-stone-500' : 'text-dore'} flex items-center gap-1.5">
               <i class="fa-solid ${it.icon}"></i> ${it.name}
             </span>
+            ${it.id === 'immunity' ? `<span class="text-[9px] font-mono ${isLocked ? 'text-red-400 font-bold' : 'text-stone-400'}">(${myImmunityCount}/2 max)</span>` : ''}
           </div>
-          <span class="font-mono text-[10px] text-[#93a697] leading-tight">${it.desc}</span>
+          <span class="font-mono text-[10px] ${isLocked ? 'text-stone-600' : 'text-[#93a697]'} leading-tight">
+            ${isLocked ? 'Limite atteinte pour cette partie (2 max).' : it.desc}
+          </span>
         `;
+
+        if (!isLocked) {
           b.onclick = () => {
             sendToHost({ type: 'CHOOSE_ITEM', id: myId, item: it.id });
             container.classList.add('pointer-events-none', 'opacity-40');
             if (waitingNotice) waitingNotice.classList.remove('hidden');
           };
+        }
+
         container.appendChild(b);
       });
 
       container.classList.remove('pointer-events-none', 'opacity-40');
 
-      const me = gameState.players[myId];
       if (me && me.isAlive) modal.classList.remove('hidden');
       updateDraftCounter();
     }
@@ -1710,38 +1806,57 @@
 
     function advanceToNextLiving() {
       const isCards = gameState.gameMode === 'cards';
-      const activeInRound = gameState.playerOrder.filter(id => {
-        const p = gameState.players[id];
-        return p && p.isAlive && (!isCards || (p.hand && p.hand.length > 0));
-      });
 
-      if (isCards && activeInRound.length <= 1) {
-        if (activeInRound.length === 1) {
-          const lastPlayer = gameState.players[activeInRound[0]];
-          gameState.feltTicker = `${lastPlayer.name} n'a pas pu se débarrasser de ses cartes !`;
+      // En mode cartes, vérifier s'il reste assez de joueurs avec des cartes
+      if (isCards) {
+        const activeWithCards = gameState.playerOrder.filter(id => {
+          const p = gameState.players[id];
+          return p && p.isAlive && Array.isArray(p.hand) && p.hand.length > 0;
+        });
+
+        if (activeWithCards.length <= 1) {
+          if (activeWithCards.length === 1) {
+            const lastPlayer = gameState.players[activeWithCards[0]];
+            gameState.feltTicker = `${lastPlayer ? lastPlayer.name : 'Dernier joueur'} n'a pas pu écouler ses cartes !`;
+          }
+          broadcastState();
+          setTimeout(startNewRound, 2200);
+          return;
         }
-        broadcastState();
-        setTimeout(startNewRound, 2500);
-        return;
       }
 
       const total = gameState.playerOrder.length;
-      let nextIdx = (gameState.activePlayerIndex + 1) % total;
-      let count = 0;
+      if (total === 0) return;
 
-      while (count <= total) {
+      let nextIdx = (gameState.activePlayerIndex + 1) % total;
+      let attempts = 0;
+
+      // Recherche du prochain joueur vivant et éligible
+      while (attempts < total) {
         const nextId = gameState.playerOrder[nextIdx];
         const p = gameState.players[nextId];
-        if (p && p.isAlive && (!isCards || (p.hand && p.hand.length > 0))) break;
+
+        if (p && p.isAlive) {
+          if (!isCards) {
+            // En mode DÉS : tout joueur vivant doit jouer, peu importe sa main de cartes
+            break;
+          } else if (Array.isArray(p.hand) && p.hand.length > 0) {
+            // En mode CARTES : le joueur doit avoir au moins une carte en main
+            break;
+          }
+        }
+
         nextIdx = (nextIdx + 1) % total;
-        count++;
+        attempts++;
       }
 
       gameState.activePlayerIndex = nextIdx;
       gameState.quintoHasRolled = false;
       gameState.hasUsedItemThisTurn = false;
-      const active = gameState.players[gameState.playerOrder[gameState.activePlayerIndex]];
-      gameState.feltTicker = `Tour de ${active ? active.name : '...' }...`;
+
+      const nextActive = gameState.players[gameState.playerOrder[gameState.activePlayerIndex]];
+      gameState.feltTicker = `Tour de ${nextActive ? nextActive.name : '...' }...`;
+
       broadcastState();
       checkBotTurnWithDelay();
     }
@@ -1865,6 +1980,11 @@
       if (playerId !== currentActiveId) return;
 
       const player = gameState.players[playerId];
+      if (!player || !player.isAlive) return;
+
+      // Enregistrer l'annonce précédente pour l'item "Retour à l'envoyeur"
+      gameState.previousQuintoClaim = gameState.quintoClaim;
+
       gameState.quintoClaim = {
         playerId: player.id,
         playerName: player.name,
@@ -1874,6 +1994,8 @@
 
       audio.chip();
       gameState.feltTicker = `${player.name} annonce ${claimVal}.`;
+      
+      // UN SEUL appel ici pour passer au joueur suivant
       advanceToNextLiving();
     }
 
@@ -1905,30 +2027,66 @@
     function resolveQuintoDuel(accuser, accused) {
       const claim = gameState.quintoClaim;
 
+      // CAS PARTICULIER : 21 QUINTO ZBEUL
       if (gameState.isZbeul && claim.score === 21) {
-        gameState.feltTicker = "21 QUINTO ZBEUL ! Tout le monde joue à la roulette russe !";
-        showToast("QUINTO 21 ! Hécatombe générale !");
+        gameState.status = 'resolving_bluff';
+        gameState.feltTicker = "21 QUINTO ZBEUL ! Hécatombe";
+        showToast("21 QUINTO ZBEUL ! Tout le monde à la roulette !");
         broadcastState();
 
-        const living = gameState.playerOrder.map(id => gameState.players[id]).filter(p => p && p.isAlive);
-        let vIdx = 0;
-        function runQuintoChain() {
-          if (vIdx >= living.length) {
-            setTimeout(startNewRound, 2000);
+        // Récupérer tous les joueurs encore vivants à cet instant précis
+        const victims = gameState.playerOrder
+          .map(id => gameState.players[id])
+          .filter(p => p && p.isAlive);
+
+        let currentIndex = 0;
+
+        function processNextQuintoVictim() {
+          // 1. Si toute la table est passée ou s'il ne reste qu'un survivant (ou zéro)
+          const remainingLiving = gameState.playerOrder
+            .map(id => gameState.players[id])
+            .filter(p => p && p.isAlive);
+
+          if (currentIndex >= victims.length || remainingLiving.length <= 1) {
+            setTimeout(() => {
+              closeDenounceModal();
+              broadcastEvent({ type: 'CLOSE_DENOUNCE_MODAL' });
+              
+              if (remainingLiving.length <= 1) {
+                gameState.status = 'game_ended';
+                broadcastState();
+              } else {
+                startNewRound();
+              }
+            }, 1200);
             return;
           }
-          const vic = living[vIdx++];
-          if (vic && vic.isAlive) {
-            triggerRevolverChamber(vic);
-            setTimeout(runQuintoChain, 4800);
-          } else {
-            runQuintoChain();
+
+          const currentVictim = victims[currentIndex++];
+
+          // Si le joueur est mort entre-temps, passer au suivant
+          if (!currentVictim || !currentVictim.isAlive) {
+            processNextQuintoVictim();
+            return;
           }
+
+          // Bannière annonçant qui passe à la roulette
+          gameState.feltTicker = `21 QUINTO ZBEUL HELLLAAAAAA ! Au tour de ${currentVictim.name} d'affronter le barillet...`;
+          broadcastState();
+
+          // Déclencher le barillet pour ce joueur avec rappel strict à la fin
+          triggerRevolverChamber(currentVictim, () => {
+            // Pause de 2 secondes après le tir pour voir le verdict avant le joueur suivant
+            setTimeout(processNextQuintoVictim, 2000);
+          });
         }
-        setTimeout(runQuintoChain, 1500);
+
+        // Laisse 2 secondes pour lire l'alerte générale avant le premier tir
+        setTimeout(processNextQuintoVictim, 2200);
         return;
       }
 
+      // CAS CLASSIQUE D'ACCUSATION (non-21)
       const realScore = getQuintoScore(claim.realDice[0], claim.realDice[1]);
       const lied = getQuintoRank(realScore) < getQuintoRank(claim.score);
 
@@ -1941,11 +2099,8 @@
       });
 
       openQuintoDenounceModalLocal(accuser.name, accused.name, claim, lied, () => {
-        if (lied) {
-          setTimeout(() => triggerRevolverChamber(accused), 1400);
-        } else {
-          setTimeout(() => triggerRevolverChamber(accuser), 1400);
-        }
+        const loser = lied ? accused : accuser;
+        triggerRevolverChamber(loser);
       });
     }
 
@@ -1957,6 +2112,7 @@
 
       if (!modal || !row) return;
       modal.classList.remove('hidden');
+      row.classList.remove('hidden'); // CRUCIAL : réaffiche la rangée masquée par le barillet !
       if (cylinderBox) cylinderBox.classList.add('hidden');
 
       if (verdict) {
@@ -1965,9 +2121,12 @@
       }
 
       row.innerHTML = `
-        <div class="flex gap-3 my-2">
-          <span id="quinto-reveal-d1" class="w-14 h-14 bg-[#18201a] text-dore border border-[#304435] font-bold text-2xl rounded-xl flex items-center justify-center shadow-2xl">?</span>
-          <span id="quinto-reveal-d2" class="w-14 h-14 bg-[#18201a] text-dore border border-[#304435] font-bold text-2xl rounded-xl flex items-center justify-center shadow-2xl">?</span>
+        <div class="flex flex-col items-center gap-2 my-2">
+          <span class="text-[10px] font-mono text-[#8a9d8f] uppercase tracking-wider">Dés réels sous le gobelet :</span>
+          <div class="flex gap-3">
+            <span id="quinto-reveal-d1" class="w-14 h-14 bg-[#18201a] text-dore border border-[#304435] font-bold text-2xl rounded-xl flex items-center justify-center shadow-2xl">?</span>
+            <span id="quinto-reveal-d2" class="w-14 h-14 bg-[#18201a] text-dore border border-[#304435] font-bold text-2xl rounded-xl flex items-center justify-center shadow-2xl">?</span>
+          </div>
         </div>
       `;
 
@@ -1982,9 +2141,11 @@
           if (d1El) d1El.innerText = Math.floor(Math.random() * 6) + 1;
           if (d2El) d2El.innerText = Math.floor(Math.random() * 6) + 1;
 
-          if (rollTicks >= 20) {
+          if (rollTicks >= 18) {
             clearInterval(rollAnim);
             audio.chip();
+
+            const realScore = getQuintoScore(claim.realDice[0], claim.realDice[1]);
 
             if (d1El) {
               d1El.innerText = claim.realDice[0];
@@ -1998,16 +2159,20 @@
             setTimeout(() => {
               if (verdict) {
                 verdict.className = "font-title text-base sm:text-lg font-bold text-dore tracking-wide text-center";
-                verdict.innerText = lied ? `${accusedName} a menti !` : `${accuserName} s'est trompé !`;
+                verdict.innerText = lied 
+                  ? `${accusedName} a menti !` 
+                  : `${accuserName} s'est fait avoir`;
               }
               audio.playFaaah();
+              
+              // Laisse 2,5 secondes complètes pour lire le résultat avant de lancer le barillet
               setTimeout(() => {
                 if (onComplete) onComplete();
-              }, 2200);
-            }, 1000);
+              }, 2500);
+            }, 600);
           }
-        }, 80);
-      }, 1000);
+        }, 70);
+      }, 600);
     }
 
     /* -------------------------------------------------------------
@@ -2176,20 +2341,24 @@
 
       setTimeout(flipNextCard, 400);
     }
-
+    
     function closeDenounceModal() {
       const modal = document.getElementById('denounce-modal');
+      const verdict = document.getElementById('denounce-verdict-banner');
+      const row = document.getElementById('denounce-cards-row');
+      if (verdict) verdict.innerText = "";
+      if (row) row.innerHTML = "";
       if (modal) modal.classList.add('hidden');
     }
 
     /* -------------------------------------------------------------
        ROULETTE & EXECUTION
        ------------------------------------------------------------- */
-    function triggerRevolverChamber(targetPlayer) {
+    function triggerRevolverChamber(targetPlayer, customOnComplete = null) {
       const risk = targetPlayer.cylinderRisk || 1;
       const remainingChambers = Math.max(1, 7 - risk);
       const fateProb = 1 / remainingChambers;
-      const isFatal = Math.random() < fateProb; // Calcul de isFatal AVANT le broadcast !
+      const isFatal = Math.random() < fateProb;
 
       broadcastEvent({
         type: 'CYLINDER_SPIN',
@@ -2202,16 +2371,25 @@
 
       triggerRevolverChamberLocal(targetPlayer.name, risk, remainingChambers, isFatal, () => {
         if (isFatal) {
-          triggerExecution(targetPlayer, `La chambre (${risk}/6) a fait feu.`);
+          triggerExecution(targetPlayer, `La chambre (${risk}/6) a fait feu.`, () => {
+            if (typeof customOnComplete === 'function') {
+              customOnComplete();
+            }
+          });
         } else {
           targetPlayer.cylinderRisk = Math.min(6, risk + 1);
-          gameState.feltTicker = `${targetPlayer.name} survit. Coup suivant : 1/${Math.max(1, 6 - risk)}.`;
+          gameState.feltTicker = `${targetPlayer.name} survit ! Risque augmenté à ${targetPlayer.cylinderRisk}/6.`;
           broadcastState();
-          setTimeout(() => {
-            closeDenounceModal();
-            broadcastEvent({ type: 'CLOSE_DENOUNCE_MODAL' });
-            startNewRound();
-          }, 1800);
+
+          if (typeof customOnComplete === 'function') {
+            customOnComplete();
+          } else {
+            setTimeout(() => {
+              closeDenounceModal();
+              broadcastEvent({ type: 'CLOSE_DENOUNCE_MODAL' });
+              startNewRound();
+            }, 1800);
+          }
         }
       });
     }
@@ -2219,18 +2397,22 @@
     function triggerRevolverChamberLocal(targetPlayerName, risk, remainingChambers, isFatal, onComplete) {
       const modal = document.getElementById('denounce-modal');
       const cylinderBox = document.getElementById('denounce-cylinder-box');
-      const row = document.getElementById('denounce-cards-row'); // <-- Récupère la rangée
+      const row = document.getElementById('denounce-cards-row');
       const wheel = document.getElementById('roulette-cylinder-wheel');
       const desc = document.getElementById('denounce-fate-desc');
       const ticker = document.getElementById('denounce-cylinder-ticker');
+      const verdict = document.getElementById('denounce-verdict-banner'); // <-- Récupère le bandeau
 
       if (!cylinderBox || !wheel || !desc || !ticker) return;
 
       if (modal) modal.classList.remove('hidden');
-      if (row) row.classList.add('hidden'); // <-- Cache le bloc vide de 110px !
+      if (row) row.classList.add('hidden');
+      
+      // Nettoie tout résidu d'ancien duel ou PFC !
+      if (verdict) verdict.innerText = "";
+
       cylinderBox.classList.remove('hidden');
       
-      // Affichage précis : 1 chance sur 6, puis 1 sur 5, etc.
       const rem = remainingChambers || Math.max(1, 7 - risk);
       desc.innerText = `${targetPlayerName} presse la détente : 1 chance sur ${rem} !`;
       ticker.innerText = "Le canon est sur sa tempe...";
@@ -2272,9 +2454,13 @@
       setTimeout(spinStep, 350);
     }
 
-    function triggerExecution(player, reason) {
+    function triggerExecution(player, reason, onDone = null) {
       player.isAlive = false;
       gameState.feltTicker = `${player.name} est éliminé.`;
+
+      // Fermer la modale de roulette pour tout le monde
+      closeDenounceModal();
+      broadcastEvent({ type: 'CLOSE_DENOUNCE_MODAL' });
 
       broadcastEvent({
         type: 'EXECUTION',
@@ -2286,6 +2472,11 @@
       broadcastState();
 
       setTimeout(() => {
+        if (typeof onDone === 'function') {
+          onDone();
+          return;
+        }
+
         const survivors = gameState.playerOrder.filter(id => gameState.players[id] && gameState.players[id].isAlive);
         if (survivors.length <= 1) {
           gameState.status = 'game_ended';
@@ -2293,11 +2484,13 @@
         } else {
           startNewRound();
         }
-      }, 2600);
+      }, 2800);
     }
 
     function triggerExecutionLocal(playerName, reason) {
       audio.gunshot();
+      closeDenounceModal(); // Assure la fermeture de la modale en arrière-plan
+
       const overlay = document.getElementById('execution-overlay');
       const title = document.getElementById('exec-title');
       const desc = document.getElementById('exec-desc');
@@ -2310,7 +2503,7 @@
         setTimeout(() => {
           overlay.classList.add('pointer-events-none');
           overlay.classList.remove('opacity-100');
-        }, 2200);
+        }, 2400);
       }
     }
 
@@ -2339,7 +2532,7 @@
       const target = gameState.players[targetId];
       if (!target || !target.isAlive) return;
       target.hand.push({ id: `c_${Date.now()}`, rank: '10', isJoker: false, isRat: true });
-      gameState.feltTicker = `Un 10 Maudit a été remis à ${target.name} !`;
+      gameState.feltTicker = `Un 10 a été remis à ${target.name} !`;
       showToast(`${target.name} a reçu un 10 !`);
       audio.chip();
       broadcastState();
@@ -2419,19 +2612,35 @@
       const accused = gameState.players[accusedId];
       gameState.immunityPending = null;
 
-      // Ordre de fermer la modale chez le client
       broadcastEvent({ type: 'IMMUNITY_PROMPT_CLOSE' });
 
       if (useImmunity) {
         consumePlayerItem(accused, 'immunity');
-        gameState.feltTicker = `${accused.name} active son Totem d'immunité ! L'accusation est annulée !`;
-        showToast(`${accused.name} sauvé par son Totem !`);
+        gameState.status = 'in_round';
+        gameState.feltTicker = `${accused.name} active son Totem d'immunité.`;
+        showToast(`${accused.name} est immunisé !`);
         audio.chip();
 
-        setTimeout(() => {
+        // 1. En mode CARTES : on neutralise la réclamation pour interdire une ré-accusation
+        if (duelType === 'cards') {
+          gameState.lastClaim = null;
+        }
+
+        // 2. En mode DÉS : les dés du joueur protégé restent validés, le suivant doit obligatoirement secouer
+        if (duelType === 'dice') {
           gameState.quintoHasRolled = false;
+          // On retire la paternité pour empêcher le suivant de crier menteur immédiatement sur ce tour blanchi
+          if (gameState.quintoClaim) {
+            gameState.quintoClaim.playerId = null; 
+          }
+        }
+
+        broadcastState();
+
+        // Passer au joueur suivant
+        setTimeout(() => {
           advanceToNextLiving();
-        }, 1800);
+        }, 1600);
         return;
       }
 
@@ -2705,6 +2914,7 @@
       const bot = gameState.players[activeId];
       if (!bot || !bot.isBot || !bot.isAlive) return;
 
+      // Gestion des items Zbeul par le bot
       if (gameState.isZbeul && Array.isArray(bot.items) && bot.items.length > 0 && !gameState.hasUsedItemThisTurn) {
         if (bot.items.includes('swap_hands') && gameState.gameMode === 'cards' && Math.random() < 0.4) {
           consumePlayerItem(bot, 'swap_hands');
@@ -2724,7 +2934,15 @@
         if (gameState.status !== 'in_round' || gameState.playerOrder[gameState.activePlayerIndex] !== bot.id) return;
 
         if (gameState.gameMode === 'dice') {
-          if (gameState.quintoClaim) {
+          // Le bot ne peut accuser QUE si l'annonce précédente appartient à un autre joueur vivant et NON protégé
+          const canDoubt = Boolean(
+            gameState.quintoClaim &&
+            gameState.quintoClaim.playerId &&
+            gameState.quintoClaim.playerId !== bot.id &&
+            gameState.players[gameState.quintoClaim.playerId]?.isAlive
+          );
+
+          if (canDoubt) {
             const currentRank = getQuintoRank(gameState.quintoClaim.score);
             let doubtChance = 0.08;
             if (currentRank >= 10) doubtChance = 0.25;
@@ -2739,7 +2957,26 @@
             }
           }
 
+          // Si le bot ne doute pas (ou ne peut pas douter), il DOIT secouer les dés
           handleQuintoRoll(bot.id);
+
+          if (
+            gameState.isZbeul &&
+            bot.items &&
+            bot.items.includes('reroll') &&
+            !gameState.hasUsedItemThisTurn
+          ) {
+            const currentScore = getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1]);
+            const currentRank = getQuintoRank(currentScore);
+            const prevRank = gameState.quintoClaim ? getQuintoRank(gameState.quintoClaim.score) : -1;
+
+            if (currentRank <= prevRank || currentRank < 4) {
+              consumePlayerItem(bot, 'reroll');
+              gameState.hasUsedItemThisTurn = true;
+              executeDiceReroll(bot.id);
+            }
+          }
+
           gameState.feltTicker = `${bot.name} jauge discrètement ses dés...`;
           broadcastState();
 
@@ -2750,7 +2987,10 @@
             const possibleScores = QUINTO_ORDER.filter(s => getQuintoRank(s) > prevRank);
 
             if (possibleScores.length === 0) {
-              handleQuintoBluff(bot.id);
+              // Si aucune enchère n'est possible, il accuse seulement s'il le peut, sinon il concède
+              if (canDoubt) {
+                handleQuintoBluff(bot.id);
+              }
               return;
             }
 
@@ -2765,7 +3005,14 @@
           }, 1500);
 
         } else {
-          if (gameState.lastClaim && shouldBotAccuseCards(bot, gameState.lastClaim)) {
+          // Mode CARTES : ne peut accuser que si l'annonce existe et appartient à un tiers
+          const canAccuseCards = Boolean(
+            gameState.lastClaim &&
+            gameState.lastClaim.playerId &&
+            gameState.lastClaim.playerId !== bot.id
+          );
+
+          if (canAccuseCards && shouldBotAccuseCards(bot, gameState.lastClaim)) {
             handleCallBluff(bot.id);
           } else {
             botPerformCardMove(bot);
@@ -2820,6 +3067,7 @@
         p.cylinderRisk = 1;
         p.hand = [];
         p.items = [];
+        p.immunityCount = 0;
         p.hasDraftedThisRound = false;
         p.isReady = p.isBot;
       });
@@ -2988,20 +3236,31 @@
         return;
       }
 
+      const hasPrevClaim = Boolean(gameState.quintoClaim && gameState.quintoClaim.playerId !== myId);
+
       itemsList.forEach((itemId) => {
         const def = ZBEUL_ITEMS[itemId];
         if (!def) return;
-        const canActivate = isMyTurn && !hasUsed && !def.passive && (itemId === 'swap_hands' || itemId === 'curse_10');
+
+        const canActivateCards = isMyTurn && !hasUsed && !def.passive && (itemId === 'swap_hands' || itemId === 'curse_10');
+        const canActivateReroll = isMyTurn && !hasUsed && gameState.gameMode === 'dice' && gameState.quintoHasRolled && itemId === 'reroll';
+        const canActivateForcePrev = isMyTurn && !hasUsed && gameState.gameMode === 'dice' && !gameState.quintoHasRolled && hasPrevClaim && itemId === 'force_prev_reroll';
+
+        const canActivate = canActivateCards || canActivateReroll || canActivateForcePrev;
 
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.title = `${def.name} - ${def.desc}`;
         btn.disabled = !canActivate;
         btn.className = `w-7 h-7 rounded flex items-center justify-center text-sm transition-all flex-shrink-0 ${
-          canActivate ? 'border border-dore bg-[#1e2e21] text-dore cursor-pointer active:scale-90' : 'border border-[#1e2720] bg-[#0e1410] text-[#718575] opacity-50'
+          canActivate
+            ? 'border border-dore bg-[#1e2e21] text-dore cursor-pointer active:scale-90 shadow-[0_0_8px_rgba(212,175,55,0.3)]'
+            : 'border border-[#1e2720] bg-[#0e1410] text-[#718575] opacity-50 cursor-not-allowed'
         }`;
         btn.innerHTML = `<i class="fa-solid ${def.icon}"></i>`;
-        if (canActivate) btn.onclick = () => handleItemActivation(itemId);
+        if (canActivate) {
+          btn.onclick = () => handleItemActivation(itemId);
+        }
         invContainer.appendChild(btn);
       });
     }
@@ -3031,6 +3290,10 @@
           };
           list.appendChild(btn);
         });
+      } else if (itemId === 'reroll') {
+        sendToHost({ type: 'USE_ITEM_REROLL', id: myId });
+      } else if (itemId === 'force_prev_reroll') {
+        sendToHost({ type: 'USE_ITEM_FORCE_PREV_REROLL', id: myId });
       }
     }
 
@@ -3198,8 +3461,8 @@
         myDiceView.classList.remove('hidden');
         myDiceView.classList.add('flex');
         dicePairEl.innerHTML = `
-          <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-xs shadow border border-dore">${gameState.quintoRealDice[0]}</span>
-          <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-xs shadow border border-dore">${gameState.quintoRealDice[1]}</span>
+          <span class="w-5 h-5 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-[11px] shadow border border-dore">${gameState.quintoRealDice[0]}</span>
+          <span class="w-5 h-5 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-[11px] shadow border border-dore">${gameState.quintoRealDice[1]}</span>
         `;
         realValTag.innerText = `(${getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1])})`;
       } else {
@@ -3218,12 +3481,11 @@
       const prevScore = gameState.quintoClaim ? gameState.quintoClaim.score : 0;
       const prevRank = getQuintoRank(prevScore);
 
-      // Styles visuels pour états actifs et désactivés
-      const ROLL_ACTIVE = "relative group w-full h-14 sm:h-16 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 overflow-hidden border border-dore/80 bg-gradient-to-b from-[#2a4531] to-[#16271c] hover:from-[#35583f] hover:to-[#1e3425] text-dore shadow-[0_4px_18px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.15)] active:scale-[0.98] cursor-pointer select-none";
-      const ROLL_DISABLED = "relative group w-full h-14 sm:h-16 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 overflow-hidden border border-[#222b24] bg-[#101411] text-[#4a5a4e] opacity-60 cursor-not-allowed select-none";
+      const ROLL_ACTIVE = "relative group w-full h-11 sm:h-12 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-dore/80 bg-gradient-to-b from-[#2a4531] to-[#16271c] hover:from-[#35583f] hover:to-[#1e3425] text-dore shadow-md active:scale-[0.98] cursor-pointer select-none";
+      const ROLL_DISABLED = "relative group w-full h-11 sm:h-12 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-[#222b24] bg-[#101411] text-[#4a5a4e] opacity-60 cursor-not-allowed select-none";
 
-      const BLUFF_ACTIVE = "relative group w-full h-14 sm:h-16 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 overflow-hidden border border-dore/80 bg-gradient-to-b from-[#25392b] to-[#16241b] hover:from-[#2f4837] hover:to-[#1c2c21] text-dore shadow-[0_4px_18px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.15)] active:scale-[0.98] cursor-pointer select-none";
-      const BLUFF_DISABLED = "relative group w-full h-14 sm:h-16 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 overflow-hidden border border-[#222b24] bg-[#101411] text-[#4a5a4e] opacity-60 cursor-not-allowed select-none";
+      const BLUFF_ACTIVE = "relative group w-full h-11 sm:h-12 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-dore/80 bg-gradient-to-b from-[#25392b] to-[#16241b] hover:from-[#2f4837] hover:to-[#1c2c21] text-dore shadow-md active:scale-[0.98] cursor-pointer select-none";
+      const BLUFF_DISABLED = "relative group w-full h-11 sm:h-12 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-[#222b24] bg-[#101411] text-[#4a5a4e] opacity-60 cursor-not-allowed select-none";
 
       if (isMyTurn && !gameState.quintoHasRolled) {
         stepRoll.classList.remove('hidden');
@@ -3249,9 +3511,10 @@
         btnTruth.innerHTML = canTellTruth 
           ? `<i class="fa-solid fa-check text-green-400"></i><span>Vérité (${realScore})</span>`
           : `<i class="fa-solid fa-ban text-stone-500"></i><span>Vérité (${realScore} &le; ${prevScore})</span>`;
+
         btnTruth.className = canTellTruth
-          ? "h-14 sm:h-16 rounded-xl border border-[#3e5644] bg-[#1c2920] hover:bg-[#25392b] text-[#f7f6f2] font-mono text-sm sm:text-base font-semibold tracking-wide transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2 cursor-pointer"
-          : "h-14 sm:h-16 rounded-xl border border-[#233026] bg-[#131915] text-[#57685a] font-mono text-sm sm:text-base tracking-wide cursor-not-allowed flex items-center justify-center gap-2";
+          ? "h-10 sm:h-11 rounded-lg border border-[#3e5644] bg-[#1c2920] hover:bg-[#25392b] text-[#f7f6f2] font-mono text-xs sm:text-sm font-semibold tracking-wide transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2 cursor-pointer"
+          : "h-10 sm:h-11 rounded-lg border border-[#233026] bg-[#131915] text-[#57685a] font-mono text-xs sm:text-sm tracking-wide cursor-not-allowed flex items-center justify-center gap-2";
 
         selectClaim.innerHTML = '';
         QUINTO_ORDER.forEach((sc, idx) => {
@@ -3421,6 +3684,7 @@
           cylinderRisk: 1,
           hand: [],
           items: [],
+          immunityCount: 0,
           hasDraftedThisRound: false
         }
       };
