@@ -4044,9 +4044,31 @@
       const isSkull = gameState.gameMode === 'skull';
       const isDice = gameState.gameMode === 'dice';
 
-      const modeTag = document.getElementById('header-mode-tag');
-      if (modeTag) {
-        modeTag.innerText = isMistigri ? "MODE : MISTIGRI" : (isSkull ? "MODE : SKULL" : (isDice ? "MODE : DÉS" : "MODE : CARTES"));
+      // MISE À JOUR DU BADGE EN HAUT À GAUCHE
+      const targetTitle = document.getElementById('game-target-title');
+      const targetBadge = document.getElementById('game-target-badge');
+      if (targetTitle) {
+        if (isDice) {
+          targetTitle.innerText = "MODE : DÉS";
+        } else if (isSkull) {
+          targetTitle.innerText = gameState.skullPhase === 'bidding' ? `DÉFI : ${gameState.skullHighBid || 1}` : "MODE : SKULL";
+        } else if (isMistigri) {
+          targetTitle.innerText = "MODE : MISTIGRI";
+        } else {
+          // Mode CARTES : afficher la figure exigée tirée au sort
+          if (gameState.requiredCard && CARD_DEFINITIONS[gameState.requiredCard]) {
+            const def = CARD_DEFINITIONS[gameState.requiredCard];
+            targetTitle.innerHTML = `FIGURE : <span class="${def.color} font-bold">${def.title} (${def.letter}) ${def.suit}</span>`;
+          } else {
+            targetTitle.innerText = "TIRAGE EN COURS...";
+          }
+        }
+      }
+
+      // MISE À JOUR DU COMPTEUR DE CARTES AU MILIEU
+      const cardsInPlayEl = document.getElementById('game-cards-in-play');
+      if (cardsInPlayEl) {
+        cardsInPlayEl.innerText = gameState.tableCardsCount || 0;
       }
 
       const centerCards = document.getElementById('center-cards-display');
