@@ -1499,31 +1499,22 @@
       if (msg.type === 'PLAYER_JOIN') {
         if (originConn) originConn.playerGameId = msg.player.id;
         
-        // Si le joueur est déjà dans la table, on met à jour ses infos
-        if (gameState.players[msg.player.id]) {
-          gameState.players[msg.player.id].name = msg.player.name;
-          gameState.players[msg.player.id].avatar = msg.player.avatar;
-          broadcastState();
-          return;
-        }
+        // On enregistre ou met à jour le joueur
+        gameState.players[msg.player.id] = {
+          ...(gameState.players[msg.player.id] || {}),
+          ...msg.player
+        };
 
-        if (Object.keys(gameState.players).length >= 4) {
-          if (originConn && originConn.open) {
-            originConn.send({ type: 'TOAST', message: 'Table déjà complète (4 max).' });
-          }
-          return;
-        }
-
-        gameState.players[msg.player.id] = msg.player;
         if (!gameState.playerOrder.includes(msg.player.id)) {
           gameState.playerOrder.push(msg.player.id);
         }
+
+        gameState.status = 'lobby';
         gameState.feltTicker = `${msg.player.name} s'installe à la table.`;
         
-        // Assure que le jeu reste bien en phase lobby et diffuse immédiatement
-        gameState.status = 'lobby';
+        // Diffusion immédiate à tout le monde (PeerJS + BroadcastChannel)
         broadcastState();
-        showToast(`${msg.player.name} a rejoint la partie.`);
+        showToast(`${msg.player.name} a rejoint la table.`);
         return;
       }
 
@@ -1821,27 +1812,37 @@
     function initClientPeer(roomCode) {
       const cleanCode = roomCode.toUpperCase();
       gameState.code = cleanCode;
+      gameState.status = 'lobby';
       document.getElementById('badge-room-code').innerText = cleanCode;
       document.getElementById('room-badge').classList.remove('hidden');
       document.getElementById('room-badge').classList.add('flex');
 
       setupBroadcastChannel(cleanCode);
 
+      const localPlayerData = {
+        id: myId,
+        name: myName,
+        avatar: (selectedAvatarId === 'custom' && customAvatarBase64) ? customAvatarBase64 : selectedAvatarId,
+        isBot: false,
+        isReady: false,
+        isAlive: true,
+        cylinderRisk: 1,
+        hand: [],
+        items: [],
+        immunityCount: 0,
+        hasDraftedThisRound: false
+      };
+
+      // CRUCIAL : Enregistrer le joueur dans son propre state local tout de suite
+      gameState.players[myId] = localPlayerData;
+      if (!gameState.playerOrder.includes(myId)) {
+        gameState.playerOrder.push(myId);
+      }
+      renderUI();
+
       const joinPayload = {
         type: 'PLAYER_JOIN',
-        player: {
-          id: myId,
-          name: myName,
-          avatar: (selectedAvatarId === 'custom' && customAvatarBase64) ? customAvatarBase64 : selectedAvatarId,
-          isBot: false,
-          isReady: false,
-          isAlive: true,
-          cylinderRisk: 1,
-          hand: [],
-          items: [],
-          immunityCount: 0,
-          hasDraftedThisRound: false
-        }
+        player: localPlayerData
       };
 
       if (typeof Peer !== 'undefined') {
@@ -1854,7 +1855,6 @@
             hostConn = peer.connect(targetPeerId, { reliable: true });
 
             hostConn.on('open', () => {
-              // Envoyer le join UNIQUEMENT quand la liaison P2P est réellement ouverte
               hostConn.send(joinPayload);
               showToast("Connecté à la table !");
             });
@@ -1876,22 +1876,22 @@
 
             hostConn.on('error', (err) => {
               console.error("Erreur connexion hôte:", err);
-              showToast("Impossible de joindre cette table.");
             });
           });
 
           peer.on('error', (err) => {
             console.warn(err);
-            showToast("Erreur serveur P2P (" + err.type + ")");
           });
         } catch (e) {
           console.error(e);
         }
       }
 
-      // Pour le test en local (deux onglets sur la même machine uniquement)
+      // Envoi immédiat par BroadcastChannel pour test en multi-fenêtres local
       if (broadcastChannel) {
-        try { broadcastChannel.postMessage({ target: 'HOST', action: joinPayload, sender: myId }); } catch(e) {}
+        try { 
+          broadcastChannel.postMessage({ target: 'HOST', action: joinPayload, sender: myId }); 
+        } catch(e) {}
       }
     }
 
