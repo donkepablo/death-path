@@ -1462,11 +1462,23 @@
       if (isHost) {
         handleClientMessage(message, null);
       } else {
-        if (broadcastChannel) {
-          try { broadcastChannel.postMessage({ target: 'HOST', action: message, sender: myId }); } catch(e) {}
-        }
+        let sent = false;
         if (hostConn && hostConn.open) {
-          try { hostConn.send(message); } catch(e) {}
+          try { 
+            hostConn.send(message); 
+            sent = true;
+          } catch(e) {
+            console.error("Échec d'envoi hostConn", e);
+          }
+        }
+        if (broadcastChannel) {
+          try { 
+            broadcastChannel.postMessage({ target: 'HOST', action: message, sender: myId }); 
+            sent = true;
+          } catch(e) {}
+        }
+        if (!sent) {
+          showToast("Connexion à l'hôte en cours... Réessaie.");
         }
       }
     }
@@ -1486,6 +1498,15 @@
 
       if (msg.type === 'PLAYER_JOIN') {
         if (originConn) originConn.playerGameId = msg.player.id;
+        
+        // Si le joueur est déjà dans la table, on met à jour ses infos
+        if (gameState.players[msg.player.id]) {
+          gameState.players[msg.player.id].name = msg.player.name;
+          gameState.players[msg.player.id].avatar = msg.player.avatar;
+          broadcastState();
+          return;
+        }
+
         if (Object.keys(gameState.players).length >= 4) {
           if (originConn && originConn.open) {
             originConn.send({ type: 'TOAST', message: 'Table déjà complète (4 max).' });
@@ -1815,6 +1836,7 @@
           cylinderRisk: 1,
           hand: [],
           items: [],
+          immunityCount: 0,
           hasDraftedThisRound: false
         }
       };
@@ -1829,6 +1851,7 @@
             hostConn = peer.connect(targetPeerId, { reliable: true });
 
             hostConn.on('open', () => {
+              // Envoyer le join UNIQUEMENT quand la liaison P2P est réellement ouverte
               hostConn.send(joinPayload);
               showToast("Connecté à la table !");
             });
@@ -1844,21 +1867,29 @@
               }
             });
 
-            hostConn.on('error', () => {
+            hostConn.on('close', () => {
+              showToast("Déconnecté de l'hôte.");
+            });
+
+            hostConn.on('error', (err) => {
+              console.error("Erreur connexion hôte:", err);
               showToast("Impossible de joindre cette table.");
             });
           });
 
           peer.on('error', (err) => {
             console.warn(err);
-            showToast("Erreur de connexion P2P.");
+            showToast("Erreur serveur P2P (" + err.type + ")");
           });
         } catch (e) {
           console.error(e);
         }
       }
 
-      sendToHost(joinPayload);
+      // Pour le test en local (deux onglets sur la même machine uniquement)
+      if (broadcastChannel) {
+        try { broadcastChannel.postMessage({ target: 'HOST', action: joinPayload, sender: myId }); } catch(e) {}
+      }
     }
 
     /* -------------------------------------------------------------
