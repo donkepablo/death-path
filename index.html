@@ -1512,9 +1512,21 @@
         if (originConn) originConn.playerGameId = msg.player.id;
         
         // On enregistre ou met à jour le joueur
+        // Le JOIN arrive 2 fois (BroadcastChannel puis PeerJS, parfois plusieurs secondes plus tard)
+        // et contient isReady:false : on ne doit pas écraser l'état "Prêt" déjà reçu.
+        const existingPlayer = gameState.players[msg.player.id];
         gameState.players[msg.player.id] = {
-          ...(gameState.players[msg.player.id] || {}),
-          ...msg.player
+          ...(existingPlayer || {}),
+          ...msg.player,
+          ...(existingPlayer ? {
+            isReady: existingPlayer.isReady,
+            hand: existingPlayer.hand,
+            items: existingPlayer.items,
+            immunityCount: existingPlayer.immunityCount,
+            hasDraftedThisRound: existingPlayer.hasDraftedThisRound,
+            isAlive: existingPlayer.isAlive,
+            cylinderRisk: existingPlayer.cylinderRisk
+          } : {})
         };
 
         if (!gameState.playerOrder.includes(msg.player.id)) {
@@ -1531,6 +1543,7 @@
       }
 
       if (msg.type === 'TOGGLE_READY') {
+        console.log('[HOST] TOGGLE_READY reçu', msg);
         if (gameState.players[msg.id]) {
           gameState.players[msg.id].isReady = (typeof msg.ready === 'boolean')
             ? msg.ready
