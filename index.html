@@ -392,12 +392,12 @@
           </div>
         </div>
 
-        <div id="game-action-ticker" class="text-xs font-mono text-[#dbe3dc] truncate max-w-[240px] sm:max-w-md text-center">
+        <div id="game-action-ticker" class="absolute left-1/2 -translate-x-1/2 text-xs font-mono text-[#dbe3dc] truncate max-w-[320px] sm:max-w-lg md:max-w-xl text-center pointer-events-none select-none">
           Silence à la table.
         </div>
 
         <div class="flex items-center gap-1.5 font-mono text-xs">
-          <span id="center-stat-label" class="text-[#7f9184] text-[10px] uppercase">Au milieu:</span>
+          <span id="center-stat-label" class="text-[#7f9184] text-[10px] uppercase">Nombre de cartes au centre :</span>
           <span id="game-cards-in-play" class="text-dore font-bold">0</span>
         </div>
       </div>
@@ -458,7 +458,6 @@
                       <div class="flex flex-col items-center">
                         <i class="fa-solid fa-layer-group text-2xl text-dore mb-1"></i>
                         <span id="skull-pile-center-count" class="font-mono text-sm font-bold text-[#faf8f5]">0</span>
-                        <span class="text-[8px] font-mono uppercase tracking-widest text-[#7fa387]">posées</span>
                       </div>
                       <div class="w-full flex justify-between text-[10px] text-dore rotate-180">
                         <i class="fa-solid fa-fan"></i>
@@ -600,45 +599,43 @@
         </div>
 
         <!-- INTERFACE DÉS (QUINTO) -->
-        <div id="quinto-action-controls" class="hidden w-full max-w-md flex-col items-center p-0 my-auto gap-1.5">          
-          <div id="quinto-my-dice-view" class="hidden items-center gap-2.5 bg-[#0d120f]/90 px-3.5 py-1.5 rounded-lg border border-[#2b3a2e] shadow-inner mb-1.5">
+        <div id="quinto-action-controls" class="hidden w-full max-w-xs flex-col items-center p-0 my-auto gap-2.5">          
+          <div id="quinto-my-dice-view" class="hidden items-center gap-2.5 bg-[#0d120f]/90 px-3.5 py-1.5 rounded-lg border border-[#2b3a2e] shadow-inner">
             <span class="text-[10px] uppercase tracking-wider font-mono text-[#7f9284]">Ton tirage :</span>
             <div id="quinto-dice-pair" class="flex gap-1.5"></div>
             <span id="quinto-real-val-tag" class="text-xs font-mono font-bold text-dore"></span>
           </div>
 
           <div id="quinto-step-roll" class="w-full grid grid-cols-2 gap-2">
-            <button id="btn-quinto-roll" disabled class="relative group w-full h-11 sm:h-12 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-[#233126] bg-[#121613] text-[#4d5e51] cursor-not-allowed select-none">
-              <i class="fa-solid fa-dice text-base"></i>
+            <button id="btn-quinto-roll" disabled class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-dice text-sm"></i>
               <span>Secouer</span>
             </button>
-            <button id="btn-quinto-bluff-early" disabled class="relative group w-full h-11 sm:h-12 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-[#233126] bg-[#121613] text-[#4d5e51] cursor-not-allowed select-none">
+            <button id="btn-quinto-bluff-early" disabled class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
               <i class="fa-solid fa-bullhorn text-sm"></i>
               <span>Menteur !</span>
             </button>
           </div>
 
-          <div id="quinto-step-choice" class="hidden w-full flex-col gap-1.5">
-            <div class="grid grid-cols-2 gap-2">
-              <button id="btn-quinto-truth" class="h-10 sm:h-11 rounded-lg border border-[#3e5644] bg-[#1c2920] hover:bg-[#25392b] text-[#f7f6f2] font-mono text-xs sm:text-sm font-semibold tracking-wide transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2">
-                <i class="fa-solid fa-check text-green-400"></i>
+          <div id="quinto-step-choice" class="hidden w-full flex-col gap-2.5">
+            <div class="w-full grid grid-cols-2 gap-2">
+              <button id="btn-quinto-truth" class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-check text-xs"></i>
                 <span>Vérité</span>
               </button>
-              <button id="btn-quinto-lie" class="h-10 sm:h-11 rounded-lg border border-[#8f7734] bg-[#221f14] hover:bg-[#2f2a1b] text-dore font-mono text-xs sm:text-sm font-semibold tracking-wide transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2">
-                <i class="fa-solid fa-mask text-dore"></i>
+              <button id="btn-quinto-lie" class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-mask text-xs"></i>
                 <span>Mentir</span>
               </button>
             </div>
 
-            <!-- Panneau de sélection du mensonge : compact et lisible -->
-            <div id="quinto-lie-input-panel" class="hidden flex-col gap-1 p-2 rounded-lg bg-[#0d120f] border border-[#3b4e40] shadow-lg">
-              <div class="flex items-center justify-between px-0.5">
-                <span class="text-[9px] font-mono uppercase tracking-wider text-[#8a9d8f]">Annonce supérieure :</span>
-              </div>
+            <!-- Panneau de sélection du mensonge -->
+            <div id="quinto-lie-input-panel" class="hidden flex-col gap-1.5 p-2 rounded-lg bg-[#0d120f] border border-[#2b3a2e] shadow-lg">
+              <span class="text-[9px] font-mono uppercase tracking-wider text-[#8a9d8f] px-0.5">Annonce supérieure :</span>
               <div class="flex gap-1.5 items-center">
-                <select id="select-quinto-claim" class="flex-1 h-9 bg-[#162018] border border-[#3d5442] focus:border-dore text-dore font-mono font-bold text-xs rounded-md px-2.5 focus:outline-none">
+                <select id="select-quinto-claim" class="flex-1 h-8 bg-[#162018] border border-[#2b3a2e] focus:border-dore text-dore font-mono font-bold text-xs rounded px-2 focus:outline-none">
                 </select>
-                <button id="btn-submit-lie" class="h-9 px-4 rounded-md border border-dore bg-dore hover:bg-[#e2c050] text-[#111311] font-mono text-xs uppercase font-bold tracking-wider transition-all active:scale-95 shadow">
+                <button id="btn-submit-lie" class="h-8 px-3 rounded border border-dore bg-[#273a2c] hover:bg-[#334c3a] text-[#f7f6f2] font-title text-xs uppercase font-bold tracking-wider transition-all active:scale-95 shadow">
                   Valider
                 </button>
               </div>
@@ -1054,7 +1051,7 @@
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = `p-2.5 rounded-lg border flex items-center justify-center transition-all overflow-hidden ${
-          isSel ? 'border-dore bg-[#223326] text-dore shadow-[0_0_12px_rgba(212,175,55,0.4)]' : 'border-[#29392c] bg-[#111713] text-[#7b8f80] hover:border-[#3d5442]'
+          isSel ? 'border-dore bg-[#223326] text-dore' : 'border-[#29392c] bg-[#111713] text-[#7b8f80] hover:border-[#3d5442]'
         }`;
 
         if (av.isCustom && customAvatarBase64) {
@@ -1455,6 +1452,9 @@
       }
       else if (evt.type === 'SKULL_REVEAL_ANIM') {
         animateSkullRevealVisual(evt.revealerName, evt.targetPlayerId, evt.tile);
+      }
+      else if (evt.type === 'SKULL_TILE_THROWN_ANIM') {
+        throwSkullTileVisualEffect(evt.playerId);
       }
     }
 
@@ -1996,7 +1996,13 @@
 
       const tile = player.hand.splice(idx, 1)[0];
       player.skullPile.push(tile);
-      audio.cardSlide();
+
+      // Déclenchement local et diffusion multijoueur
+      broadcastEvent({
+        type: 'SKULL_TILE_THROWN_ANIM',
+        playerId: playerId
+      });
+      throwSkullTileVisualEffect(playerId);
 
       gameState.feltTicker = `${player.name} a posé une tuile face cachée.`;
       advanceSkullPlacementTurn();
@@ -2111,7 +2117,6 @@
       const availableTiles = target.skullPile.filter(t => !t.revealed);
       if (availableTiles.length === 0) return;
 
-      // Verrouiller temporairement pour éviter les doubles clics pendant l'animation
       if (gameState.isRevealingAnimationRunning) return;
       gameState.isRevealingAnimationRunning = true;
 
@@ -2119,7 +2124,7 @@
       tileToReveal.revealed = true;
       gameState.skullRevealedCards.push({ player: target.name, tile: tileToReveal });
 
-      // Diffusion de l'animation avec suspense au centre
+      // Lancement de l'animation pour tout le monde
       broadcastEvent({
         type: 'SKULL_REVEAL_ANIM',
         revealerName: revealer.name,
@@ -2131,7 +2136,7 @@
       gameState.feltTicker = `${revealer.name} retourne un disque chez ${target.name}...`;
       broadcastState();
 
-      // Délai de suspense (1.5 seconde) avant d'appliquer les conséquences
+      // Durée nécessaire pour laisser l'animation 3D se terminer complètement (1,8s)
       setTimeout(() => {
         gameState.isRevealingAnimationRunning = false;
 
@@ -2149,28 +2154,32 @@
         }
 
         // 2. FLEUR VALIDÉE
-        gameState.feltTicker = `Fleur révélée (${gameState.skullRevealedCards.length}/${gameState.skullTargetCount})`;
+        const currentCount = gameState.skullRevealedCards.length;
+        const targetCount = gameState.skullTargetCount;
+        gameState.feltTicker = `Fleur révélée (${currentCount}/${targetCount})`;
 
-        // 3. OBJECTIF ATTEINT
-        if (gameState.skullRevealedCards.length >= gameState.skullTargetCount) {
+        // 3. OBJECTIF ATTEINT (Dernière carte)
+        if (currentCount >= targetCount) {
           revealer.skullScore = (revealer.skullScore || 0) + 1;
           audio.chip();
 
           if (revealer.skullScore >= 2) {
             gameState.status = 'game_ended';
-            gameState.feltTicker = `${revealer.name} remporte la partie !`;
+            gameState.feltTicker = `${revealer.name} valide son 2e point et remporte la partie ! 🏆`;
             broadcastState();
           } else {
-            gameState.feltTicker = `${revealer.name} valide son défi (${revealer.skullScore}/2 point) !`;
+            gameState.feltTicker = `DÉFI RÉUSSI ! ${revealer.name} marque un point (${revealer.skullScore}/2) !`;
             broadcastState();
-            setTimeout(startNewRound, 2600);
+            // Délai généreux pour bien contempler la victoire de la manche
+            setTimeout(startNewRound, 3000);
           }
           return;
         }
 
+        // Si le défi continue (il reste des tuiles à retourner)
         broadcastState();
         checkBotTurnWithDelay();
-      }, 1500);
+      }, 1800); // 1800ms au lieu de 1500ms : l'animation entière a le temps d'atterrir
     }
 
     function proceedWithRoundStart(living) {
@@ -2639,6 +2648,63 @@
       }
     }
 
+    function throwSkullTileVisualEffect(playerId) {
+      let source = null;
+      if (playerId === myId) {
+        source = document.getElementById('skull-hand-tiles') || document.getElementById('seat-bottom');
+      } else {
+        const others = gameState.playerOrder.filter(id => id !== myId);
+        const idx = others.indexOf(playerId);
+        const seatId = idx === 0 ? 'seat-left' : (idx === 1 ? 'seat-top' : 'seat-right');
+        source = document.getElementById(seatId);
+      }
+      const target = document.getElementById('skull-pile-top') || document.getElementById('center-skull-display') || document.getElementById('table-felt-center');
+      if (!source || !target) return;
+
+      const sRect = source.getBoundingClientRect();
+      const tRect = target.getBoundingClientRect();
+
+      // Tuile volante avec le même style que les cartes/piles du jeu
+      const thrown = document.createElement('div');
+      thrown.className = 'thrown-card-anim w-14 h-20 sm:w-16 sm:h-24 rounded-xl border-2 border-[#8f7734] bg-[#142318] p-2 flex flex-col items-center justify-between shadow-2xl';
+      thrown.innerHTML = `
+        <div class="w-full flex justify-between text-[10px] text-dore opacity-80 pointer-events-none">
+          <i class="fa-solid fa-fan"></i><i class="fa-solid fa-skull"></i>
+        </div>
+        <i class="fa-solid fa-layer-group text-2xl text-dore/70 my-auto pointer-events-none"></i>
+        <div class="w-full flex justify-between text-[10px] text-dore opacity-80 rotate-180 pointer-events-none">
+          <i class="fa-solid fa-fan"></i><i class="fa-solid fa-skull"></i>
+        </div>
+      `;
+
+      // Position de départ centrée sur l'émetteur
+      const startX = sRect.left + sRect.width / 2 - 28;
+      const startY = sRect.top + sRect.height / 2 - 40;
+      thrown.style.left = `${startX}px`;
+      thrown.style.top = `${startY}px`;
+      thrown.style.transform = 'scale(0.85) rotate(-8deg)';
+      thrown.style.opacity = '1';
+      document.body.appendChild(thrown);
+
+      // Trajectoire calquée sur les cartes (courbe d'accélération + rotation)
+      const targetRot = (Math.random() * 16 - 8); // Entre -8° et +8°
+      const targetOffsetX = (Math.random() * 8 - 4);
+      const targetOffsetY = (Math.random() * 6 - 3);
+
+      setTimeout(() => {
+        thrown.style.left = `${tRect.left + tRect.width / 2 - 28 + targetOffsetX}px`;
+        thrown.style.top = `${tRect.top + tRect.height / 2 - 40 + targetOffsetY}px`;
+        thrown.style.transform = `scale(1) rotate(${targetRot}deg)`;
+        thrown.style.opacity = '0.95';
+
+        // Disparition douce au moment où la tuile se dépose sur le tas
+        setTimeout(() => {
+          thrown.style.opacity = '0';
+          setTimeout(() => thrown.remove(), 160);
+        }, 450);
+      }, 30);
+    }
+
     function animateMistigriDrawVisual(fromPlayerId, toPlayerId, isStolenCardMistigri = false) {
       // Récupérer le conteneur source (victime)
       let sourceEl = null;
@@ -2867,18 +2933,18 @@
       if (gameState.isZbeul && claim.score === 21) {
         gameState.status = 'resolving_bluff';
         gameState.feltTicker = "21 QUINTO ZBEUL ! Hécatombe";
-        showToast("21 QUINTO ZBEUL ! Tout le monde à la roulette !");
+        showToast("21 QUINTO ZBEUL !");
         broadcastState();
 
-        // Récupérer tous les joueurs encore vivants à cet instant précis
+        // Récupérer tous les joueurs vivants SAUF l'auteur du 21
         const victims = gameState.playerOrder
+          .filter(id => id !== claim.playerId)
           .map(id => gameState.players[id])
           .filter(p => p && p.isAlive);
 
         let currentIndex = 0;
 
         function processNextQuintoVictim() {
-          // 1. Si toute la table est passée ou s'il ne reste qu'un survivant (ou zéro)
           const remainingLiving = gameState.playerOrder
             .map(id => gameState.players[id])
             .filter(p => p && p.isAlive);
@@ -2900,24 +2966,19 @@
 
           const currentVictim = victims[currentIndex++];
 
-          // Si le joueur est mort entre-temps, passer au suivant
           if (!currentVictim || !currentVictim.isAlive) {
             processNextQuintoVictim();
             return;
           }
 
-          // Bannière annonçant qui passe à la roulette
-          gameState.feltTicker = `21 QUINTO ZBEUL HELLLAAAAAA ! Au tour de ${currentVictim.name} d'affronter le barillet...`;
+          gameState.feltTicker = `21 QUINTO ZBEUL ! Au tour de ${currentVictim.name} d'affronter le barillet...`;
           broadcastState();
 
-          // Déclencher le barillet pour ce joueur avec rappel strict à la fin
           triggerRevolverChamber(currentVictim, () => {
-            // Pause de 2 secondes après le tir pour voir le verdict avant le joueur suivant
             setTimeout(processNextQuintoVictim, 2000);
           });
         }
 
-        // Laisse 2 secondes pour lire l'alerte générale avant le premier tir
         setTimeout(processNextQuintoVictim, 2200);
         return;
       }
@@ -3058,7 +3119,7 @@
 
       let verdictText = '';
       if (lied && played10) verdictText = `CARTE 10 ! ${accused.name} est éliminé immédiatement.`;
-      else if (lied) verdictText = `Il a menti ! ${accused.name} tourne le barillet.`;
+      else if (lied) verdictText = `Mensonge ! ${accused.name} tourne le barillet.`;
       else verdictText = `Cartes correctes ! ${accuser.name} tourne le barillet.`;
 
       broadcastEvent({
@@ -3075,9 +3136,9 @@
             triggerExecution(accused, "A posé la carte 10.");
           }, 2000);
         } else if (lied) {
-          setTimeout(() => triggerRevolverChamber(accused), 1400);
+          setTimeout(() => triggerRevolverChamber(accused), 2000);
         } else {
-          setTimeout(() => triggerRevolverChamber(accuser), 1400);
+          setTimeout(() => triggerRevolverChamber(accuser), 2000);
         }
       });
     }
@@ -3128,7 +3189,7 @@
         const realDef = CARD_DEFINITIONS[realCard.rank] || CARD_DEFINITIONS[realCard.isJoker ? 'JOKER' : '10'];
 
         let rollTicks = 0;
-        const totalRollTicks = 16;
+        const totalRollTicks = 30;
 
         const rollInterval = setInterval(() => {
           rollTicks++;
@@ -3207,12 +3268,22 @@
 
       triggerRevolverChamberLocal(targetPlayer.name, risk, remainingChambers, isFatal, () => {
         if (isFatal) {
+          // Tir fatal : élimination
           triggerExecution(targetPlayer, `La chambre (${risk}/6) a fait feu.`, () => {
             if (typeof customOnComplete === 'function') {
               customOnComplete();
+            } else {
+              const survivors = gameState.playerOrder.filter(id => gameState.players[id] && gameState.players[id].isAlive);
+              if (survivors.length <= 1) {
+                gameState.status = 'game_ended';
+                broadcastState();
+              } else {
+                startNewRound();
+              }
             }
           });
         } else {
+          // Survie : on incrémente le risque
           targetPlayer.cylinderRisk = Math.min(6, risk + 1);
           gameState.feltTicker = `${targetPlayer.name} survit ! Risque augmenté à ${targetPlayer.cylinderRisk}/6.`;
           broadcastState();
@@ -3237,14 +3308,12 @@
       const wheel = document.getElementById('roulette-cylinder-wheel');
       const desc = document.getElementById('denounce-fate-desc');
       const ticker = document.getElementById('denounce-cylinder-ticker');
-      const verdict = document.getElementById('denounce-verdict-banner'); // <-- Récupère le bandeau
+      const verdict = document.getElementById('denounce-verdict-banner');
 
       if (!cylinderBox || !wheel || !desc || !ticker) return;
 
       if (modal) modal.classList.remove('hidden');
       if (row) row.classList.add('hidden');
-      
-      // Nettoie tout résidu d'ancien duel ou PFC !
       if (verdict) verdict.innerText = "";
 
       cylinderBox.classList.remove('hidden');
@@ -3271,20 +3340,20 @@
         } else {
           ticker.innerText = "...";
           setTimeout(() => {
-          if (isFatal) {
-            closeDenounceModal();
-          } else {
-            audio.dryHammerClick();
-            ticker.innerText = "Chambre vide. Clic !";
-            showToast(`${targetPlayerName} survit !`);
-            
-            // Ferme la modale chez TOUS les joueurs (hôte et clients)
-            setTimeout(() => {
+            if (isFatal) {
+              ticker.innerText = "PAN !";
               closeDenounceModal();
-            }, 1800);
-          }
-          if (onComplete) onComplete();
-        }, 1200);
+              if (onComplete) onComplete();
+            } else {
+              audio.dryHammerClick();
+              ticker.innerText = "bouh";
+              showToast(`${targetPlayerName} survit !`);
+              setTimeout(() => {
+                closeDenounceModal();
+                if (onComplete) onComplete();
+              }, 1600);
+            }
+          }, 1000);
         }
       }
       setTimeout(spinStep, 350);
@@ -3294,7 +3363,6 @@
       player.isAlive = false;
       gameState.feltTicker = `${player.name} est éliminé.`;
 
-      // Fermer la modale de roulette pour tout le monde
       closeDenounceModal();
       broadcastEvent({ type: 'CLOSE_DENOUNCE_MODAL' });
 
@@ -4058,7 +4126,7 @@
           // Mode CARTES : afficher la figure exigée tirée au sort
           if (gameState.requiredCard && CARD_DEFINITIONS[gameState.requiredCard]) {
             const def = CARD_DEFINITIONS[gameState.requiredCard];
-            targetTitle.innerHTML = `FIGURE : <span class="${def.color} font-bold">${def.title} (${def.letter}) ${def.suit}</span>`;
+            targetTitle.innerHTML = `<span class="text-white font-bold">FIGURE : ${def.title} (${def.letter})</span>`;
           } else {
             targetTitle.innerText = "TIRAGE EN COURS...";
           }
@@ -4066,9 +4134,17 @@
       }
 
       // MISE À JOUR DU COMPTEUR DE CARTES AU MILIEU
+      const count = gameState.tableCardsCount || 0;
+      
       const cardsInPlayEl = document.getElementById('game-cards-in-play');
       if (cardsInPlayEl) {
-        cardsInPlayEl.innerText = gameState.tableCardsCount || 0;
+        cardsInPlayEl.innerText = count;
+      }
+
+      // C'EST CE 0 ICI AU MILIEU DE LA TABLE SUR LA CARTE VERTE :
+      const centerPileCount = document.getElementById('center-pile-count');
+      if (centerPileCount) {
+        centerPileCount.innerText = count;
       }
 
       const centerCards = document.getElementById('center-cards-display');
@@ -4394,7 +4470,7 @@
           </div>
 
           <div class="mt-1 w-full flex flex-col items-center justify-center text-center">
-            <span class="font-title font-bold ${isLocal ? 'text-[9px] opacity-70 text-[#c8d4cb]' : 'text-[10px] sm:text-[11px] text-[#f7f6f2]'} whitespace-nowrap block text-center ${!player.isAlive ? 'line-through text-red-400' : ''}">
+            <span class="font-title font-bold text-[10px] sm:text-[11px] text-[#f7f6f2] whitespace-nowrap block text-center ${!player.isAlive ? 'line-through text-red-400' : ''}">
               ${player.name}
             </span>
             <div class="flex items-center justify-center gap-1 text-[8px] font-mono text-[#7b8f80]">
@@ -4665,11 +4741,10 @@
       const prevScore = gameState.quintoClaim ? gameState.quintoClaim.score : 0;
       const prevRank = getQuintoRank(prevScore);
 
-      const ROLL_ACTIVE = "relative group w-full h-11 sm:h-12 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-dore/80 bg-gradient-to-b from-[#2a4531] to-[#16271c] hover:from-[#35583f] hover:to-[#1e3425] text-dore shadow-md active:scale-[0.98] cursor-pointer select-none";
-      const ROLL_DISABLED = "relative group w-full h-11 sm:h-12 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-[#222b24] bg-[#101411] text-[#4a5a4e] opacity-60 cursor-not-allowed select-none";
-
-      const BLUFF_ACTIVE = "relative group w-full h-11 sm:h-12 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-dore/80 bg-gradient-to-b from-[#25392b] to-[#16241b] hover:from-[#2f4837] hover:to-[#1c2c21] text-dore shadow-md active:scale-[0.98] cursor-pointer select-none";
-      const BLUFF_DISABLED = "relative group w-full h-11 sm:h-12 rounded-xl font-title text-xs sm:text-sm font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-[#222b24] bg-[#101411] text-[#4a5a4e] opacity-60 cursor-not-allowed select-none";
+      // DA identique aux boutons du mode Cartes
+      // Style partagé identique pour les deux boutons actifs
+      const BTN_CHOICE_ACTIVE = "py-2 rounded border border-dore bg-[#273a2c] hover:bg-[#334c3a] text-[#f7f6f2] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-lg cursor-pointer";
+      const BTN_CHOICE_DISABLED = "py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5";
 
       if (isMyTurn && !gameState.quintoHasRolled) {
         stepRoll.classList.remove('hidden');
@@ -4678,11 +4753,11 @@
         liePanel.classList.add('hidden');
 
         btnRoll.disabled = false;
-        btnRoll.className = ROLL_ACTIVE;
+        btnRoll.className = BTN_CHOICE_ACTIVE;
 
         const canCall = Boolean(gameState.quintoClaim && gameState.quintoClaim.playerId !== myId);
         btnBluffEarly.disabled = !canCall;
-        btnBluffEarly.className = canCall ? BLUFF_ACTIVE : BLUFF_DISABLED;
+        btnBluffEarly.className = canCall ? BTN_CHOICE_ACTIVE : BTN_CHOICE_DISABLED;
       } else if (isMyTurn && gameState.quintoHasRolled) {
         stepRoll.classList.add('hidden');
         stepChoice.classList.remove('hidden');
@@ -4691,14 +4766,17 @@
         const realScore = getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1]);
         const canTellTruth = getQuintoRank(realScore) > prevRank;
 
+        // Bouton Vérité
         btnTruth.disabled = !canTellTruth;
         btnTruth.innerHTML = canTellTruth 
-          ? `<i class="fa-solid fa-check text-green-400"></i><span>Vérité (${realScore})</span>`
-          : `<i class="fa-solid fa-ban text-stone-500"></i><span>Vérité (${realScore} &le; ${prevScore})</span>`;
+          ? `<i class="fa-solid fa-check text-xs"></i><span>Vérité (${realScore})</span>`
+          : `<i class="fa-solid fa-ban text-xs"></i><span>Vérité (${realScore})</span>`;
+        btnTruth.className = canTellTruth ? BTN_CHOICE_ACTIVE : BTN_CHOICE_DISABLED;
 
-        btnTruth.className = canTellTruth
-          ? "h-10 sm:h-11 rounded-lg border border-[#3e5644] bg-[#1c2920] hover:bg-[#25392b] text-[#f7f6f2] font-mono text-xs sm:text-sm font-semibold tracking-wide transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2 cursor-pointer"
-          : "h-10 sm:h-11 rounded-lg border border-[#233026] bg-[#131915] text-[#57685a] font-mono text-xs sm:text-sm tracking-wide cursor-not-allowed flex items-center justify-center gap-2";
+        // Bouton Mentir (même apparence exacte)
+        btnLie.disabled = false;
+        btnLie.innerHTML = `<i class="fa-solid fa-mask text-xs"></i><span>Mentir</span>`;
+        btnLie.className = BTN_CHOICE_ACTIVE;
 
         selectClaim.innerHTML = '';
         QUINTO_ORDER.forEach((sc, idx) => {
@@ -4716,10 +4794,10 @@
         liePanel.classList.add('hidden');
 
         btnRoll.disabled = true;
-        btnRoll.className = ROLL_DISABLED;
+        btnRoll.className = BTN_CHOICE_DISABLED;
 
         btnBluffEarly.disabled = true;
-        btnBluffEarly.className = BLUFF_DISABLED;
+        btnBluffEarly.className = BTN_CHOICE_DISABLED;
       }
     }
 
