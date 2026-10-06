@@ -4125,13 +4125,17 @@
       const countTag = document.getElementById('inventory-count-tag');
       const stateNotice = document.getElementById('inventory-usage-state');
 
+      // Si le mode Zbeul n'est pas actif, ou si le joueur n'existe pas ou est éliminé : on masque la barre
       if (!gameState.isZbeul || !me || !me.isAlive) {
         if (invBar) invBar.classList.add('hidden');
         return;
       }
 
-      invBar.classList.remove('hidden');
-      invBar.classList.add('flex');
+      if (invBar) {
+        invBar.classList.remove('hidden');
+        invBar.classList.add('flex');
+      }
+
       const itemsList = Array.isArray(me.items) ? me.items : [];
       if (countTag) countTag.innerText = itemsList.length;
 
@@ -4159,6 +4163,7 @@
         const def = ZBEUL_ITEMS[itemId];
         if (!def) return;
 
+        // Conditions d'activation selon le mode de jeu en cours
         const canActivateCards = isMyTurn && !hasUsed && !def.passive && (itemId === 'swap_hands' || itemId === 'curse_10');
         const canActivateReroll = isMyTurn && !hasUsed && gameState.gameMode === 'dice' && gameState.quintoHasRolled && itemId === 'reroll';
         const canActivateForcePrev = isMyTurn && !hasUsed && gameState.gameMode === 'dice' && !gameState.quintoHasRolled && hasPrevClaim && itemId === 'force_prev_reroll';
@@ -4175,61 +4180,13 @@
             : 'border border-[#1e2720] bg-[#0e1410] text-[#718575] opacity-50 cursor-not-allowed'
         }`;
         btn.innerHTML = `<i class="fa-solid ${def.icon}"></i>`;
+        
         if (canActivate) {
           btn.onclick = () => handleItemActivation(itemId);
         }
+        
         invContainer.appendChild(btn);
       });
-
-      const isSkull = gameState.gameMode === 'skull';
-      const isDice = gameState.gameMode === 'dice';
-
-      const modeTag = document.getElementById('header-mode-tag');
-      if (modeTag) modeTag.innerText = isSkull ? "MODE : SKULL" : (isDice ? "MODE : DÉS" : "MODE : CARTES");
-
-      const badgeTitle = document.getElementById('game-target-title');
-      if (isSkull) {
-        badgeTitle.innerText = `PHASE : ${gameState.skullPhase.toUpperCase()} (${getTotalSkullPlacedTiles()} POSÉES)`;
-      } else if (isDice) {
-        badgeTitle.innerText = `ANNONCE : ${gameState.quintoClaim ? gameState.quintoClaim.score : 'AUCUNE'}`;
-      } else {
-        if (gameState.requiredCard) {
-          const reqDef = CARD_DEFINITIONS[gameState.requiredCard];
-          badgeTitle.innerText = `FIGURE : ${reqDef ? reqDef.title : gameState.requiredCard} (${reqDef ? reqDef.letter : ''})`;
-        } else {
-          badgeTitle.innerText = "TIRAGE EN COURS...";
-        }
-      }
-
-      const centerCards = document.getElementById('center-cards-display');
-      const centerDice = document.getElementById('center-dice-display');
-      const centerSkull = document.getElementById('center-skull-display');
-
-      if (isSkull) {
-        centerCards.classList.add('hidden');
-        centerDice.classList.add('hidden');
-        centerSkull.classList.remove('hidden');
-        centerSkull.classList.add('flex');
-
-        const bidVal = document.getElementById('skull-table-bid-val');
-        const bidHolder = document.getElementById('skull-table-bid-holder');
-        const holder = gameState.players[gameState.skullHighBidderId];
-        bidVal.innerText = gameState.skullHighBid > 0 ? gameState.skullHighBid : "--";
-        bidHolder.innerText = holder ? `Défi par ${holder.name}` : "En attente d'enchère";
-
-        const revProgress = document.getElementById('skull-reveal-progress');
-        if (gameState.skullPhase === 'revealing') {
-          revProgress.classList.remove('hidden');
-          revProgress.classList.add('inline-flex');
-          document.getElementById('skull-revealed-count').innerText = gameState.skullRevealedCards.length;
-          document.getElementById('skull-needed-count').innerText = gameState.skullTargetCount;
-        } else {
-          revProgress.classList.add('hidden');
-        }
-      } else {
-        centerSkull.classList.add('hidden');
-        // ... suite du code gérant Cartes et Quinto
-      }
     }
 
     function handleItemActivation(itemId) {
@@ -4739,18 +4696,6 @@
     /* -------------------------------------------------------------
        ATTACH EVENT LISTENERS
        ------------------------------------------------------------- */
-    document.getElementById('btn-mode-cards').addEventListener('click', () => {
-      gameState.gameMode = 'cards';
-      document.getElementById('btn-mode-cards').className = "p-2 rounded border border-dore bg-[#1e2a21] text-dore text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-all";
-      document.getElementById('btn-mode-dice').className = "p-2 rounded border border-[#29392c] bg-[#111713] text-[#7b8f80] text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-all";
-    });
-
-    document.getElementById('btn-mode-dice').addEventListener('click', () => {
-      gameState.gameMode = 'dice';
-      document.getElementById('btn-mode-dice').className = "p-2 rounded border border-dore bg-[#1e2a21] text-dore text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-all";
-      document.getElementById('btn-mode-cards').className = "p-2 rounded border border-[#29392c] bg-[#111713] text-[#7b8f80] text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-all";
-    });
-
     document.getElementById('btn-mode-zbeul').addEventListener('click', () => {
       gameState.isZbeul = !gameState.isZbeul;
       const b = document.getElementById('btn-mode-zbeul');
