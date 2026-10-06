@@ -1317,7 +1317,7 @@
           if (!msg || msg.sender === myId) return;
           if (isHost && msg.target === 'HOST') {
             handleClientMessage(msg.action, null);
-          } else if (!isHost) {
+          } else {
             if (msg.type === 'SYNC_STATE') {
               gameState = msg.state;
               renderUI();
@@ -1519,6 +1519,9 @@
           gameState.playerOrder.push(msg.player.id);
         }
         gameState.feltTicker = `${msg.player.name} s'installe à la table.`;
+        
+        // Assure que le jeu reste bien en phase lobby et diffuse immédiatement
+        gameState.status = 'lobby';
         broadcastState();
         showToast(`${msg.player.name} a rejoint la partie.`);
         return;
@@ -4897,6 +4900,13 @@
     document.getElementById('btn-toggle-ready').addEventListener('click', () => {
       audio.init();
       audio.chip();
+      
+      // Mise à jour optimiste locale immédiate
+      if (gameState.players[myId]) {
+        gameState.players[myId].isReady = !gameState.players[myId].isReady;
+        renderUI();
+      }
+      
       sendToHost({ type: 'TOGGLE_READY', id: myId });
     });
 
