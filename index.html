@@ -1458,7 +1458,11 @@
       }
     }
 
+    let _msgCounter = 0;
     function sendToHost(message) {
+      if (message && typeof message === 'object' && !message._mid) {
+        message._mid = myId + '_' + Date.now() + '_' + (++_msgCounter);
+      }
       if (isHost) {
         handleClientMessage(message, null);
       } else {
@@ -1493,8 +1497,16 @@
       return false;
     }
 
+    const _seenMsgIds = new Set();
     function handleClientMessage(msg, originConn) {
       if (!isHost || !msg) return;
+
+      // Un même message peut arriver 2 fois (PeerJS + BroadcastChannel) : on ignore le doublon
+      if (msg._mid) {
+        if (_seenMsgIds.has(msg._mid)) return;
+        _seenMsgIds.add(msg._mid);
+        if (_seenMsgIds.size > 500) _seenMsgIds.delete(_seenMsgIds.values().next().value);
+      }
 
       if (msg.type === 'PLAYER_JOIN') {
         if (originConn) originConn.playerGameId = msg.player.id;
@@ -1520,7 +1532,9 @@
 
       if (msg.type === 'TOGGLE_READY') {
         if (gameState.players[msg.id]) {
-          gameState.players[msg.id].isReady = !gameState.players[msg.id].isReady;
+          gameState.players[msg.id].isReady = (typeof msg.ready === 'boolean')
+            ? msg.ready
+            : !gameState.players[msg.id].isReady;
           broadcastState();
         }
       } else if (msg.type === 'SET_GAME_MODE') {
@@ -4902,12 +4916,14 @@
       audio.chip();
       
       // Mise à jour optimiste locale immédiate
+      let newReady = true;
       if (gameState.players[myId]) {
-        gameState.players[myId].isReady = !gameState.players[myId].isReady;
+        newReady = !gameState.players[myId].isReady;
+        gameState.players[myId].isReady = newReady;
         renderUI();
       }
       
-      sendToHost({ type: 'TOGGLE_READY', id: myId });
+      sendToHost({ type: 'TOGGLE_READY', id: myId, ready: newReady });
     });
 
     document.getElementById('btn-start-game').addEventListener('click', () => {
