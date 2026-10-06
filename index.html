@@ -233,7 +233,6 @@
     <div class="flex items-center gap-2">
       <span class="text-dore font-title text-lg font-bold">♠</span>
       <h1 class="text-xs sm:text-sm font-title font-bold tracking-[0.2em] text-[#f7f6f2] uppercase">PROUT BLUFF</h1>
-      <span id="header-mode-tag" class="text-[9px] font-mono text-[#8a998e] border-l border-[#243327] pl-2 uppercase hidden md:inline">MODE : CARTES</span>
       <span id="header-zbeul-tag" class="text-[9px] font-mono text-dore px-1.5 py-0.5 rounded border border-dore/40 uppercase hidden">ZBEUL</span>
     </div>
 
@@ -271,29 +270,42 @@
       </div>
 
       <div class="bg-[#171d19]/95 border border-[#28382c] rounded-xl p-4 backdrop-blur-md space-y-3 shadow-2xl">
+        <!-- CHAMP PSEUDO À RÉINSÉRER ICI -->
         <div>
           <label class="block text-[10px] font-mono tracking-widest text-[#95a89b] uppercase mb-1">Ton nom</label>
-          <input id="input-username" type="text" maxlength="16" placeholder="Ton pseudo..." 
+          <input id="input-username" type="text" maxlength="16" placeholder="Ton blaze" 
             class="w-full bg-[#0f1411] border border-[#233126] focus:border-dore rounded-lg py-2 px-3 text-[#e8ece9] placeholder-[#4f6154] text-sm focus:outline-none transition-colors font-mono" />
         </div>
 
         <div>
-          <label class="block text-[10px] font-mono tracking-widest text-[#95a89b] uppercase mb-1">Mode de jeu</label>
-          <div class="grid grid-cols-2 gap-2">
-            <button type="button" id="btn-mode-cards" class="p-2 rounded border border-dore bg-[#1e2a21] text-dore text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-all">
-              <i class="fa-solid fa-layer-group"></i>
-              <span>Cartes</span>
-            </button>
-            <button type="button" id="btn-mode-dice" class="p-2 rounded border border-[#29392c] bg-[#111713] text-[#7b8f80] text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-all">
-              <i class="fa-solid fa-dice"></i>
-              <span>Dés</span>
-            </button>
-          </div>
+          <label class="block text-[10px] font-mono tracking-widest text-[#95a89b] uppercase mb-1.5">Modes de jeu</label>
+          <div class="flex flex-col gap-2">
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" id="btn-mode-cards" class="w-full h-9 rounded border border-dore bg-[#1e2a21] text-dore text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-colors">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Cartes</span>
+              </button>
+              <button type="button" id="btn-mode-dice" class="w-full h-9 rounded border border-[#29392c] bg-[#111713] text-[#7b8f80] text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-colors">
+                <i class="fa-solid fa-dice"></i>
+                <span>Dés</span>
+              </button>
+              <button type="button" id="btn-mode-skull" class="w-full h-9 rounded border border-[#29392c] bg-[#111713] text-[#7b8f80] text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-colors">
+                <i class="fa-solid fa-skull"></i>
+                <span>Skull</span>
+              </button>
+              <button type="button" id="btn-mode-mistigri" class="w-full h-9 rounded border border-[#29392c] bg-[#111713] text-[#7b8f80] text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-colors">
+                <i class="fa-solid fa-cat"></i>
+                <span>Mistigri</span>
+              </button>
+            </div>
 
-          <button type="button" id="btn-mode-zbeul" class="mt-2 w-full p-2 rounded border border-[#2b3a2e] bg-[#121613] text-[#788a7c] text-xs font-title font-bold flex items-center justify-center gap-2 transition-all">
-            <i class="fa-solid fa-fire text-sm"></i>
-            <span>Zbeul</span>
-          </button>
+            <div id="wrapper-mode-zbeul" class="w-full">
+              <button type="button" id="btn-mode-zbeul" class="w-full h-9 rounded border border-[#2b3a2e] bg-[#121613] text-[#788a7c] text-xs font-title font-bold flex items-center justify-center gap-2 transition-colors">
+                <i class="fa-solid fa-fire text-sm"></i>
+                <span>Zbeul</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <div>
@@ -432,6 +444,41 @@
                   <div id="quinto-table-player" class="font-title text-xs sm:text-sm font-bold text-[#f7f6f2] tracking-wider uppercase mt-1.5 text-center whitespace-nowrap">
                     En attente
                   </div>
+                </div>
+                <div id="center-skull-display" class="hidden flex-col items-center justify-center text-center select-none gap-2">
+                  <!-- Paquet central empilé -->
+                  <div class="relative w-20 h-28 sm:w-24 sm:h-32 flex items-center justify-center">
+                    <div id="skull-pile-shadow-1" class="absolute w-full h-full rounded-xl border border-[#233526] bg-[#0c140e] shadow-md -rotate-6 opacity-60"></div>
+                    <div id="skull-pile-shadow-2" class="absolute w-full h-full rounded-xl border border-[#2b4230] bg-[#101b13] shadow-md rotate-3 opacity-80"></div>
+                    <div id="skull-pile-top" class="relative w-full h-full rounded-xl border-2 border-[#8f7734] bg-[#142318] p-2 flex flex-col items-center justify-between shadow-2xl transition-transform">
+                      <div class="w-full flex justify-between text-[10px] text-dore">
+                        <i class="fa-solid fa-fan"></i>
+                        <i class="fa-solid fa-skull"></i>
+                      </div>
+                      <div class="flex flex-col items-center">
+                        <i class="fa-solid fa-layer-group text-2xl text-dore mb-1"></i>
+                        <span id="skull-pile-center-count" class="font-mono text-sm font-bold text-[#faf8f5]">0</span>
+                        <span class="text-[8px] font-mono uppercase tracking-widest text-[#7fa387]">posées</span>
+                      </div>
+                      <div class="w-full flex justify-between text-[10px] text-dore rotate-180">
+                        <i class="fa-solid fa-fan"></i>
+                        <i class="fa-solid fa-skull"></i>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Progression de la révélation -->
+                  <div id="skull-reveal-progress" class="hidden items-center gap-1.5 bg-[#0c100e]/95 border border-dore px-3 py-1 rounded-full text-xs font-mono shadow-md">
+                    <span class="text-green-400 font-bold" id="skull-revealed-count">0</span>
+                    <span class="text-stone-400">/</span>
+                    <span class="text-dore font-bold" id="skull-needed-count">0</span>
+                    <span class="text-[#8a9d8f] text-[10px]">révélées</span>
+                  </div>
+                </div>
+                <div id="center-mistigri-display" class="hidden flex-col items-center justify-center text-center select-none">
+                  <span id="mistigri-turn-hint" class="text-[10px] font-mono text-dore bg-[#101712]/90 px-2.5 py-1 rounded-full border border-dore shadow-md]">
+                    Pioche chez ton voisin !
+                  </span>
                 </div>
               </div>
 
@@ -598,6 +645,48 @@
             </div>
           </div>
         </div>
+
+        <!-- INTERFACE SKULL -->
+        <div id="skull-action-controls" class="hidden w-full max-w-md flex-col items-center p-0 my-auto gap-2">
+          <!-- Tuiles en main -->
+          <div id="skull-hand-tiles" class="flex gap-2 justify-center items-center py-1"></div>
+
+          <!-- Boutons d'action Skull -->
+          <div class="w-full flex flex-col gap-1.5">
+            <div id="skull-placement-actions" class="w-full grid grid-cols-2 gap-2">
+              <button id="btn-skull-play-card" disabled class="py-2.5 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed">
+                <i class="fa-solid fa-hand"></i>
+                <span>Poser Tuile</span>
+              </button>
+              <button id="btn-skull-open-bid" disabled class="py-2.5 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed">
+                <i class="fa-solid fa-fire"></i>
+                <span>Lancer Défi</span>
+              </button>
+            </div>
+
+            <!-- Panel Surenchère -->
+            <div id="skull-bidding-panel" class="hidden flex-col gap-1.5 p-2 rounded-lg bg-[#0e1410] border border-[#304435]">
+              <div class="flex items-center justify-between text-[10px] font-mono text-[#8a9d8f]">
+                <span>Ton enchère (min: <strong id="skull-min-bid-lbl" class="text-dore">1</strong>) :</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <input id="input-skull-bid" type="number" min="1" max="16" class="w-20 h-9 bg-[#162018] border border-[#3b4e40] text-dore font-mono font-bold text-center rounded focus:outline-none focus:border-dore" />
+                <button id="btn-skull-submit-bid" class="flex-1 h-9 rounded bg-[#253d2c] hover:bg-[#32523b] border border-dore text-dore font-title text-xs uppercase font-bold tracking-wider active:scale-95 transition-all">
+                  Surenchérir
+                </button>
+                <button id="btn-skull-pass-bid" class="px-3 h-9 rounded bg-[#1c221e] hover:bg-stone-800 border border-stone-700 text-stone-300 font-title text-xs uppercase font-bold tracking-wider active:scale-95 transition-all">
+                  Passer
+                </button>
+              </div>
+            </div>
+
+            <!-- Guide Révélation -->
+            <div id="skull-reveal-notice" class="hidden text-center text-xs font-mono text-dore animate-pulse">
+              Clique sur les disques pour les retourner !
+            </div>
+          </div>
+        </div>
+
     </section>
 
     <!-- SCREEN 4: GAME OVER -->
@@ -1037,6 +1126,97 @@
     }
 
     /* -------------------------------------------------------------
+       MISTIGRI DECK (53 CARTES : 26 PAIRES + 1 MISTIGRI)
+       ------------------------------------------------------------- */
+    function generateMistigriDeck() {
+      const suits = [
+        { s: '♠', c: 'text-noir' },
+        { s: '♣', c: 'text-noir' },
+        { s: '♥', c: 'text-rougeCarte' },
+        { s: '♦', c: 'text-rougeCarte' }
+      ];
+      const ranks = ['A', 'K', 'Q', 'V', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
+      const deck = [];
+      let uid = 1;
+
+      // 1. On injecte les 52 cartes régulières (26 paires complètes)
+      ranks.forEach(r => {
+        suits.forEach(st => {
+          deck.push({
+            id: `m_${uid++}`,
+            rank: r,
+            suit: st.s,
+            color: st.c,
+            isMistigri: false,
+            title: r
+          });
+        });
+      });
+
+      // 2. On injecte STRICTEMENT UN ET UN SEUL MISTIGRI
+      deck.push({
+        id: `mistigri_unique`,
+        rank: 'M',
+        suit :'fa-cat',
+        color: 'text-noir',
+        isMistigri: true,
+        title: 'MISTIGRI'
+      });
+
+      // Mélange complet (Fisher-Yates)
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      return deck;
+    }
+
+    function purgePlayerPairs(player) {
+      if (!player || !Array.isArray(player.hand)) return 0;
+
+      // On regroupe par Clé = Valeur + Teinte (ex: "5_black", "5_red")
+      const groups = {};
+
+      player.hand.forEach(c => {
+        if (!c.isMistigri && c.rank !== 'M') {
+          const isRed = (c.suit === '♥' || c.suit === '♦');
+          const colorKey = isRed ? 'red' : 'black';
+          const key = `${c.rank}_${colorKey}`;
+
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(c);
+        }
+      });
+
+      const retained = [];
+      let pairsRemoved = 0;
+
+      // Si on a 2 cartes de même couleur et même rang (ex: 5♠ et 5♣), elles forment une paire
+      Object.keys(groups).forEach(key => {
+        const list = groups[key];
+        if (list.length >= 2) {
+          pairsRemoved++;
+          // S'il y avait un doublon imprévu (3 cartes), on garde la carte restante
+          if (list.length > 2) {
+            retained.push(...list.slice(2));
+          }
+        } else {
+          retained.push(...list);
+        }
+      });
+
+      // On conserve le Mistigri
+      player.hand.forEach(c => {
+        if (c.isMistigri || c.rank === 'M') {
+          retained.push(c);
+        }
+      });
+
+      player.hand = retained;
+      return pairsRemoved;
+    }
+
+    /* -------------------------------------------------------------
        STATE MANAGEMENT & MULTIPLAYER NETWORKING
        ------------------------------------------------------------- */
     const PEER_CONFIG = {
@@ -1057,6 +1237,7 @@
     let broadcastChannel = null;
     let currentActiveScreen = 'screen-auth';
     let selectedHandCardIds = [];
+    let selectedSkullTileId = null;
 
     let gameState = {
       code: 'SOLO',
@@ -1076,7 +1257,13 @@
       feltTicker: "Silence à la table.",
       pfcDuel: null,
       immunityPending: null,
-      pfcPromptPending: null
+      pfcPromptPending: null,
+      skullPhase: 'placement',
+      skullHighBid: 0,
+      skullHighBidderId: null,
+      skullPassers: [],
+      skullRevealedCards: [],
+      skullTargetCount: 0
     };
 
     function showToast(msg) {
@@ -1145,6 +1332,12 @@
     function buildSanitizedStateFor(recipientPlayerId) {
       const clone = JSON.parse(JSON.stringify(gameState));
       Object.keys(clone.players).forEach(pId => {
+        if (clone.players[pId].skullPile) {
+          clone.players[pId].skullPile = clone.players[pId].skullPile.map(c => 
+            c.revealed ? c : { id: c.id, hidden: true }
+          );
+        }
+        // Masquer les cartes en main des adversaires tout en conservant le nombre de cartes
         if (pId !== recipientPlayerId && clone.players[pId].hand) {
           clone.players[pId].hand = clone.players[pId].hand.map(c => ({ id: c.id, hidden: true }));
         }
@@ -1255,6 +1448,13 @@
       }
       else if (evt.type === 'PFC_PROMPT_CLOSE') {
         closePfcPromptModal();
+      }
+      else if (evt.type === 'MISTIGRI_STEAL_ANIM') {
+        audio.cardSlide();
+        animateMistigriDrawVisual(evt.victimId, evt.drawerId, evt.isMistigri);
+      }
+      else if (evt.type === 'SKULL_REVEAL_ANIM') {
+        animateSkullRevealVisual(evt.revealerName, evt.targetPlayerId, evt.tile);
       }
     }
 
@@ -1380,6 +1580,131 @@
           executeForcePrevReroll(msg.id);
         }
       }
+      else if (msg.type === 'SKULL_PLAY_TILE') {
+        handleSkullPlayTile(msg.id, msg.tileId);
+      } else if (msg.type === 'SKULL_SUBMIT_BID') {
+        handleSkullSubmitBid(msg.id, msg.bid);
+      } else if (msg.type === 'SKULL_PASS_BID') {
+        handleSkullPassBid(msg.id);
+      } else if (msg.type === 'SKULL_REVEAL_PILE') {
+        handleSkullRevealTile(msg.id, msg.targetPlayerId);
+      }
+      else if (msg.type === 'MISTIGRI_DRAW') {
+        handleMistigriDraw(msg.id, msg.victimId, msg.cardIndex);
+      }
+    }
+
+    function handleMistigriDraw(drawerId, victimId, cardIndex) {
+      if (!isHost || gameState.status !== 'in_round' || gameState.gameMode !== 'mistigri') return;
+
+      const currentTurnPlayerId = gameState.playerOrder[gameState.activePlayerIndex];
+      if (currentTurnPlayerId !== drawerId) {
+        showToast("Ce n'est pas ton tour !");
+        return;
+      }
+
+      const drawer = gameState.players[drawerId];
+      const victim = gameState.players[victimId];
+      if (!drawer || !victim || !Array.isArray(victim.hand) || victim.hand.length === 0) {
+        showToast("Ce joueur n'a plus de cartes à piocher !");
+        return;
+      }
+
+      // 1. Extraction sécurisée de la carte
+      const validIndex = Math.max(0, Math.min(victim.hand.length - 1, cardIndex));
+      const stolenCard = victim.hand.splice(validIndex, 1)[0];
+      if (!stolenCard) return;
+
+      drawer.hand.push(stolenCard);
+
+      // 2. Animations et sons
+      audio.cardSlide();
+      broadcastEvent({
+        type: 'MISTIGRI_STEAL_ANIM',
+        drawerId: drawerId,
+        victimId: victimId,
+        isMistigri: Boolean(stolenCard.isMistigri)
+      });
+      animateMistigriDrawVisual(victimId, drawerId, stolenCard.isMistigri);
+
+      // 3. Mélange du paquet de la victime
+      if (victim.hand.length > 1) {
+        for (let i = victim.hand.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [victim.hand[i], victim.hand[j]] = [victim.hand[j], victim.hand[i]];
+        }
+      }
+
+      // 4. Mise à jour immédiate de l'affichage pour voir la carte arriver
+      broadcastState();
+
+      // 5. Résolution après temporisation (pour voir la carte)
+      setTimeout(() => {
+        const pairsRemoved = purgePlayerPairs(drawer);
+        if (pairsRemoved > 0) {
+          audio.chip();
+          showToast(`Paire de ${stolenCard.rank} défaussée !`);
+          gameState.feltTicker = `${drawer.name} forme une paire de ${stolenCard.rank}.`;
+        } else {
+          gameState.feltTicker = `${drawer.name} a pris une carte à ${victim.name}.`;
+        }
+
+        if (victim.hand.length === 0) {
+          showToast(`${victim.name} s'est sauvé !`);
+        }
+        if (drawer.hand.length === 0) {
+          showToast(`${drawer.name} s'est sauvé !`);
+        }
+
+        // 6. Vérifier la fin de manche (il ne reste qu'un seul joueur avec des cartes)
+        const livingWithCards = gameState.playerOrder.filter(id => {
+          const p = gameState.players[id];
+          return p && p.isAlive && Array.isArray(p.hand) && p.hand.length > 0;
+        });
+
+        if (livingWithCards.length <= 1) {
+          const loser = livingWithCards.length === 1 ? gameState.players[livingWithCards[0]] : victim;
+          gameState.status = 'resolving_bluff';
+          gameState.feltTicker = `MISTIGRI ! ${loser ? loser.name : 'Le perdant'} garde le chat ! Roulette !`;
+          broadcastState();
+
+          setTimeout(() => {
+            if (loser) triggerRevolverChamber(loser);
+          }, 1500);
+          return;
+        }
+
+        advanceToNextMistigriTurn();
+      }, 900);
+    }
+
+    function advanceToNextMistigriTurn() {
+      const total = gameState.playerOrder.length;
+      let nextIdx = (gameState.activePlayerIndex + 1) % total;
+      let attempts = 0;
+
+      // Trouver le prochain joueur vivant QUI A ENCORE DES CARTES
+      while (attempts < total) {
+        const id = gameState.playerOrder[nextIdx];
+        const p = gameState.players[id];
+        if (p && p.isAlive && Array.isArray(p.hand) && p.hand.length > 0) {
+          break;
+        }
+        nextIdx = (nextIdx + 1) % total;
+        attempts++;
+      }
+
+      gameState.activePlayerIndex = nextIdx;
+      const activePlayer = gameState.players[gameState.playerOrder[nextIdx]];
+      const victimId = getMistigriVictimId(activePlayer.id);
+      const victim = gameState.players[victimId];
+
+      gameState.feltTicker = victim 
+        ? `Au tour de ${activePlayer.name} de piocher chez ${victim.name}.`
+        : `Tour de ${activePlayer.name}.`;
+
+      broadcastState();
+      checkBotTurnWithDelay();
     }
 
     function executeDiceReroll(playerId) {
@@ -1558,9 +1883,248 @@
       }
     }
 
+    /* -------------------------------------------------------------
+       SKULL ENGINE
+       ------------------------------------------------------------- */
+    function getTotalSkullPlacedTiles() {
+      let count = 0;
+      Object.values(gameState.players).forEach(p => {
+        if (p.isAlive && Array.isArray(p.skullPile)) count += p.skullPile.length;
+      });
+      return count;
+    }
+
+    function setupSkullRound(living) {
+      gameState.status = 'in_round';
+      gameState.skullPhase = 'placement';
+      gameState.skullHighBid = 0;
+      gameState.skullHighBidderId = null;
+      gameState.skullPassers = [];
+      gameState.skullRevealedCards = [];
+      gameState.skullTargetCount = 0;
+
+      living.forEach(id => {
+        const p = gameState.players[id];
+        p.hand = [
+          { id: `sk_${id}_1`, type: 'flower', name: 'Fleur', icon: 'fa-spa text-emerald-700' },
+          { id: `sk_${id}_2`, type: 'flower', name: 'Fleur', icon: 'fa-spa text-emerald-700' },
+          { id: `sk_${id}_3`, type: 'flower', name: 'Fleur', icon: 'fa-spa text-emerald-700' },
+          { id: `sk_${id}_4`, type: 'skull', name: 'Crâne', icon: 'fa-skull text-rose-700' }
+        ];
+        p.skullPile = [];
+        if (typeof p.skullScore !== 'number') p.skullScore = 0;
+      });
+
+      const firstId = living[Math.floor(Math.random() * living.length)];
+      gameState.activePlayerIndex = gameState.playerOrder.indexOf(firstId);
+      gameState.feltTicker = `Nouveau tour de Skull : ${gameState.players[firstId].name} pose la première tuile.`;
+
+      broadcastState();
+      checkBotTurnWithDelay();
+    }
+
+    function handleSkullPlayTile(playerId, tileId) {
+      if (!isHost || gameState.status !== 'in_round' || gameState.skullPhase !== 'placement') return;
+      if (gameState.playerOrder[gameState.activePlayerIndex] !== playerId) return;
+
+      const player = gameState.players[playerId];
+      if (!player || !player.isAlive) return;
+
+      const idx = player.hand.findIndex(t => t.id === tileId);
+      if (idx === -1) return;
+
+      const tile = player.hand.splice(idx, 1)[0];
+      player.skullPile.push(tile);
+      audio.cardSlide();
+
+      gameState.feltTicker = `${player.name} a posé une tuile face cachée.`;
+      advanceSkullPlacementTurn();
+    }
+
+    function advanceSkullPlacementTurn() {
+      let nextIdx = (gameState.activePlayerIndex + 1) % gameState.playerOrder.length;
+      while (!gameState.players[gameState.playerOrder[nextIdx]]?.isAlive) {
+        nextIdx = (nextIdx + 1) % gameState.playerOrder.length;
+      }
+      gameState.activePlayerIndex = nextIdx;
+      broadcastState();
+      checkBotTurnWithDelay();
+
+      const living = gameState.playerOrder.filter(id => gameState.players[id]?.isAlive);
+      const allHandsEmpty = living.every(id => gameState.players[id]?.hand?.length === 0);
+
+      if (allHandsEmpty) {
+        // Déclenchement automatique de l'enchère par le joueur actif
+        handleSkullSubmitBid(gameState.playerOrder[nextIdx], 1);
+        return;
+      }
+    }
+
+    function handleSkullSubmitBid(playerId, bidValue) {
+      if (!isHost || gameState.status !== 'in_round') return;
+      const val = parseInt(bidValue, 10);
+      const totalTiles = getTotalSkullPlacedTiles();
+      if (isNaN(val) || val <= gameState.skullHighBid || val > totalTiles) return;
+
+      gameState.skullPhase = 'bidding';
+      gameState.skullHighBid = val;
+      gameState.skullHighBidderId = playerId;
+
+      const player = gameState.players[playerId];
+      audio.chip();
+      gameState.feltTicker = `${player.name} monte le défi à ${val} tuile(s) !`;
+
+      if (val === totalTiles) {
+        startSkullRevealingPhase();
+        return;
+      }
+
+      advanceSkullBiddingTurn();
+    }
+
+    function handleSkullPassBid(playerId) {
+      if (!isHost || gameState.status !== 'in_round' || gameState.skullPhase !== 'bidding') return;
+      if (!gameState.skullPassers.includes(playerId)) {
+        gameState.skullPassers.push(playerId);
+      }
+
+      const player = gameState.players[playerId];
+      gameState.feltTicker = `${player.name} passe son tour d'enchère.`;
+
+      const living = gameState.playerOrder.filter(id => gameState.players[id]?.isAlive);
+      const remainingBidders = living.filter(id => !gameState.skullPassers.includes(id));
+
+      if (remainingBidders.length <= 1) {
+        startSkullRevealingPhase();
+      } else {
+        advanceSkullBiddingTurn();
+      }
+    }
+
+    function advanceSkullBiddingTurn() {
+      const total = gameState.playerOrder.length;
+      let nextIdx = (gameState.activePlayerIndex + 1) % total;
+      let attempts = 0;
+
+      while (attempts < total) {
+        const id = gameState.playerOrder[nextIdx];
+        if (gameState.players[id]?.isAlive && !gameState.skullPassers.includes(id)) {
+          break;
+        }
+        nextIdx = (nextIdx + 1) % total;
+        attempts++;
+      }
+
+      gameState.activePlayerIndex = nextIdx;
+      broadcastState();
+      checkBotTurnWithDelay();
+    }
+
+    function startSkullRevealingPhase() {
+      gameState.skullPhase = 'revealing';
+      gameState.skullTargetCount = gameState.skullHighBid;
+      gameState.skullRevealedCards = [];
+      const winner = gameState.players[gameState.skullHighBidderId];
+      gameState.activePlayerIndex = gameState.playerOrder.indexOf(winner.id);
+
+      gameState.feltTicker = `${winner.name} doit révéler ${gameState.skullTargetCount} tuiles !`;
+      broadcastState();
+      checkBotTurnWithDelay();
+    }
+
+    function handleSkullRevealTile(revealerId, targetPlayerId) {
+      if (!isHost || gameState.status !== 'in_round' || gameState.skullPhase !== 'revealing') return;
+      if (revealerId !== gameState.skullHighBidderId) return;
+
+      const revealer = gameState.players[revealerId];
+      const target = gameState.players[targetPlayerId];
+      if (!target || !target.skullPile || target.skullPile.length === 0) return;
+
+      // Doit retourner toutes ses tuiles en premier
+      const unrevealedOwn = revealer.skullPile.filter(t => !t.revealed);
+      if (revealer.id !== target.id && unrevealedOwn.length > 0) {
+        showToast("Tu dois d'abord retourner toutes tes propres tuiles !");
+        return;
+      }
+
+      const availableTiles = target.skullPile.filter(t => !t.revealed);
+      if (availableTiles.length === 0) return;
+
+      // Verrouiller temporairement pour éviter les doubles clics pendant l'animation
+      if (gameState.isRevealingAnimationRunning) return;
+      gameState.isRevealingAnimationRunning = true;
+
+      const tileToReveal = availableTiles[availableTiles.length - 1];
+      tileToReveal.revealed = true;
+      gameState.skullRevealedCards.push({ player: target.name, tile: tileToReveal });
+
+      // Diffusion de l'animation avec suspense au centre
+      broadcastEvent({
+        type: 'SKULL_REVEAL_ANIM',
+        revealerName: revealer.name,
+        targetPlayerId: targetPlayerId,
+        tile: tileToReveal
+      });
+      animateSkullRevealVisual(revealer.name, targetPlayerId, tileToReveal);
+
+      gameState.feltTicker = `${revealer.name} retourne un disque chez ${target.name}...`;
+      broadcastState();
+
+      // Délai de suspense (1.5 seconde) avant d'appliquer les conséquences
+      setTimeout(() => {
+        gameState.isRevealingAnimationRunning = false;
+
+        // 1. CRÂNE DÉCOUVERT
+        if (tileToReveal.type === 'skull') {
+          audio.playFaaah();
+          gameState.status = 'resolving_bluff';
+          gameState.feltTicker = `CRÂNE DÉCOUVERT ! ${revealer.name} affronte le barillet !`;
+          broadcastState();
+
+          setTimeout(() => {
+            triggerRevolverChamber(revealer);
+          }, 1500);
+          return;
+        }
+
+        // 2. FLEUR VALIDÉE
+        gameState.feltTicker = `Fleur révélée (${gameState.skullRevealedCards.length}/${gameState.skullTargetCount})`;
+
+        // 3. OBJECTIF ATTEINT
+        if (gameState.skullRevealedCards.length >= gameState.skullTargetCount) {
+          revealer.skullScore = (revealer.skullScore || 0) + 1;
+          audio.chip();
+
+          if (revealer.skullScore >= 2) {
+            gameState.status = 'game_ended';
+            gameState.feltTicker = `${revealer.name} remporte la partie !`;
+            broadcastState();
+          } else {
+            gameState.feltTicker = `${revealer.name} valide son défi (${revealer.skullScore}/2 point) !`;
+            broadcastState();
+            setTimeout(startNewRound, 2600);
+          }
+          return;
+        }
+
+        broadcastState();
+        checkBotTurnWithDelay();
+      }, 1500);
+    }
+
     function proceedWithRoundStart(living) {
       // S'assurer qu'aucune modale de duel ne traîne
       closeDenounceModal();
+
+      if (gameState.gameMode === 'skull') {
+        setupSkullRound(living);
+        return;
+      }
+
+      if (gameState.gameMode === 'mistigri') {
+        setupMistigriRound(living);
+        return;
+      }
 
       if (gameState.gameMode === 'dice') {
         const luckyFirstId = living[Math.floor(Math.random() * living.length)];
@@ -1611,6 +2175,66 @@
           checkBotTurnWithDelay();
         });
       }
+    }
+
+    function setupMistigriRound(living) {
+      gameState.status = 'in_round';
+      gameState.feltTicker = "Distribution des cartes et élimination des paires...";
+
+      // Vider impérativement toutes les mains de tous les joueurs de la table
+      gameState.playerOrder.forEach(id => {
+        if (gameState.players[id]) {
+          gameState.players[id].hand = [];
+        }
+      });
+
+      const deck = generateMistigriDeck();
+
+      // Distribution équitable à tous les survivants
+      let pIdx = 0;
+      while (deck.length > 0) {
+        const targetId = living[pIdx % living.length];
+        gameState.players[targetId].hand.push(deck.pop());
+        pIdx++;
+      }
+
+      // Purge initiale des paires
+      let totalPairsPurged = 0;
+      living.forEach(id => {
+        totalPairsPurged += purgePlayerPairs(gameState.players[id]);
+      });
+
+      // Déterminer le premier joueur avec des cartes
+      // Sélection aléatoire parmi les joueurs ayant des cartes :
+      const validStarters = living.filter(id => gameState.players[id].hand.length > 0);
+      const starterId = validStarters.length > 0 
+        ? validStarters[Math.floor(Math.random() * validStarters.length)] 
+        : living[Math.floor(Math.random() * living.length)];
+      gameState.activePlayerIndex = gameState.playerOrder.indexOf(starterId);
+
+      audio.chip();
+      const starter = gameState.players[starterId];
+      gameState.feltTicker = `${totalPairsPurged} paires éliminées ! Au tour de ${starter ? starter.name : '...'} de piocher.`;
+
+      broadcastState();
+      checkBotTurnWithDelay();
+    }
+
+    function getMistigriVictimId(sourcePlayerId) {
+      const order = gameState.playerOrder;
+      const total = order.length;
+      let startIdx = order.indexOf(sourcePlayerId);
+      if (startIdx === -1) return null;
+
+      // On cherche le joueur suivant (sens horaire) qui a encore des cartes et est vivant
+      for (let i = 1; i < total; i++) {
+        const nextId = order[(startIdx + i) % total];
+        const p = gameState.players[nextId];
+        if (p && p.isAlive && Array.isArray(p.hand) && p.hand.length > 0) {
+          return nextId;
+        }
+      }
+      return null;
     }
 
     function triggerItemDraftPhase(callback) {
@@ -1952,6 +2576,157 @@
           }, 450);
         }, i * 65);
       }
+    }
+
+    function animateMistigriDrawVisual(fromPlayerId, toPlayerId, isStolenCardMistigri = false) {
+      // Récupérer le conteneur source (victime)
+      let sourceEl = null;
+      if (fromPlayerId === myId) {
+        sourceEl = document.getElementById('my-hand-container');
+      } else {
+        const others = gameState.playerOrder.filter(id => id !== myId);
+        const idx = others.indexOf(fromPlayerId);
+        const seatId = idx === 0 ? 'seat-left' : (idx === 1 ? 'seat-top' : 'seat-right');
+        sourceEl = document.getElementById(seatId);
+      }
+
+      // Récupérer le conteneur cible (voleur)
+      let targetEl = null;
+      if (toPlayerId === myId) {
+        targetEl = document.getElementById('my-hand-container');
+      } else {
+        const others = gameState.playerOrder.filter(id => id !== myId);
+        const idx = others.indexOf(toPlayerId);
+        const seatId = idx === 0 ? 'seat-left' : (idx === 1 ? 'seat-top' : 'seat-right');
+        targetEl = document.getElementById(seatId);
+      }
+
+      if (!sourceEl || !targetEl) return;
+
+      const sRect = sourceEl.getBoundingClientRect();
+      const tRect = targetEl.getBoundingClientRect();
+
+      // Création de l'élément volant
+      const card = document.createElement('div');
+      const isTargetMe = toPlayerId === myId;
+      const isPurple = isStolenCardMistigri && isTargetMe;
+
+      card.className = `thrown-card-anim w-12 h-16 sm:w-14 sm:h-20 rounded-lg border-2 flex items-center justify-center shadow-2xl transition-all duration-500 ease-out z-[999] ${
+        isPurple
+          ? 'border-purple-600 bg-[#faf8f5] ring-2 ring-purple-500/50 shadow-[0_0_18px_rgba(168,85,247,0.7)]'
+          : 'border-[#8f7734] bg-[#1a251e] text-dore'
+      }`;
+
+      card.innerHTML = isPurple
+        ? '<i class="fa-solid fa-cat text-purple-700 text-xl animate-bounce"></i>'
+        : '<span class="font-bold font-card text-xs">♠</span>';
+
+      // Position de départ
+      const startX = sRect.left + sRect.width / 2 - 24;
+      const startY = sRect.top + sRect.height / 2 - 32;
+      card.style.left = `${startX}px`;
+      card.style.top = `${startY}px`;
+      card.style.transform = 'scale(0.8) rotate(-10deg)';
+      document.body.appendChild(card);
+
+      // Déplacement vers la destination
+      requestAnimationFrame(() => {
+        const destX = tRect.left + tRect.width / 2 - 24;
+        const destY = tRect.top + tRect.height / 2 - 32;
+
+        card.style.left = `${destX}px`;
+        card.style.top = `${destY}px`;
+        card.style.transform = 'scale(1.05) rotate(8deg)';
+
+        setTimeout(() => {
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.7) translateY(10px)';
+          setTimeout(() => card.remove(), 200);
+        }, 450);
+      });
+    }
+
+    function animateSkullRevealVisual(revealerName, targetPlayerId, tile) {
+      // Trouver la source (siège du joueur dont on retourne la tuile)
+      let sourceEl = null;
+      if (targetPlayerId === myId) {
+        sourceEl = document.getElementById('seat-bottom');
+      } else {
+        const others = gameState.playerOrder.filter(id => id !== myId);
+        const idx = others.indexOf(targetPlayerId);
+        const seatId = idx === 0 ? 'seat-left' : (idx === 1 ? 'seat-top' : 'seat-right');
+        sourceEl = document.getElementById(seatId);
+      }
+      const targetEl = document.getElementById('table-felt-center');
+      if (!targetEl) return;
+
+      const sRect = sourceEl ? sourceEl.getBoundingClientRect() : targetEl.getBoundingClientRect();
+      const tRect = targetEl.getBoundingClientRect();
+
+      const isSkull = tile.type === 'skull';
+
+      // 1. Dos de carte identique à la pile de Skull
+      const disc = document.createElement('div');
+      disc.className = 'thrown-card-anim w-14 h-20 sm:w-16 sm:h-24 rounded-xl border-2 border-[#8f7734] bg-[#142318] p-2 flex flex-col items-center justify-between shadow-2xl transition-all duration-500 ease-out z-[999]';
+      disc.innerHTML = `
+        <div class="w-full flex justify-between text-[10px] text-dore">
+          <i class="fa-solid fa-fan"></i><i class="fa-solid fa-skull"></i>
+        </div>
+        <i class="fa-solid fa-hourglass-half text-2xl text-dore animate-pulse"></i>
+        <div class="w-full flex justify-between text-[10px] text-dore rotate-180">
+          <i class="fa-solid fa-fan"></i><i class="fa-solid fa-skull"></i>
+        </div>
+      `;
+
+      // Départ depuis le joueur
+      disc.style.left = `${sRect.left + sRect.width / 2 - 32}px`;
+      disc.style.top = `${sRect.top + sRect.height / 2 - 44}px`;
+      disc.style.transform = 'scale(0.7) rotate(-10deg)';
+      document.body.appendChild(disc);
+
+      audio.cardSlide();
+
+      // Trajet vers le centre
+      requestAnimationFrame(() => {
+        disc.style.left = `${tRect.left + tRect.width / 2 - 32}px`;
+        disc.style.top = `${tRect.top + tRect.height / 2 - 48}px`;
+        disc.style.transform = 'scale(1.25) rotate(0deg)';
+
+        // 2. Flip 3D
+        setTimeout(() => {
+          disc.style.transition = 'transform 0.22s ease-in';
+          disc.style.transform = 'scale(1.35) rotateY(90deg)';
+
+          setTimeout(() => {
+            audio.chip();
+
+            // 3. Face avant : design calqué sur les tuiles en main
+            const haloColor = isSkull 
+              ? 'border-rose-700 shadow-[0_0_22px_rgba(190,18,60,0.65)] ring-2 ring-rose-600/40' 
+              : 'border-emerald-600 shadow-[0_0_22px_rgba(5,150,105,0.6)] ring-2 ring-emerald-500/40';
+
+            disc.className = `thrown-card-anim w-14 h-20 sm:w-16 sm:h-24 rounded-xl border-2 bg-[#faf8f5] p-2 flex flex-col items-center justify-between select-none z-[999] ${haloColor}`;
+            disc.innerHTML = `
+              <i class="fa-solid ${tile.icon} text-xl mt-0.5 ${isSkull ? 'text-rose-700 animate-bounce' : 'text-emerald-700'}"></i>
+              <span class="text-[10px] font-mono font-bold uppercase tracking-wider ${isSkull ? 'text-rose-800' : 'text-emerald-800'}">
+                ${tile.name}
+              </span>
+              <span class="text-[8px] font-mono font-bold text-stone-400">SKULL</span>
+            `;
+
+            disc.style.transition = 'transform 0.22s ease-out';
+            disc.style.transform = 'scale(1.25) rotateY(0deg)';
+
+            // 4. Sortie en douceur
+            setTimeout(() => {
+              disc.style.transition = 'all 0.35s ease-in';
+              disc.style.opacity = '0';
+              disc.style.transform = 'scale(0.85) translateY(-16px)';
+              setTimeout(() => disc.remove(), 360);
+            }, 850);
+          }, 230);
+        }, 420);
+      });
     }
 
     /* -------------------------------------------------------------
@@ -2914,8 +3689,8 @@
       const bot = gameState.players[activeId];
       if (!bot || !bot.isBot || !bot.isAlive) return;
 
-      // Gestion des items Zbeul par le bot
-      if (gameState.isZbeul && Array.isArray(bot.items) && bot.items.length > 0 && !gameState.hasUsedItemThisTurn) {
+      // Gestion des items Zbeul (modes non-Skull uniquement)
+      if (gameState.gameMode !== 'skull' && gameState.isZbeul && Array.isArray(bot.items) && bot.items.length > 0 && !gameState.hasUsedItemThisTurn) {
         if (bot.items.includes('swap_hands') && gameState.gameMode === 'cards' && Math.random() < 0.4) {
           consumePlayerItem(bot, 'swap_hands');
           gameState.hasUsedItemThisTurn = true;
@@ -2930,11 +3705,23 @@
         }
       }
 
+      if (gameState.gameMode === 'mistigri') {
+        setTimeout(() => {
+          if (gameState.status !== 'in_round' || gameState.playerOrder[gameState.activePlayerIndex] !== bot.id) return;
+          botPlayMistigriTurn(bot);
+        }, Math.floor(Math.random() * 800) + 1400);
+        return;
+      }
+
       setTimeout(() => {
         if (gameState.status !== 'in_round' || gameState.playerOrder[gameState.activePlayerIndex] !== bot.id) return;
 
+        if (gameState.gameMode === 'skull') {
+          botPlaySkullTurn(bot);
+          return;
+        }
+
         if (gameState.gameMode === 'dice') {
-          // Le bot ne peut accuser QUE si l'annonce précédente appartient à un autre joueur vivant et NON protégé
           const canDoubt = Boolean(
             gameState.quintoClaim &&
             gameState.quintoClaim.playerId &&
@@ -2957,15 +3744,9 @@
             }
           }
 
-          // Si le bot ne doute pas (ou ne peut pas douter), il DOIT secouer les dés
           handleQuintoRoll(bot.id);
 
-          if (
-            gameState.isZbeul &&
-            bot.items &&
-            bot.items.includes('reroll') &&
-            !gameState.hasUsedItemThisTurn
-          ) {
+          if (gameState.isZbeul && bot.items && bot.items.includes('reroll') && !gameState.hasUsedItemThisTurn) {
             const currentScore = getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1]);
             const currentRank = getQuintoRank(currentScore);
             const prevRank = gameState.quintoClaim ? getQuintoRank(gameState.quintoClaim.score) : -1;
@@ -2987,10 +3768,7 @@
             const possibleScores = QUINTO_ORDER.filter(s => getQuintoRank(s) > prevRank);
 
             if (possibleScores.length === 0) {
-              // Si aucune enchère n'est possible, il accuse seulement s'il le peut, sinon il concède
-              if (canDoubt) {
-                handleQuintoBluff(bot.id);
-              }
+              if (canDoubt) handleQuintoBluff(bot.id);
               return;
             }
 
@@ -3005,7 +3783,6 @@
           }, 1500);
 
         } else {
-          // Mode CARTES : ne peut accuser que si l'annonce existe et appartient à un tiers
           const canAccuseCards = Boolean(
             gameState.lastClaim &&
             gameState.lastClaim.playerId &&
@@ -3018,7 +3795,64 @@
             botPerformCardMove(bot);
           }
         }
-      }, Math.floor(Math.random() * 800) + 1600);
+      }, Math.floor(Math.random() * 1300) + 2200);
+    }
+
+    function botPlayMistigriTurn(bot) {
+      const victimId = getMistigriVictimId(bot.id);
+      if (!victimId) return;
+
+      const victim = gameState.players[victimId];
+      if (!victim || !victim.hand || victim.hand.length === 0) return;
+
+      const randomIndex = Math.floor(Math.random() * victim.hand.length);
+      handleMistigriDraw(bot.id, victimId, randomIndex);
+    }
+
+    function botPlaySkullTurn(bot) {
+      const living = gameState.playerOrder.filter(id => gameState.players[id]?.isAlive);
+      const totalTiles = getTotalSkullPlacedTiles();
+      const allPlacedAtLeastOne = living.every(id => gameState.players[id]?.skullPile?.length >= 1);
+
+      if (gameState.skullPhase === 'placement') {
+        const canBid = allPlacedAtLeastOne && totalTiles >= living.length;
+        // Si le bot n'a plus de cartes en main ou décide d'ouvrir les enchères
+        if (!bot.hand || bot.hand.length === 0 || (canBid && Math.random() < 0.35)) {
+          handleSkullSubmitBid(bot.id, 1);
+        } else {
+          const chosenTile = bot.hand[Math.floor(Math.random() * bot.hand.length)];
+          handleSkullPlayTile(bot.id, chosenTile.id);
+        }
+      } else if (gameState.skullPhase === 'bidding') {
+        const currentBid = gameState.skullHighBid;
+        const myPileHasSkull = bot.skullPile && bot.skullPile.some(t => t.type === 'skull');
+        let maxSafeBid = myPileHasSkull ? Math.floor(totalTiles * 0.4) : Math.floor(totalTiles * 0.7);
+        maxSafeBid = Math.max(1, maxSafeBid);
+
+        if (currentBid < maxSafeBid && currentBid < totalTiles && Math.random() < 0.6) {
+          handleSkullSubmitBid(bot.id, currentBid + 1);
+        } else {
+          handleSkullPassBid(bot.id);
+        }
+      } else if (gameState.skullPhase === 'revealing') {
+        // 1. Retourner obligatoirement ses propres tuiles
+        const ownUnrevealed = bot.skullPile.filter(t => !t.revealed);
+        if (ownUnrevealed.length > 0) {
+          handleSkullRevealTile(bot.id, bot.id);
+          return;
+        }
+
+        // 2. Choisir une tuile chez un adversaire
+        const availableTargets = living.filter(id => {
+          const p = gameState.players[id];
+          return p && p.skullPile && p.skullPile.some(t => !t.revealed);
+        });
+
+        if (availableTargets.length > 0) {
+          const targetId = availableTargets[Math.floor(Math.random() * availableTargets.length)];
+          handleSkullRevealTile(bot.id, targetId);
+        }
+      }
     }
 
     function shouldBotAccuseCards(bot, lastClaim) {
@@ -3070,6 +3904,8 @@
         p.immunityCount = 0;
         p.hasDraftedThisRound = false;
         p.isReady = p.isBot;
+        p.skullPile = [];
+        p.skullScore = 0;
       });
       gameState.feltTicker = "Nouvelle donne ouverte.";
       broadcastState();
@@ -3112,7 +3948,7 @@
             <span class="w-6 h-6 rounded-full border border-[#354839] bg-[#161f18] flex items-center justify-center text-xs overflow-hidden ${p.isReady ? 'text-dore' : 'text-[#637568]'}">
               ${avIcon}
             </span>
-            <span class="font-title font-bold text-xs">${p.name} ${isSelf ? '<span class="text-[9px] text-[#7d9182] font-mono">(Toi)</span>' : ''}</span>
+            <span class="font-title font-bold text-xs">${p.name} ${isSelf ? '<span class="text-[8px] opacity-60 text-[#7d9182] font-mono">(Toi)</span>' : ''}</span>
             ${p.isBot ? '<span class="text-[8px] font-mono border border-[#2b3a2e] px-1 rounded text-[#7d9182]">Bot</span>' : ''}
           </div>
           <span class="text-[10px] font-mono uppercase tracking-widest font-bold ${p.isReady ? 'text-dore' : 'text-[#637568]'}">
@@ -3143,47 +3979,73 @@
     }
 
     function renderTableScreen(me) {
+      const isMistigri = gameState.gameMode === 'mistigri';
+      const isSkull = gameState.gameMode === 'skull';
       const isDice = gameState.gameMode === 'dice';
 
       const modeTag = document.getElementById('header-mode-tag');
-      if (modeTag) modeTag.innerText = isDice ? "MODE : DÉS" : "MODE : CARTES";
-
-      const zbeulTag = document.getElementById('header-zbeul-tag');
-      if (zbeulTag) {
-        if (gameState.isZbeul) zbeulTag.classList.remove('hidden');
-        else zbeulTag.classList.add('hidden');
-      }
-
-      const badgeTitle = document.getElementById('game-target-title');
-      if (isDice) {
-        badgeTitle.innerText = `ANNONCE : ${gameState.quintoClaim ? gameState.quintoClaim.score : 'AUCUNE'}`;
-      } else {
-        if (gameState.requiredCard) {
-          const reqDef = CARD_DEFINITIONS[gameState.requiredCard];
-          badgeTitle.innerText = `FIGURE : ${reqDef ? reqDef.title : gameState.requiredCard} (${reqDef ? reqDef.letter : ''})`;
-        } else {
-          badgeTitle.innerText = "TIRAGE EN COURS...";
-        }
-      }
-
-      document.getElementById('game-action-ticker').innerText = gameState.feltTicker;
-
-      const centerLabel = document.getElementById('center-stat-label');
-      const centerCount = document.getElementById('game-cards-in-play');
-      if (isDice) {
-        if (centerLabel) centerLabel.innerText = "Dernier :";
-        if (centerCount) centerCount.innerText = gameState.quintoClaim ? `${gameState.quintoClaim.score}` : '-';
-      } else {
-        if (centerLabel) centerLabel.innerText = "Au milieu :";
-        if (centerCount) centerCount.innerText = `${gameState.tableCardsCount}`;
-        document.getElementById('center-pile-count').innerText = `${gameState.tableCardsCount}`;
+      if (modeTag) {
+        modeTag.innerText = isMistigri ? "MODE : MISTIGRI" : (isSkull ? "MODE : SKULL" : (isDice ? "MODE : DÉS" : "MODE : CARTES"));
       }
 
       const centerCards = document.getElementById('center-cards-display');
       const centerDice = document.getElementById('center-dice-display');
-      if (isDice) {
-        if (centerCards) centerCards.classList.add('hidden');
-        if (centerDice) centerDice.classList.remove('hidden');
+      const centerSkull = document.getElementById('center-skull-display');
+      const centerMistigri = document.getElementById('center-mistigri-display');
+
+      centerCards.classList.add('hidden');
+      centerDice.classList.add('hidden');
+      centerSkull.classList.add('hidden');
+      if (centerMistigri) centerMistigri.classList.add('hidden');
+
+      if (isMistigri) {
+        if (centerMistigri) {
+          centerMistigri.classList.remove('hidden');
+          centerMistigri.classList.add('flex');
+        }
+        const currentActiveId = gameState.playerOrder[gameState.activePlayerIndex];
+        const currentActive = gameState.players[currentActiveId];
+        const targetVictimId = getMistigriVictimId(currentActiveId);
+        const targetVictim = gameState.players[targetVictimId];
+        const hint = document.getElementById('mistigri-turn-hint');
+
+        if (hint) {
+          if (currentActiveId === myId) {
+            hint.innerText = targetVictim ? `Pioche une carte chez ${targetVictim.name} !` : "En attente...";
+          } else {
+            hint.innerText = targetVictim 
+              ? `${currentActive ? currentActive.name : '...'} pioche chez ${targetVictim.name}`
+              : `Tour de ${currentActive ? currentActive.name : '...'}`;
+          }
+        }
+      } else if (isSkull) {
+        centerCards.classList.add('hidden');
+        centerDice.classList.add('hidden');
+        
+        const isRevealing = gameState.skullPhase === 'revealing';
+
+        // Masquer le bloc central complet pendant la révélation pour laisser place nette
+        if (isRevealing) {
+          centerSkull.classList.add('hidden');
+          centerSkull.classList.remove('flex');
+        } else {
+          centerSkull.classList.remove('hidden');
+          centerSkull.classList.add('flex');
+
+          const totalPlaced = getTotalSkullPlacedTiles();
+          const countEl = document.getElementById('skull-pile-center-count');
+          if (countEl) countEl.innerText = totalPlaced;
+        }
+
+        const revProgress = document.getElementById('skull-reveal-progress');
+        if (revProgress) {
+          revProgress.classList.add('hidden');
+        }
+      
+      } else if (isDice) {
+        centerCards.classList.add('hidden');
+        centerDice.classList.remove('hidden');
+        centerSkull.classList.add('hidden');
         const numberEl = document.getElementById('quinto-table-number');
         const playerEl = document.getElementById('quinto-table-player');
         if (numberEl && playerEl) {
@@ -3191,15 +4053,70 @@
           playerEl.innerText = gameState.quintoClaim ? gameState.quintoClaim.playerName : "Aucune annonce";
         }
       } else {
-        if (centerCards) centerCards.classList.remove('hidden');
-        if (centerDice) centerDice.classList.add('hidden');
+        centerCards.classList.remove('hidden');
+        centerDice.classList.add('hidden');
+        centerSkull.classList.add('hidden');
       }
 
       renderSeatsAroundTable();
       renderInventoryConsole(me);
 
-      if (isDice) renderQuintoPlayerConsole(me);
-      else renderCardPlayerConsole(me);
+      // Branchement strict sans écrasement mutuel
+      if (isMistigri) {
+        renderMistigriPlayerConsole(me);
+      } else if (isSkull) {
+        renderSkullPlayerConsole(me);
+      } else if (isDice) {
+        renderQuintoPlayerConsole(me);
+      } else {
+        renderCardPlayerConsole(me);
+      }
+    }
+
+    function renderMistigriPlayerConsole(me) {
+      document.getElementById('my-hand-container').classList.remove('hidden');
+      document.getElementById('cards-action-controls').classList.add('hidden');
+      document.getElementById('quinto-action-controls').classList.add('hidden');
+      document.getElementById('skull-action-controls').classList.add('hidden');
+
+      const consoleTitle = document.getElementById('hand-console-title');
+      if (consoleTitle) consoleTitle.innerText = 'Ta Main';
+      const consoleCount = document.getElementById('hand-console-count');
+      if (consoleCount) consoleCount.innerText = `(${me && me.hand ? me.hand.length : 0})`;
+
+      const container = document.getElementById('my-hand-container');
+      container.innerHTML = '';
+      if (!me || !me.isAlive) return;
+
+      if (!me.hand || me.hand.length === 0) {
+        container.innerHTML = `<div class="font-mono text-green-400 text-xs py-3 font-bold text-center">Tu n'as plus aucune carte ! Tu es sauvé ! 🎉</div>`;
+        return;
+      }
+
+      me.hand.forEach(c => {
+        const card = document.createElement('div');
+        const isM = c.isMistigri;
+        card.className = `w-14 h-20 sm:w-16 sm:h-24 rounded-lg border-2 flex flex-col justify-between p-1.5 shadow-md bg-[#faf8f5] select-none ${
+          isM ? 'border-purple-600 ring-2 ring-purple-500/50 shadow-[0_0_14px_rgba(168,85,247,0.65)]' : 'border-[#d2cbbe]'
+        }`;
+
+        const suitHtml = isM 
+          ? `<i class="fa-solid fa-cat text-[10px]"></i>` 
+          : `<span>${c.suit}</span>`;
+
+        card.innerHTML = `
+          <div class="flex justify-between items-center text-xs font-bold ${c.color}">
+            <span>${c.rank}</span>${suitHtml}
+          </div>
+          <div class="my-auto flex flex-col items-center justify-center">
+            ${isM ? '<i class="fa-solid fa-cat text-noir text-2xl"></i>' : `<span class="font-black text-lg ${c.color}">${c.rank}</span>`}
+          </div>
+          <div class="flex justify-between items-center text-xs font-bold rotate-180 ${c.color}">
+            <span>${c.rank}</span>${suitHtml}
+          </div>
+        `;
+        container.appendChild(card);
+      });
     }
 
     function renderInventoryConsole(me) {
@@ -3263,6 +4180,56 @@
         }
         invContainer.appendChild(btn);
       });
+
+      const isSkull = gameState.gameMode === 'skull';
+      const isDice = gameState.gameMode === 'dice';
+
+      const modeTag = document.getElementById('header-mode-tag');
+      if (modeTag) modeTag.innerText = isSkull ? "MODE : SKULL" : (isDice ? "MODE : DÉS" : "MODE : CARTES");
+
+      const badgeTitle = document.getElementById('game-target-title');
+      if (isSkull) {
+        badgeTitle.innerText = `PHASE : ${gameState.skullPhase.toUpperCase()} (${getTotalSkullPlacedTiles()} POSÉES)`;
+      } else if (isDice) {
+        badgeTitle.innerText = `ANNONCE : ${gameState.quintoClaim ? gameState.quintoClaim.score : 'AUCUNE'}`;
+      } else {
+        if (gameState.requiredCard) {
+          const reqDef = CARD_DEFINITIONS[gameState.requiredCard];
+          badgeTitle.innerText = `FIGURE : ${reqDef ? reqDef.title : gameState.requiredCard} (${reqDef ? reqDef.letter : ''})`;
+        } else {
+          badgeTitle.innerText = "TIRAGE EN COURS...";
+        }
+      }
+
+      const centerCards = document.getElementById('center-cards-display');
+      const centerDice = document.getElementById('center-dice-display');
+      const centerSkull = document.getElementById('center-skull-display');
+
+      if (isSkull) {
+        centerCards.classList.add('hidden');
+        centerDice.classList.add('hidden');
+        centerSkull.classList.remove('hidden');
+        centerSkull.classList.add('flex');
+
+        const bidVal = document.getElementById('skull-table-bid-val');
+        const bidHolder = document.getElementById('skull-table-bid-holder');
+        const holder = gameState.players[gameState.skullHighBidderId];
+        bidVal.innerText = gameState.skullHighBid > 0 ? gameState.skullHighBid : "--";
+        bidHolder.innerText = holder ? `Défi par ${holder.name}` : "En attente d'enchère";
+
+        const revProgress = document.getElementById('skull-reveal-progress');
+        if (gameState.skullPhase === 'revealing') {
+          revProgress.classList.remove('hidden');
+          revProgress.classList.add('inline-flex');
+          document.getElementById('skull-revealed-count').innerText = gameState.skullRevealedCards.length;
+          document.getElementById('skull-needed-count').innerText = gameState.skullTargetCount;
+        } else {
+          revProgress.classList.add('hidden');
+        }
+      } else {
+        centerSkull.classList.add('hidden');
+        // ... suite du code gérant Cartes et Quinto
+      }
     }
 
     function handleItemActivation(itemId) {
@@ -3311,7 +4278,8 @@
     }
 
     function renderSingleSeat(container, player, isLocal = false) {
-      const isActiveTurn = gameState.playerOrder[gameState.activePlayerIndex] === player.id;
+      const activeId = gameState.playerOrder[gameState.activePlayerIndex];
+      const isActiveTurn = activeId === player.id;
       const avIcon = getAvatarIcon(player.avatar);
 
       let revolverPips = '';
@@ -3320,16 +4288,61 @@
         revolverPips += `<span class="w-1.5 h-1.5 rounded-full ${filled ? 'bg-dore shadow-[0_0_6px_rgba(212,175,55,0.6)]' : 'bg-[#29382d]'}"></span>`;
       }
 
-      const itemCount = (gameState.isZbeul && Array.isArray(player.items)) ? player.items.length : 0;
-      const itemBadge = itemCount > 0 ? `
-        <span class="absolute -top-1 -right-1 min-w-[17px] h-4 px-1 bg-[#1d2b20] border border-dore rounded-full flex items-center justify-center text-[8px] font-bold text-dore shadow">
-          <i class="fa-solid fa-briefcase text-[7px] mr-0.5"></i>${itemCount}
-        </span>
-      ` : '';
+      let mistigriTargetHtml = '';
+      if (gameState.gameMode === 'mistigri' && !isLocal && player.isAlive && player.hand && player.hand.length > 0) {
+        const currentActiveId = gameState.playerOrder[gameState.activePlayerIndex];
+        const isMyTurn = currentActiveId === myId;
+        const targetVictimId = getMistigriVictimId(myId);
+        
+        const canDrawFromThisPlayer = isMyTurn && (targetVictimId === player.id);
+
+        let cardPicks = '';
+        for (let i = 0; i < player.hand.length; i++) {
+          cardPicks += `
+            <button type="button" 
+              ${canDrawFromThisPlayer ? `onclick="pickMistigriCard('${player.id}',${i})"` : 'disabled'} 
+              class="w-6 h-9 -ml-2.5 first:ml-0 rounded border-2 flex-shrink-0 ${
+                canDrawFromThisPlayer 
+                  ? 'border-dore bg-[#1b2b1e] hover:-translate-y-2 cursor-pointer shadow-[0_0_10px_rgba(212,175,55,0.6)]' 
+                  : 'border-[#263529] bg-[#101512] cursor-not-allowed opacity-50'
+              } transition-transform duration-150 flex items-center justify-center text-[9px] font-bold text-dore select-none">
+              ♠
+            </button>
+          `;
+        }
+
+        // pl-2.5 est remplacé par une largeur automatique parfaitement centrée
+        mistigriTargetHtml = `
+          <div class="mt-1.5 flex flex-col items-center justify-center w-full">
+            <div class="inline-flex items-center justify-center">
+              ${cardPicks}
+            </div>
+            ${canDrawFromThisPlayer ? '<span class="text-[8px] font-mono text-dore animate-pulse mt-0.5 font-bold uppercase text-center">Clique pour piocher</span>' : ''}
+          </div>
+        `;
+      }
+
+      let skullPileBadge = '';
+      if (gameState.gameMode === 'skull' && player.isAlive) {
+        const pile = player.skullPile || [];
+        const isRevealing = gameState.skullPhase === 'revealing';
+        const isMyTurnToReveal = isRevealing && activeId === myId;
+        const canClick = isMyTurnToReveal && pile.some(t => !t.revealed);
+
+        skullPileBadge = `
+          <div class="mt-1 flex items-center justify-center gap-1 cursor-pointer" onclick="handlePileClick('${player.id}')">
+            <div class="px-2 py-0.5 rounded-full border ${canClick ? 'border-dore bg-dore/20 animate-bounce' : 'border-[#2d4032] bg-[#121914]'} flex items-center gap-1.5 shadow">
+              <i class="fa-solid fa-layer-group text-[9px] text-dore"></i>
+              <span class="font-mono text-[9px] font-bold text-dore">${pile.length}</span>
+            </div>
+            ${player.skullScore ? `<span class="text-[10px] text-yellow-400 font-bold ml-0.5" title="Victoires"><i class="fa-solid fa-trophy text-[8px] mr-0.5"></i>${player.skullScore}/2</span>` : ''}
+          </div>
+        `;
+      }
 
       const isCards = gameState.gameMode === 'cards';
-      const hasWonRound = isCards && player.isAlive && (!player.hand || player.hand.length === 0) && gameState.status === 'in_round';
-      const cardCountTxt = !player.isAlive ? 'Éliminé' : hasWonRound ? 'Gagné' : isCards ? `${player.hand ? player.hand.length : 0}c` : 'En jeu';
+      const hasWonRound = (isCards || gameState.gameMode === 'mistigri') && player.isAlive && (!player.hand || player.hand.length === 0) && gameState.status === 'in_round';
+      const cardCountTxt = !player.isAlive ? 'Éliminé' : hasWonRound ? 'Sauvé !' : `${player.hand ? player.hand.length : 0}c`;
 
       container.innerHTML = `
         <div class="flex flex-col items-center select-none">
@@ -3338,21 +4351,152 @@
             isActiveTurn ? 'border-dore bg-[#19271d] ring-2 ring-dore/60 shadow-[0_0_18px_rgba(212,175,55,0.65)]' : 'border-[#384c3c] bg-[#111713]'
           } flex items-center justify-center shadow-lg transition-all duration-300">
             ${player.isAlive ? avIcon : '<i class="fa-solid fa-skull text-[#506253]"></i>'}
-            ${itemBadge}
           </div>
 
           <div class="mt-1 w-full flex flex-col items-center justify-center text-center">
-            <span class="font-title font-bold text-[10px] sm:text-[11px] text-[#f7f6f2] whitespace-nowrap block text-center ${!player.isAlive ? 'line-through text-red-400' : ''}">
+            <span class="font-title font-bold ${isLocal ? 'text-[9px] opacity-70 text-[#c8d4cb]' : 'text-[10px] sm:text-[11px] text-[#f7f6f2]'} whitespace-nowrap block text-center ${!player.isAlive ? 'line-through text-red-400' : ''}">
               ${player.name}
             </span>
             <div class="flex items-center justify-center gap-1 text-[8px] font-mono text-[#7b8f80]">
-              <span>${player.isAlive ? cardCountTxt : 'Éliminé'}</span>
+              <span>${cardCountTxt}</span>
               <span>•</span>
-              <div class="flex gap-0.5 items-center justify-center" title="Chambres">${revolverPips}</div>
+              <div class="flex gap-0.5 items-center justify-center">${revolverPips}</div>
             </div>
+            ${skullPileBadge}
+            ${mistigriTargetHtml}
           </div>
         </div>
       `;
+    }
+
+    function handlePileClick(targetPlayerId) {
+      if (gameState.gameMode === 'skull' && gameState.skullPhase === 'revealing') {
+        sendToHost({
+          type: 'SKULL_REVEAL_PILE',
+          id: myId,
+          targetPlayerId: targetPlayerId
+        });
+      }
+    }
+
+    function renderSkullPlayerConsole(me) {
+      document.getElementById('my-hand-container').classList.add('hidden');
+      document.getElementById('cards-action-controls').classList.add('hidden');
+      document.getElementById('quinto-action-controls').classList.add('hidden');
+      document.getElementById('skull-action-controls').classList.remove('hidden');
+      document.getElementById('skull-action-controls').classList.add('flex');
+
+      const consoleTitle = document.getElementById('hand-console-title');
+      if (consoleTitle) consoleTitle.innerText = 'Tes Tuiles';
+      const consoleCount = document.getElementById('hand-console-count');
+      if (consoleCount) consoleCount.innerText = `(${me && me.hand ? me.hand.length : 0})`;
+
+      // Si le joueur n'a plus de tuiles en main, il DOIT ouvrir les enchères
+      const hasNoMoreTiles = (!me.hand || me.hand.length === 0);
+      if (hasNoMoreTiles && isMyTurn && gameState.skullPhase === 'placement') {
+        btnPlay.disabled = true;
+        btnOpenBid.disabled = false;
+        btnOpenBid.classList.add('animate-bounce'); // incitation visuelle
+      }
+
+      const container = document.getElementById('skull-hand-tiles');
+      container.innerHTML = '';
+      if (!me || !me.isAlive) return;
+
+      const isMyTurn = gameState.playerOrder[gameState.activePlayerIndex] === myId;
+      const totalTiles = getTotalSkullPlacedTiles();
+      const living = gameState.playerOrder.filter(id => gameState.players[id]?.isAlive);
+      const allPlacedAtLeastOne = living.every(id => gameState.players[id]?.skullPile?.length >= 1);
+
+      (me.hand || []).forEach(tile => {
+        const isSel = selectedSkullTileId === tile.id;
+        const isSkull = tile.type === 'skull';
+        const btn = document.createElement('button');
+        
+        btn.className = `w-14 h-20 rounded-xl border-2 flex flex-col items-center justify-between p-2 transition-all shadow-lg ${
+          isSel 
+            ? 'border-dore bg-white scale-105 shadow-[0_0_15px_rgba(212,175,55,0.7)] -translate-y-2' 
+            : 'border-[#d2cbbe] bg-[#faf8f5] hover:border-dore hover:-translate-y-1'
+        }`;
+        
+        btn.innerHTML = `
+          <i class="fa-solid ${tile.icon} text-lg mt-0.5"></i>
+          <span class="text-[9px] font-mono font-bold uppercase tracking-wider ${isSkull ? 'text-rose-800' : 'text-emerald-800'}">${tile.name}</span>
+          <span class="text-[8px] font-mono font-bold text-stone-400">SKULL</span>
+        `;
+        
+        btn.onclick = () => {
+          if (isMyTurn && gameState.skullPhase === 'placement') {
+            selectedSkullTileId = (selectedSkullTileId === tile.id) ? null : tile.id;
+            renderSkullPlayerConsole(me);
+          }
+        };
+        container.appendChild(btn);
+      });
+
+      const btnPlay = document.getElementById('btn-skull-play-card');
+      const btnOpenBid = document.getElementById('btn-skull-open-bid');
+      const bidPanel = document.getElementById('skull-bidding-panel');
+      const revealNotice = document.getElementById('skull-reveal-notice');
+
+      if (gameState.skullPhase === 'placement') {
+        bidPanel.classList.add('hidden');
+        revealNotice.classList.add('hidden');
+        document.getElementById('skull-placement-actions').classList.remove('hidden');
+
+        btnPlay.disabled = !isMyTurn || !selectedSkullTileId;
+        btnPlay.className = (!isMyTurn || !selectedSkullTileId)
+          ? "py-2.5 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all cursor-not-allowed"
+          : "py-2.5 rounded-lg border border-dore bg-[#243828] hover:bg-[#2d4833] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer";
+
+        const canOpenBid = isMyTurn && allPlacedAtLeastOne && totalTiles >= 1;
+        btnOpenBid.disabled = !canOpenBid;
+        btnOpenBid.className = !canOpenBid
+          ? "py-2.5 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all cursor-not-allowed"
+          : "py-2.5 rounded-lg border border-dore bg-[#243828] hover:bg-[#2d4833] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer";
+      } else if (gameState.skullPhase === 'bidding') {
+        document.getElementById('skull-placement-actions').classList.add('hidden');
+        revealNotice.classList.add('hidden');
+
+        const hasPassed = gameState.skullPassers.includes(myId);
+        if (isMyTurn && !hasPassed) {
+          bidPanel.classList.remove('hidden');
+          bidPanel.classList.add('flex');
+          const minBid = gameState.skullHighBid + 1;
+          document.getElementById('skull-min-bid-lbl').innerText = minBid;
+          const input = document.getElementById('input-skull-bid');
+          input.min = minBid;
+          input.max = totalTiles;
+          if (parseInt(input.value, 10) < minBid || !input.value) input.value = minBid;
+        } else {
+          bidPanel.classList.add('hidden');
+        }
+      } else if (gameState.skullPhase === 'revealing') {
+        document.getElementById('skull-placement-actions').classList.add('hidden');
+        bidPanel.classList.add('hidden');
+        if (isMyTurn && gameState.skullHighBidderId === myId) {
+          revealNotice.classList.remove('hidden');
+        } else {
+          revealNotice.classList.add('hidden');
+        }
+      }
+    }
+
+    function pickMistigriCard(victimId, cardIndex) {
+      if (gameState.gameMode !== 'mistigri') return;
+
+      const currentActiveId = gameState.playerOrder[gameState.activePlayerIndex];
+      if (currentActiveId !== myId) {
+        showToast("Attends ton tour !");
+        return;
+      }
+
+      sendToHost({
+        type: 'MISTIGRI_DRAW',
+        id: myId,
+        victimId: victimId,
+        cardIndex: cardIndex
+      });
     }
 
     function renderCardPlayerConsole(me) {
@@ -3554,22 +4698,39 @@
 
     function renderGameOverScreen() {
       const players = Object.values(gameState.players);
-      const winner = players.find(p => p.isAlive) || players[0];
+      
+      let winner = null;
+      if (gameState.gameMode === 'skull') {
+        winner = players.find(p => p.skullScore >= 2) || players.find(p => p.isAlive) || players[0];
+      } else {
+        winner = players.find(p => p.isAlive) || players[0];
+      }
+
       document.getElementById('gameover-title').innerText = `${winner.name.toUpperCase()} TRIOMPHE`;
 
       const list = document.getElementById('gameover-standings');
       list.innerHTML = '';
       players.forEach(p => {
+        const isWinner = p.id === winner.id;
         const row = document.createElement('div');
         row.className = 'flex items-center justify-between p-2 rounded border border-[#28382c] bg-[#111713] text-xs font-mono';
+        
+        let scoreTag = '';
+        if (gameState.gameMode === 'skull') {
+          scoreTag = `<span class="text-[10px] text-yellow-400 font-bold mr-2">${p.skullScore || 0}/2 pts</span>`;
+        }
+
         row.innerHTML = `
           <div class="flex items-center gap-2">
-            <span>${p.isAlive ? '♠' : '✝'}</span>
+            <span>${isWinner ? '🏆' : (p.isAlive ? '♠' : '✝')}</span>
             <span class="font-title font-bold text-[#f7f6f2]">${p.name}</span>
           </div>
-          <span class="font-mono text-[9px] uppercase tracking-wider ${p.isAlive ? 'text-dore font-bold' : 'text-[#637568]'}">
-            ${p.isAlive ? 'Vainqueur' : 'Éliminé'}
-          </span>
+          <div class="flex items-center">
+            ${scoreTag}
+            <span class="font-mono text-[9px] uppercase tracking-wider ${isWinner ? 'text-dore font-bold' : (p.isAlive ? 'text-stone-300' : 'text-[#637568]')}">
+              ${isWinner ? 'Vainqueur' : (p.isAlive ? 'En jeu' : 'Éliminé')}
+            </span>
+          </div>
         `;
         list.appendChild(row);
       });
@@ -3594,9 +4755,9 @@
       gameState.isZbeul = !gameState.isZbeul;
       const b = document.getElementById('btn-mode-zbeul');
       if (gameState.isZbeul) {
-        b.className = "mt-2 w-full p-2 rounded border border-dore bg-[#1e2a21] text-dore text-xs font-title font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_12px_rgba(212,175,55,0.25)]";
+        b.className = "w-full h-9 p-2 rounded border border-dore bg-[#1e2a21] text-dore text-xs font-title font-bold flex items-center justify-center gap-2 transition-colors";
       } else {
-        b.className = "mt-2 w-full p-2 rounded border border-[#2b3a2e] bg-[#121613] text-[#788a7c] text-xs font-title font-bold flex items-center justify-center gap-2 transition-all";
+        b.className = "w-full h-9 p-2 rounded border border-[#2b3a2e] bg-[#121613] text-[#788a7c] text-xs font-title font-bold flex items-center justify-center gap-2 transition-colors";
       }
     });
 
@@ -3850,6 +5011,87 @@
     });
 
     window.addEventListener('DOMContentLoaded', () => initAvatarSelector());
+
+    /* -------------------------------------------------------------
+       GESTION DES MODES DE JEU (SÉLECTION & STYLES)
+       ------------------------------------------------------------- */
+    const MODE_CONFIG = {
+      cards: {
+        btnId: 'btn-mode-cards',
+        allowsZbeul: true
+      },
+      dice: {
+        btnId: 'btn-mode-dice',
+        allowsZbeul: true
+      },
+      skull: {
+        btnId: 'btn-mode-skull',
+        allowsZbeul: true
+      },
+      mistigri: {
+        btnId: 'btn-mode-mistigri',
+        allowsZbeul: true
+      }
+    };
+
+    const ACTIVE_MODE_CLASS = 'w-full h-9 rounded border border-dore bg-[#1e2a21] text-dore text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-colors';
+    const INACTIVE_MODE_CLASS = 'w-full h-9 rounded border border-[#29392c] bg-[#111713] text-[#7b8f80] text-xs font-title font-bold flex items-center justify-center gap-1.5 transition-colors';
+
+    function setGameMode(selectedMode) {
+      gameState.gameMode = selectedMode;
+      sendToHost({ type: 'SET_GAME_MODE', mode: selectedMode });
+
+      const config = MODE_CONFIG[selectedMode];
+
+      if (!config.allowsZbeul) {
+        gameState.isZbeul = false;
+      }
+
+      const zbeulWrapper = document.getElementById('wrapper-mode-zbeul');
+      if (zbeulWrapper) {
+        zbeulWrapper.classList.toggle('hidden', !config.allowsZbeul);
+      }
+
+      Object.entries(MODE_CONFIG).forEach(([modeKey, modeVal]) => {
+        const btn = document.getElementById(modeVal.btnId);
+        if (!btn) return;
+        btn.className = (modeKey === selectedMode) ? ACTIVE_MODE_CLASS : INACTIVE_MODE_CLASS;
+      });
+    }
+
+    // Attachement des écouteurs pour chaque mode
+    Object.keys(MODE_CONFIG).forEach(mode => {
+      const btn = document.getElementById(MODE_CONFIG[mode].btnId);
+      if (btn) {
+        btn.addEventListener('click', () => setGameMode(mode));
+      }
+    });
+
+    /* -------------------------------------------------------------
+       ACTIONS DU MODE SKULL
+       ------------------------------------------------------------- */
+    const skullActionBindings = [
+      { id: 'btn-skull-play-card', action: () => {
+        if (!selectedSkullTileId) return;
+        sendToHost({ type: 'SKULL_PLAY_TILE', id: myId, tileId: selectedSkullTileId });
+        selectedSkullTileId = null;
+      }},
+      { id: 'btn-skull-open-bid', action: () => {
+        sendToHost({ type: 'SKULL_SUBMIT_BID', id: myId, bid: 1 });
+      }},
+      { id: 'btn-skull-submit-bid', action: () => {
+        const val = document.getElementById('input-skull-bid')?.value;
+        if (val) sendToHost({ type: 'SKULL_SUBMIT_BID', id: myId, bid: val });
+      }},
+      { id: 'btn-skull-pass-bid', action: () => {
+        sendToHost({ type: 'SKULL_PASS_BID', id: myId });
+      }}
+    ];
+
+    skullActionBindings.forEach(({ id, action }) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('click', action);
+    });
   </script>
 </body>
 </html>
