@@ -4580,6 +4580,12 @@
     function renderTableScreen(me) {
       const isMistigri = gameState.gameMode === 'mistigri';
       const isSkull = gameState.gameMode === 'skull';
+
+      const skullPlacement = document.getElementById('skull-placement-actions');
+      if (skullPlacement) {
+        skullPlacement.classList.add('hidden');
+        skullPlacement.classList.remove('grid'); // Supprime l'affichage en grille
+      }
       const isDice = gameState.gameMode === 'dice';
 
       // MISE À JOUR DU BADGE EN HAUT À GAUCHE
@@ -5149,6 +5155,8 @@
 
       // Actions selon la phase
       if (gameState.skullPhase === 'placement') {
+        skullActionsWrapper?.classList.remove('hidden');
+        skullActionsWrapper?.classList.add('grid');
         bidPanel?.classList.add('hidden');
         revealNotice?.classList.add('hidden');
         skullActionsWrapper?.classList.remove('hidden');
