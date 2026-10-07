@@ -610,7 +610,7 @@
         <div class="w-full max-w-xs min-h-[42px] flex items-center justify-center flex-shrink-0 mb-1">
           
           <!-- Actions Cartes -->
-          <div id="cards-action-controls" class="hidden w-full grid-cols-2 gap-2">
+          <div id="cards-action-controls" class="hidden w-full grid grid-cols-2 gap-2" style="display: none !important;">
             <button id="btn-play-selection" disabled class="h-9 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
               <i class="fa-solid fa-hand"></i>
               <span id="btn-play-label">Poser (0)</span>
@@ -1513,10 +1513,7 @@
       } 
       else if (evt.type === 'TOAST_NOTIF') {
         showToast(evt.message);
-      }
-      if (evt.type === 'LOTTERY_ANIM') {
-        runLotteryCardAnimationLocal(evt.chosenRank, evt.firstPlayerName);
-      }
+    }
     }
 
     let _msgCounter = 0;
@@ -2523,7 +2520,8 @@
         gameState.tableCardsCount = 0;
         gameState.lastClaim = null;
         gameState.feltTicker = "Mélange des cartes...";
-        
+        broadcastState();
+
         const chosenRank = CARD_RANKS[Math.floor(Math.random() * CARD_RANKS.length)];
         const luckyFirstId = living[Math.floor(Math.random() * living.length)];
         const active = gameState.players[luckyFirstId];
@@ -2539,17 +2537,12 @@
           gameState.players[id].hand = hand;
         });
 
-        // 1. On synchronise d'abord l'état pour que tous les clients affichent la table de jeu
-        broadcastState();
-
-        // 2. On diffuse l'animation à tout le monde
         broadcastEvent({
           type: 'LOTTERY_ANIM',
           chosenRank: chosenRank,
           firstPlayerName: active.name
         });
 
-        // 3. L'hôte joue l'animation en local
         runLotteryCardAnimationLocal(chosenRank, active.name, () => {
           gameState.status = 'in_round';
           gameState.feltTicker = `Le sort désigne ${active.name} pour ouvrir la manche.`;
@@ -2754,7 +2747,6 @@
       if (!modal || !cardFrame) return;
 
       modal.classList.remove('hidden');
-      modal.style.setProperty('display', 'flex', 'important'); // <-- Force l'affichage visible
       if (statusEl) {
         statusEl.className = "font-mono text-xs text-dore animate-pulse";
         statusEl.innerText = "Tirage de la figure...";
@@ -2807,7 +2799,6 @@
 
         setTimeout(() => {
           modal.classList.add('hidden');
-          modal.style.setProperty('display', 'none', 'important'); // <-- Referme proprement
           broadcastToast(`Premier à parler : ${firstPlayerName}`);
           if (onComplete) onComplete();
         }, 2200);
@@ -4622,44 +4613,38 @@
       if (tickerEl && gameState.feltTicker) {
         tickerEl.innerText = gameState.feltTicker;
       }
-
       const isMistigri = gameState.gameMode === 'mistigri';
       const isSkull = gameState.gameMode === 'skull';
-      const isDice = gameState.gameMode === 'dice';
 
-      // Masquer les panneaux selon le mode en cours
       const skullPlacement = document.getElementById('skull-placement-actions');
-      if (skullPlacement && !isSkull) {
+      if (skullPlacement) {
         skullPlacement.classList.add('hidden');
         skullPlacement.classList.remove('grid');
-        skullPlacement.style.setProperty('display', 'none', 'important');
       }
+      const isDice = gameState.gameMode === 'dice';
 
-      const skullBidding = document.getElementById('skull-bidding-panel');
-      if (skullBidding && !isSkull) {
-        skullBidding.classList.add('hidden');
-        skullBidding.style.setProperty('display', 'none', 'important');
-      }
-
-      const skullNotice = document.getElementById('skull-reveal-notice');
-      if (skullNotice && !isSkull) {
-        skullNotice.classList.add('hidden');
-      }
-
-      const quintoBtns = document.getElementById('quinto-buttons-wrapper');
-      if (quintoBtns && !isDice) {
-        quintoBtns.classList.add('hidden');
-        quintoBtns.style.setProperty('display', 'none', 'important');
-      }
-
-      const cardsControls = document.getElementById('cards-action-controls');
-      if (cardsControls && (isDice || isSkull || isMistigri)) {
-        cardsControls.classList.add('hidden');
-        cardsControls.style.setProperty('display', 'none', 'important');
-      }
+      // SÉCURITÉ ABSOLUE : masquer tous les blocs d'actions
+      const allActionPanels = [
+        'cards-action-controls',
+        'quinto-buttons-wrapper',
+        'quinto-action-controls',
+        'skull-action-controls',
+        'skull-placement-actions',
+        'skull-bidding-panel',
+        'skull-reveal-notice'
+      ];
+      allActionPanels.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add('hidden');
+          el.classList.remove('grid', 'flex');
+          el.style.setProperty('display', 'none', 'important'); // Masquage prioritaire absolu
+        }
+      });
 
       // MISE À JOUR DU BADGE EN HAUT À GAUCHE
       const targetTitle = document.getElementById('game-target-title');
+      const targetBadge = document.getElementById('game-target-badge');
       if (targetTitle) {
         if (isDice) {
           targetTitle.innerText = "MODE : DÉS";
@@ -4694,6 +4679,7 @@
         cardsInPlayEl.innerText = count;
       }
 
+      // C'EST CE 0 ICI AU MILIEU DE LA TABLE SUR LA CARTE VERTE :
       const centerPileCount = document.getElementById('center-pile-count');
       if (centerPileCount) {
         centerPileCount.innerText = count;
@@ -4704,9 +4690,9 @@
       const centerSkull = document.getElementById('center-skull-display');
       const centerMistigri = document.getElementById('center-mistigri-display');
 
-      if (centerCards) centerCards.classList.add('hidden');
-      if (centerDice) centerDice.classList.add('hidden');
-      if (centerSkull) centerSkull.classList.add('hidden');
+      centerCards.classList.add('hidden');
+      centerDice.classList.add('hidden');
+      centerSkull.classList.add('hidden');
       if (centerMistigri) centerMistigri.classList.add('hidden');
 
       if (isMistigri) {
@@ -4730,18 +4716,18 @@
           }
         }
       } else if (isSkull) {
+        centerCards.classList.add('hidden');
+        centerDice.classList.add('hidden');
+        
         const isRevealing = gameState.skullPhase === 'revealing';
 
+        // Masquer le bloc central complet pendant la révélation pour laisser place nette
         if (isRevealing) {
-          if (centerSkull) {
-            centerSkull.classList.add('hidden');
-            centerSkull.classList.remove('flex');
-          }
+          centerSkull.classList.add('hidden');
+          centerSkull.classList.remove('flex');
         } else {
-          if (centerSkull) {
-            centerSkull.classList.remove('hidden');
-            centerSkull.classList.add('flex');
-          }
+          centerSkull.classList.remove('hidden');
+          centerSkull.classList.add('hidden');
 
           const totalPlaced = getTotalSkullPlacedTiles();
           const countEl = document.getElementById('skull-pile-center-count');
@@ -4752,8 +4738,11 @@
         if (revProgress) {
           revProgress.classList.add('hidden');
         }
+      
       } else if (isDice) {
-        if (centerDice) centerDice.classList.remove('hidden');
+        centerCards.classList.add('hidden');
+        centerDice.classList.remove('hidden');
+        centerSkull.classList.add('hidden');
         const numberEl = document.getElementById('quinto-table-number');
         const playerEl = document.getElementById('quinto-table-player');
         if (numberEl && playerEl) {
@@ -4761,13 +4750,31 @@
           playerEl.innerText = gameState.quintoClaim ? gameState.quintoClaim.playerName : "";
         }
       } else {
-        if (centerCards) centerCards.classList.remove('hidden');
+        centerCards.classList.remove('hidden');
+        centerDice.classList.add('hidden');
+        centerSkull.classList.add('hidden');
       }
 
       renderSeatsAroundTable();
       renderInventoryConsole(me);
 
-      // Branchement strict de la console active
+      // SÉCURITÉ ABSOLUE : masquer tous les blocs de contrôles du bas avant d'activer le bon
+      document.getElementById('cards-action-controls')?.classList.add('hidden');
+      document.getElementById('quinto-buttons-wrapper')?.classList.add('hidden');
+      document.getElementById('quinto-action-controls')?.classList.add('hidden');
+      document.getElementById('skull-action-controls')?.classList.add('hidden');
+      document.getElementById('skull-placement-actions')?.classList.add('hidden');
+      document.getElementById('skull-bidding-panel')?.classList.add('hidden');
+
+      const skullBidding = document.getElementById('skull-bidding-panel');
+      if (skullBidding) {
+        skullBidding.classList.add('hidden');
+        skullBidding.classList.remove('flex');
+      }
+
+      document.getElementById('skull-reveal-notice')?.classList.add('hidden');
+
+      // Branchement strict sans écrasement mutuel
       if (isMistigri) {
         renderMistigriPlayerConsole(me);
       } else if (isSkull) {
@@ -5300,30 +5307,8 @@
 
     function renderCardPlayerConsole(me) {
       if (gameState.gameMode !== 'cards') return;
-
-      const myHandContainer = document.getElementById('my-hand-container');
-      if (myHandContainer) {
-        myHandContainer.classList.remove('hidden');
-        myHandContainer.style.removeProperty('display');
-      }
-      
-      const cardsControls = document.getElementById('cards-action-controls');
-      if (cardsControls) {
-        cardsControls.classList.remove('hidden');
-        cardsControls.classList.add('grid');
-        cardsControls.style.removeProperty('display');
-        cardsControls.style.setProperty('display', 'grid', 'important');
-      }
-
-      // Masquer explicitement les panneaux des autres modes
-      ['quinto-buttons-wrapper', 'quinto-action-controls', 'skull-action-controls', 'skull-placement-actions', 'skull-bidding-panel'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.classList.add('hidden');
-          el.style.setProperty('display', 'none', 'important');
-        }
-      });
-
+      document.getElementById('my-hand-container')?.classList.remove('hidden');
+      document.getElementById('cards-action-controls')?.classList.remove('hidden');
       document.getElementById('quinto-action-controls')?.classList.add('hidden');
       document.getElementById('quinto-buttons-wrapper')?.classList.add('hidden');
 
