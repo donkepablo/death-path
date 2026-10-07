@@ -610,7 +610,7 @@
         <div class="w-full max-w-xs min-h-[42px] flex items-center justify-center flex-shrink-0 mb-1">
           
           <!-- Actions Cartes -->
-          <div id="cards-action-controls" class="w-full grid grid-cols-2 gap-2">
+          <div id="cards-action-controls" class="hidden w-full grid grid-cols-2 gap-2" style="display: none !important;">
             <button id="btn-play-selection" disabled class="h-9 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
               <i class="fa-solid fa-hand"></i>
               <span id="btn-play-label">Poser (0)</span>
@@ -622,7 +622,7 @@
           </div>
 
           <!-- Actions Dés (Secouer / Menteur / Vérité / Mentir) ancrées dans la barre basse -->
-          <div id="quinto-buttons-wrapper" class="hidden w-full flex-col justify-center">
+          <div id="quinto-buttons-wrapper" class="hidden w-full flex-col justify-center" style="display: none !important;">
             <!-- Étape 1 : Avant de secouer (Secouer / Renvoyer / Menteur) -->
             <div id="quinto-step-roll" class="w-full flex flex-col gap-1.5">
               <div class="grid grid-cols-2 gap-2 w-full">
@@ -4773,7 +4773,18 @@
     }
 
     function renderMistigriPlayerConsole(me) {
-      document.getElementById('my-hand-container').classList.remove('hidden');
+      if (gameState.gameMode !== 'mistigri') return; // GARDE-FOU OBLIGATOIRE
+
+      // Masquer impérativement tous les blocs d'actions des autres modes
+      ['cards-action-controls', 'quinto-buttons-wrapper', 'quinto-action-controls', 'skull-action-controls', 'skull-placement-actions', 'skull-bidding-panel', 'skull-reveal-notice'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add('hidden');
+          el.style.setProperty('display', 'none', 'important');
+        }
+      });
+
+      document.getElementById('my-hand-container')?.classList.remove('hidden');
       document.getElementById('cards-action-controls').classList.add('hidden');
       document.getElementById('quinto-action-controls').classList.add('hidden');
       document.getElementById('skull-action-controls').classList.add('hidden');
@@ -5281,6 +5292,7 @@
     }
 
     function renderCardPlayerConsole(me) {
+      if (gameState.gameMode !== 'cards') return;
       document.getElementById('my-hand-container')?.classList.remove('hidden');
       document.getElementById('cards-action-controls')?.classList.remove('hidden');
       document.getElementById('quinto-action-controls')?.classList.add('hidden');
@@ -5370,12 +5382,12 @@
     }
 
     function renderQuintoPlayerConsole(me) {
+      if (gameState.gameMode !== 'dice') return; // GARDE-FOU OBLIGATOIRE
+
       document.getElementById('my-hand-container')?.classList.add('hidden');
       document.getElementById('cards-action-controls')?.classList.add('hidden');
       document.getElementById('quinto-action-controls')?.classList.remove('hidden');
       document.getElementById('skull-action-controls')?.classList.add('hidden');
-      
-      // AJOUT INDISPENSABLE : masquer les boutons Skull et Mistigri
       document.getElementById('skull-placement-actions')?.classList.add('hidden');
       document.getElementById('skull-bidding-panel')?.classList.add('hidden');
       document.getElementById('skull-reveal-notice')?.classList.add('hidden');
