@@ -704,6 +704,7 @@
           </div>
 
       </div>
+    </div>
     </section>
 
     <!-- SCREEN 4: GAME OVER -->
@@ -5045,38 +5046,25 @@
       const skullActionsWrapper = document.getElementById('skull-placement-actions');
 
       const consoleTitle = document.getElementById('hand-console-title');
-      if (consoleTitle) consoleTitle.innerText = 'Tes Tuiles';
+      const activePlayerId = gameState.playerOrder[gameState.activePlayerIndex];
+      const activePlayer = gameState.players[activePlayerId];
+      const isMyTurn = activePlayerId === myId;
+
+      if (consoleTitle) {
+        consoleTitle.innerText = isMyTurn ? 'À TOI DE JOUER !' : `Tour de : ${activePlayer ? activePlayer.name : '...'}`;
+        consoleTitle.className = isMyTurn ? 'text-dore font-title text-[11px] font-bold uppercase tracking-wider animate-pulse' : 'text-stone-400 font-title text-[11px] font-bold uppercase tracking-wider';
+      }
+
       const consoleCount = document.getElementById('hand-console-count');
       if (consoleCount) consoleCount.innerText = `(${me && me.hand ? me.hand.length : 0})`;
 
-      const isMyTurn = gameState.playerOrder[gameState.activePlayerIndex] === myId;
       const totalTiles = getTotalSkullPlacedTiles();
       const living = gameState.playerOrder.filter(id => gameState.players[id]?.isAlive);
       const allPlacedAtLeastOne = living.every(id => (gameState.players[id]?.skullPile?.length || 0) >= 1);
 
-      // Gestion de la fin de manche Skull
-      let btnNextRound = document.getElementById('btn-skull-next-round');
-      const actionsContainer = skullActionsWrapper?.parentElement;
-      if (gameState.status === 'skull_round_won') {
-        if (!btnNextRound) {
-          btnNextRound = document.createElement('button');
-          btnNextRound.id = 'btn-skull-next-round';
-          btnNextRound.onclick = () => sendToHost({ type: 'SKULL_NEXT_ROUND', id: myId });
-          if (actionsContainer) actionsContainer.appendChild(btnNextRound);
-        }
-        btnNextRound.classList.remove('hidden');
-        btnNextRound.disabled = !isHost;
-        btnNextRound.className = isHost 
-          ? "w-full h-9 rounded-lg border border-dore bg-[#273a2c] hover:bg-[#334c3a] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer flex items-center justify-center"
-          : "w-full h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold cursor-not-allowed flex items-center justify-center";
-        btnNextRound.innerText = isHost ? "Passer à la manche suivante" : "En attente de l'hôte...";
-        
-        skullActionsWrapper?.classList.add('hidden');
-        bidPanel?.classList.add('hidden');
-        revealNotice?.classList.add('hidden');
-        return;
-      } else if (btnNextRound) {
-        btnNextRound.classList.add('hidden');
+      // Auto-sélection de la première tuile si c'est notre tour et qu'aucune n'est choisie
+      if (isMyTurn && gameState.skullPhase === 'placement' && me?.hand?.length > 0 && !selectedSkullTileId) {
+        selectedSkullTileId = me.hand[0].id;
       }
 
       // Rendu des tuiles en main
@@ -5101,7 +5089,7 @@
             `;
             btn.onclick = () => {
               if (isMyTurn && gameState.skullPhase === 'placement') {
-                selectedSkullTileId = (selectedSkullTileId === tile.id) ? null : tile.id;
+                selectedSkullTileId = tile.id;
                 renderSkullPlayerConsole(me);
               }
             };
@@ -5110,7 +5098,7 @@
         }
       }
 
-      // Gestion des panneaux selon la phase de jeu
+      // Actions selon la phase
       if (gameState.skullPhase === 'placement') {
         bidPanel?.classList.add('hidden');
         revealNotice?.classList.add('hidden');
@@ -5122,7 +5110,7 @@
         if (btnPlay) {
           btnPlay.disabled = !canPlayTile;
           btnPlay.className = !canPlayTile
-            ? "h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed"
+            ? "h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-50"
             : "h-9 rounded-lg border border-dore bg-[#243828] hover:bg-[#2d4833] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer flex items-center justify-center gap-1.5";
         }
 
@@ -5130,7 +5118,7 @@
         if (btnOpenBid) {
           btnOpenBid.disabled = !canOpenBid;
           btnOpenBid.className = !canOpenBid
-            ? "h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed"
+            ? "h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-50"
             : "h-9 rounded-lg border border-dore bg-[#243828] hover:bg-[#2d4833] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer flex items-center justify-center gap-1.5" + (hasNoMoreTiles ? " animate-bounce" : "");
         }
 
