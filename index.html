@@ -1402,6 +1402,7 @@
       // Mode DÉS : seuls les adversaires voient les dés masqués.
       // Le joueur actif (qu'il soit hôte ou client) doit OBLIGATOIREMENT recevoir ses dés réels.
       const activeIdForDice = gameState.playerOrder[gameState.activePlayerIndex];
+      // Si le destinataire n'est PAS le joueur actif, on masque les dés
       if (recipientPlayerId && recipientPlayerId !== activeIdForDice) {
         clone.quintoRealDice = null;
       }
@@ -2017,10 +2018,11 @@
 
           peer.on('connection', (conn) => {
             connections.push(conn);
-            conn.on('data', (data) => handleClientMessage(data, conn));
-            conn.on('close', () => {
-              connections = connections.filter(c => c !== conn);
-              if (conn.playerGameId) handlePlayerDeparture(conn.playerGameId);
+            conn.on('data', (data) => {
+              if (data && data.id) {
+                conn.playerGameId = data.id; // Enregistre immédiatement l'ID joueur sur la connexion
+              }
+              handleClientMessage(data, conn);
             });
           });
         } catch (e) {
@@ -2513,8 +2515,9 @@
         // Chaque joueur reçoit 1 PFC et 1 forçage de relance pour la manche
         living.forEach(id => {
           if (gameState.players[id]) {
-            gameState.players[id].hasDicePfc = true;
-            gameState.players[id].hasForcedReroll = false; // <-- AJOUT ICI
+            // Le PFC et le forçage sont STRICTEMENT réservés au mode Zbeul
+            gameState.players[id].hasDicePfc = Boolean(gameState.isZbeul);
+            gameState.players[id].hasForcedReroll = false;
           }
         });
         
@@ -3370,7 +3373,7 @@
       const accused = gameState.players[gameState.quintoClaim.playerId];
       if (!accuser || !accused || !accuser.isAlive || !accused.isAlive) return;
 
-      if (accused.hasDicePfc) {
+      if (gameState.isZbeul && accused.hasDicePfc) {
         startPfcPrompt(accuser, accused, 'dice');
         return;
       }
@@ -4692,11 +4695,6 @@
 
       // MISE À JOUR DU COMPTEUR DE CARTES AU MILIEU
       const count = gameState.tableCardsCount || 0;
-      
-      const cardsInPlayEl = document.getElementById('game-cards-in-play');
-      if (cardsInPlayEl) {
-        cardsInPlayEl.innerText = count;
-      }
 
       // C'EST CE 0 ICI AU MILIEU DE LA TABLE SUR LA CARTE VERTE :
       const centerPileCount = document.getElementById('center-pile-count');
@@ -4772,6 +4770,26 @@
         centerCards.classList.remove('hidden');
         centerDice.classList.add('hidden');
         centerSkull.classList.add('hidden');
+      }
+
+      const statLabelEl = document.getElementById('center-stat-label');
+      if (statLabelEl) {
+        if (isDice) {
+          statLabelEl.innerText = "NOMBRE EN JEU :";
+        } else if (isSkull) {
+          statLabelEl.innerText = "TUILES AU CENTRE :";
+        } else {
+          statLabelEl.innerText = "NOMBRE DE CARTES AU CENTRE :";
+        }
+      }
+
+      const cardsInPlayEl = document.getElementById('game-cards-in-play');
+      if (cardsInPlayEl) {
+        if (isDice) {
+          cardsInPlayEl.innerText = gameState.quintoClaim ? gameState.quintoClaim.score : "--";
+        } else {
+          cardsInPlayEl.innerText = count;
+        }
       }
 
       renderSeatsAroundTable();
@@ -5507,7 +5525,6 @@
       const dicePairEl = document.getElementById('quinto-dice-pair');
       const realValTag = document.getElementById('quinto-real-val-tag');
 
-      // 2. CONDITION STRICTE : Visible UNIQUEMENT si c'est mon tour ET que j'ai RÉELLEMENT secoué les dés
       const hasRolledDiceNow = Boolean(
         isMyTurn &&
         gameState.quintoHasRolled === true &&
