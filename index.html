@@ -3757,8 +3757,6 @@
     function triggerRevolverChamber(targetPlayer, customOnComplete = null) {
       const risk = targetPlayer.cylinderRisk || 1;
       const remainingChambers = Math.max(1, 7 - risk);
-      
-      // À 6/6, AUCUN tirage au sort : mort certaine à 100 % !
       const isFatal = (risk >= 6) ? true : (Math.random() < (1 / remainingChambers));
 
       broadcastEvent({
@@ -3771,8 +3769,9 @@
       });
 
       triggerRevolverChamberLocal(targetPlayer.name, risk, remainingChambers, isFatal, () => {
+        if (!isHost) return; // Seul l'hôte gère la suite logique
+
         if (isFatal) {
-          // Tir fatal : élimination immédiate
           triggerExecution(targetPlayer, `Le coup ${risk}/6 a fait feu`, () => {
             if (typeof customOnComplete === 'function') {
               customOnComplete();
@@ -3787,7 +3786,6 @@
             }
           });
         } else {
-          // Survie : on monte le risque (max 6)
           targetPlayer.cylinderRisk = risk + 1;
           gameState.feltTicker = `${targetPlayer.name} survit ! Risque augmenté à ${targetPlayer.cylinderRisk}/6.`;
           broadcastState();
@@ -3799,10 +3797,8 @@
               closeDenounceModal();
               broadcastEvent({ type: 'CLOSE_DENOUNCE_MODAL' });
               
-              // Relance adaptée selon le mode de jeu
               if (gameState.gameMode === 'skull') {
                 gameState.status = 'in_round';
-                // Si on était en train de révéler à Skull et qu'on rate, la manche s'arrête ou on avance
                 startNewRound();
               } else {
                 startNewRound();
