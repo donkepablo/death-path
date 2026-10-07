@@ -5612,15 +5612,15 @@
           }
 
           if (btnForcePrev) {
-            // STRICTEMENT RÉSERVÉ AU MODE ZBEUL
-            if (!gameState.isZbeul) {
+            // STRICTEMENT RÉSERVÉ AU MODE ZBEUL ET UNIQUEMENT QUAND C'EST TON TOUR
+            if (!gameState.isZbeul || !isMyTurn) {
               btnForcePrev.classList.add('hidden');
               btnForcePrev.disabled = true;
             } else {
               const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
               const isBlockedByMirror = Boolean(gameState.isMirrorChainActive || wasPrecededByMirror);
               const alreadyUsedRound = Boolean(me && me.hasForcedReroll);
-              const canForce = hasPrevClaim && !alreadyUsedRound && !isBlockedByMirror;
+              const canForce = hasPrevClaim && !alreadyUsedRound && !isBlockedByMirror && isMyTurn;
 
               btnForcePrev.classList.toggle('hidden', !hasPrevClaim || alreadyUsedRound);
               btnForcePrev.disabled = !canForce;
