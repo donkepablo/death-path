@@ -3885,9 +3885,13 @@
       });
 
       triggerExecutionLocal(player.name, reason);
+      
+      // CRUCIAL : On diffuse immédiatement le nouvel état (joueur mort) à tout le monde
       broadcastState();
 
       setTimeout(() => {
+        if (!isHost) return; // Seul l'hôte gère la suite de la logique de partie
+
         if (typeof onDone === 'function') {
           onDone();
           return;
@@ -3898,12 +3902,7 @@
           gameState.status = 'game_ended';
           broadcastState();
         } else {
-          // Si on est en mode Skull, on nettoie les tuiles et relance une manche Skull propre
-          if (gameState.gameMode === 'skull') {
-            startNewRound();
-          } else {
-            startNewRound();
-          }
+          startNewRound();
         }
       }, 2800);
     }
