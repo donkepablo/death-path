@@ -607,7 +607,7 @@
         </div>
 
         <!-- ZONE INFÉRIEURE : BOUTONS D'ACTIONS (HAUTEUR STRICTEMENT FIGÉE À 42px) -->
-        <div class="w-full max-w-xs min-h-[42px] flex items-center justify-center flex-shrink-0 mb-1">
+        <div class="w-full max-w-xs min-h-[42px] flex items-center justify-center flex-shrink-0 mb-1 mt-3.5">
           
           <!-- Actions Cartes -->
           <div id="cards-action-controls" class="hidden w-full grid-cols-2 gap-2">
@@ -4950,22 +4950,70 @@
     }
 
     function renderSeatsAroundTable() {
-      const otherPlayers = gameState.playerOrder.filter(id => id !== myId).map(id => gameState.players[id]).filter(Boolean);
-      const seatConfigs = [
-        { el: document.getElementById('seat-left'), pos: 'left' },
-        { el: document.getElementById('seat-top'), pos: 'top' },
-        { el: document.getElementById('seat-right'), pos: 'right' }
-      ];
-      seatConfigs.forEach(s => { if (s.el) s.el.innerHTML = ''; });
+      const seatConfigs = {
+        top: document.getElementById('seat-top'),
+        left: document.getElementById('seat-left'),
+        right: document.getElementById('seat-right'),
+        bottom: document.getElementById('seat-bottom')
+      };
 
-      otherPlayers.forEach((p, idx) => {
-        if (seatConfigs[idx] && seatConfigs[idx].el) {
-          renderSingleSeat(seatConfigs[idx].el, p, false, seatConfigs[idx].pos);
-        }
-      });
+      // Vider tous les sièges
+      Object.values(seatConfigs).forEach(el => { if (el) el.innerHTML = ''; });
 
+      const order = gameState.playerOrder;
+      const myIndex = order.indexOf(myId);
+
+      // Si le joueur local n'est pas dans l'ordre, rendu par défaut
+      if (myIndex === -1) {
+        const me = gameState.players[myId];
+        if (me && seatConfigs.bottom) renderSingleSeat(seatConfigs.bottom, me, true, 'bottom');
+        return;
+      }
+
+      // 1. Mon siège est toujours en bas
       const me = gameState.players[myId];
-      if (me) renderSingleSeat(document.getElementById('seat-bottom'), me, true, 'bottom');
+      if (me && seatConfigs.bottom) {
+        renderSingleSeat(seatConfigs.bottom, me, true, 'bottom');
+      }
+
+      const total = order.length;
+      if (total <= 1) return;
+
+      // 2. Répartition ordonnée dans le sens horaire selon le nombre de joueurs à la table
+      if (total === 2) {
+        // 2 joueurs : l'adversaire est face à moi (en haut)
+        const otherId = order[(myIndex + 1) % total];
+        const other = gameState.players[otherId];
+        if (other && seatConfigs.top) {
+          renderSingleSeat(seatConfigs.top, other, false, 'top');
+        }
+      } else if (total === 3) {
+        // 3 joueurs : le suivant est à gauche, le dernier est à droite
+        const next1Id = order[(myIndex + 1) % total];
+        const next2Id = order[(myIndex + 2) % total];
+        
+        const p1 = gameState.players[next1Id];
+        const p2 = gameState.players[next2Id];
+
+        if (p1 && seatConfigs.left) renderSingleSeat(seatConfigs.left, p1, false, 'left');
+        if (p2 && seatConfigs.right) renderSingleSeat(seatConfigs.right, p2, false, 'right');
+      } else {
+        // 4 joueurs :
+        // (myIndex + 1) -> Gauche
+        // (myIndex + 2) -> Haut (face à face)
+        // (myIndex + 3) -> Droite
+        const leftId = order[(myIndex + 1) % total];
+        const topId = order[(myIndex + 2) % total];
+        const rightId = order[(myIndex + 3) % total];
+
+        const pLeft = gameState.players[leftId];
+        const pTop = gameState.players[topId];
+        const pRight = gameState.players[rightId];
+
+        if (pLeft && seatConfigs.left) renderSingleSeat(seatConfigs.left, pLeft, false, 'left');
+        if (pTop && seatConfigs.top) renderSingleSeat(seatConfigs.top, pTop, false, 'top');
+        if (pRight && seatConfigs.right) renderSingleSeat(seatConfigs.right, pRight, false, 'right');
+      }
     }
 
     function renderSingleSeat(container, player, isLocal = false, seatPosition = 'top') {
