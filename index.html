@@ -2172,9 +2172,12 @@
       gameState.skullPassers = [];
       gameState.skullRevealedCards = [];
       gameState.skullTargetCount = 0;
+      gameState.tableCardsCount = 0;
+      selectedSkullTileId = null;
 
       living.forEach(id => {
         const p = gameState.players[id];
+        // On redonne 4 tuiles complètes pour la nouvelle manche
         p.hand = [
           { id: `sk_${id}_1`, type: 'flower', name: 'Fleur', icon: 'fa-spa text-emerald-700' },
           { id: `sk_${id}_2`, type: 'flower', name: 'Fleur', icon: 'fa-spa text-emerald-700' },
@@ -2185,9 +2188,13 @@
         if (typeof p.skullScore !== 'number') p.skullScore = 0;
       });
 
-      const firstId = living[Math.floor(Math.random() * living.length)];
-      gameState.activePlayerIndex = gameState.playerOrder.indexOf(firstId);
-      gameState.feltTicker = `Nouveau tour de Skull : ${gameState.players[firstId].name} pose la première tuile.`;
+      // Le vainqueur du défi précédent (ou un joueur vivant tiré au sort) commence la nouvelle manche
+      const starterId = (gameState.skullHighBidderId && gameState.players[gameState.skullHighBidderId]?.isAlive)
+        ? gameState.skullHighBidderId
+        : living[Math.floor(Math.random() * living.length)];
+
+      gameState.activePlayerIndex = gameState.playerOrder.indexOf(starterId);
+      gameState.feltTicker = `Nouvelle manche : ${gameState.players[starterId].name} commence en posant une tuile.`;
 
       broadcastState();
       checkBotTurnWithDelay();
@@ -2404,10 +2411,17 @@
             gameState.feltTicker = `${revealer.name} valide son 2e point et remporte la partie ! 🏆`;
             broadcastState();
           } else {
-            // Manche remportée (1/2 point) : pause explicite pour afficher le bouton
+            // Manche remportée : notification puis relance automatique après 3 secondes
             gameState.status = 'skull_round_won';
-            gameState.feltTicker = `DÉFI RÉUSSI ! ${revealer.name} marque 1 point (${revealer.skullScore}/2).`;
+            gameState.feltTicker = `DÉFI RÉUSSI ! ${revealer.name} marque 1 point (${revealer.skullScore}/2). Préparez-vous pour la manche suivante...`;
+            showToast(`${revealer.name} marque 1 point !`);
             broadcastState();
+
+            setTimeout(() => {
+              if (isHost && gameState.status === 'skull_round_won') {
+                startNewRound();
+              }
+            }, 3000);
           }
           return;
         }
@@ -5049,6 +5063,18 @@
       const activePlayerId = gameState.playerOrder[gameState.activePlayerIndex];
       const activePlayer = gameState.players[activePlayerId];
       const isMyTurn = activePlayerId === myId;
+
+      if (gameState.status === 'skull_round_won') {
+        skullActionsWrapper?.classList.add('hidden');
+        bidPanel?.classList.add('hidden');
+        revealNotice?.classList.remove('hidden');
+        if (revealNotice) {
+          revealNotice.innerText = isHost 
+            ? "Manche terminée ! Lancement de la prochaine manche..." 
+            : "Manche terminée ! En attente de la manche suivante...";
+        }
+        return;
+      }
 
       if (consoleTitle) {
         consoleTitle.innerText = isMyTurn ? 'À TOI DE JOUER !' : `Tour de : ${activePlayer ? activePlayer.name : '...'}`;
