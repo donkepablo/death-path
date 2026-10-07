@@ -610,7 +610,7 @@
         <div class="w-full max-w-xs min-h-[42px] flex items-center justify-center flex-shrink-0 mb-1">
           
           <!-- Actions Cartes -->
-          <div id="cards-action-controls" class="hidden w-full grid grid-cols-2 gap-2" style="display: none !important;">
+          <div id="cards-action-controls" class="hidden w-full grid-cols-2 gap-2">
             <button id="btn-play-selection" disabled class="h-9 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
               <i class="fa-solid fa-hand"></i>
               <span id="btn-play-label">Poser (0)</span>
@@ -2112,9 +2112,10 @@
             });
 
             hostConn.on('data', (data) => {
-              if (data && data.type === 'SYNC_STATE') {
+              if (!data) return;
+
+              if (data.type === 'SYNC_STATE') {
                 gameState = normalizeIncomingState(data.state);
-                // Synchroniser le mode localement pour le client
                 if (data.state.gameMode) {
                   gameState.gameMode = data.state.gameMode;
                 }
@@ -2122,6 +2123,9 @@
                   gameState.isZbeul = data.state.isZbeul;
                 }
                 renderUI();
+              } else if (data.type === 'SYNC_EVENT') {
+                // Permet au client d'ouvrir les fenêtres de tirage, dénonciation et barillet
+                handleSyncEvent(data.event);
               }
             });
 
@@ -5308,7 +5312,12 @@
     function renderCardPlayerConsole(me) {
       if (gameState.gameMode !== 'cards') return;
       document.getElementById('my-hand-container')?.classList.remove('hidden');
-      document.getElementById('cards-action-controls')?.classList.remove('hidden');
+      const cardsActions = document.getElementById('cards-action-controls');
+        if (cardsActions) {
+          cardsActions.classList.remove('hidden');
+          cardsActions.style.removeProperty('display');
+          cardsActions.classList.add('grid');
+        }
       document.getElementById('quinto-action-controls')?.classList.add('hidden');
       document.getElementById('quinto-buttons-wrapper')?.classList.add('hidden');
 
