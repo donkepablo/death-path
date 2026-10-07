@@ -5468,8 +5468,12 @@
 
       document.getElementById('my-hand-container')?.classList.add('hidden');
       document.getElementById('cards-action-controls')?.classList.add('hidden');
-      
-      // Nettoyer display: none !important et forcer flex
+      document.getElementById('skull-action-controls')?.classList.add('hidden');
+      document.getElementById('skull-placement-actions')?.classList.add('hidden');
+      document.getElementById('skull-bidding-panel')?.classList.add('hidden');
+      document.getElementById('skull-reveal-notice')?.classList.add('hidden');
+
+      // 1. Déverrouillage impératif du conteneur haut des dés
       const qActionControls = document.getElementById('quinto-action-controls');
       if (qActionControls) {
         qActionControls.classList.remove('hidden');
@@ -5477,11 +5481,7 @@
         qActionControls.style.setProperty('display', 'flex', 'important');
       }
 
-      document.getElementById('skull-action-controls')?.classList.add('hidden');
-      document.getElementById('skull-placement-actions')?.classList.add('hidden');
-      document.getElementById('skull-bidding-panel')?.classList.add('hidden');
-      document.getElementById('skull-reveal-notice')?.classList.add('hidden');
-      
+      // 2. Déverrouillage des boutons du bas
       const qBtns = document.getElementById('quinto-buttons-wrapper');
       if (qBtns) {
         qBtns.classList.remove('hidden');
@@ -5504,8 +5504,16 @@
       const dicePairEl = document.getElementById('quinto-dice-pair');
       const realValTag = document.getElementById('quinto-real-val-tag');
 
-      // Affiche les dés si le joueur a secoué pendant son tour
-      if (me?.isAlive && gameState.quintoRealDice && gameState.quintoHasRolled && isMyTurn) {
+      // 3. Affichage du tirage dès que le joueur actif possède des dés
+      const hasDiceToDisplay = Boolean(
+        me?.isAlive &&
+        isMyTurn &&
+        gameState.quintoRealDice &&
+        Array.isArray(gameState.quintoRealDice) &&
+        gameState.quintoRealDice.length === 2
+      );
+
+      if (hasDiceToDisplay) {
         if (myDiceView) {
           myDiceView.classList.remove('hidden');
           myDiceView.style.removeProperty('display');
@@ -5513,11 +5521,13 @@
         }
         if (dicePairEl) {
           dicePairEl.innerHTML = `
-            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-xs shadow border border-dore font-mono">${gameState.quintoRealDice[0]}</span>
-            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-xs shadow border border-dore font-mono">${gameState.quintoRealDice[1]}</span>
+            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded-md flex items-center justify-center text-xs shadow border border-dore font-mono">${gameState.quintoRealDice[0]}</span>
+            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded-md flex items-center justify-center text-xs shadow border border-dore font-mono">${gameState.quintoRealDice[1]}</span>
           `;
         }
-        if (realValTag) realValTag.innerText = `(${getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1])})`;
+        if (realValTag) {
+          realValTag.innerText = `(${getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1])})`;
+        }
       } else {
         if (myDiceView) {
           myDiceView.classList.add('hidden');
