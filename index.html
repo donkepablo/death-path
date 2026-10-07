@@ -5495,6 +5495,7 @@
       const dicePairEl = document.getElementById('quinto-dice-pair');
       const realValTag = document.getElementById('quinto-real-val-tag');
 
+      // Affiche les dés dès que le joueur a secoué pendant son tour
       if (me?.isAlive && gameState.quintoRealDice && gameState.quintoHasRolled && isMyTurn) {
         if (myDiceView) {
           myDiceView.classList.remove('hidden');
@@ -5502,14 +5503,16 @@
         }
         if (dicePairEl) {
           dicePairEl.innerHTML = `
-            <span class="w-5 h-5 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-[11px] shadow border border-dore">${gameState.quintoRealDice[0]}</span>
-            <span class="w-5 h-5 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-[11px] shadow border border-dore">${gameState.quintoRealDice[1]}</span>
+            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded-md flex items-center justify-center text-xs shadow border border-dore font-mono">${gameState.quintoRealDice[0]}</span>
+            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded-md flex items-center justify-center text-xs shadow border border-dore font-mono">${gameState.quintoRealDice[1]}</span>
           `;
         }
         if (realValTag) realValTag.innerText = `(${getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1])})`;
-      } else if (myDiceView) {
-        myDiceView.classList.add('hidden');
-        myDiceView.classList.remove('flex');
+      } else {
+        if (myDiceView) {
+          myDiceView.classList.add('hidden');
+          myDiceView.classList.remove('flex');
+        }
       }
 
       const stepRoll = document.getElementById('quinto-step-roll');
@@ -5551,21 +5554,27 @@
           }
 
           if (btnForcePrev) {
-            const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
-            const isBlockedByMirror = Boolean(gameState.isMirrorChainActive || wasPrecededByMirror);
-            const alreadyUsedRound = Boolean(me && me.hasForcedReroll);
-            const canForce = hasPrevClaim && !alreadyUsedRound && !isBlockedByMirror;
+            // STRICTEMENT RÉSERVÉ AU MODE ZBEUL
+            if (!gameState.isZbeul) {
+              btnForcePrev.classList.add('hidden');
+              btnForcePrev.disabled = true;
+            } else {
+              const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
+              const isBlockedByMirror = Boolean(gameState.isMirrorChainActive || wasPrecededByMirror);
+              const alreadyUsedRound = Boolean(me && me.hasForcedReroll);
+              const canForce = hasPrevClaim && !alreadyUsedRound && !isBlockedByMirror;
 
-            btnForcePrev.classList.toggle('hidden', !hasPrevClaim || alreadyUsedRound);
-            btnForcePrev.disabled = !canForce;
-            btnForcePrev.className = canForce
-              ? "w-full h-7 rounded border border-amber-600 bg-[#241a0d] hover:bg-[#342411] text-amber-300 font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-              : "w-full h-7 rounded border border-[#2b3a2e] bg-[#141b16] text-[#55695a] font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
+              btnForcePrev.classList.toggle('hidden', !hasPrevClaim || alreadyUsedRound);
+              btnForcePrev.disabled = !canForce;
+              btnForcePrev.className = canForce
+                ? "w-full h-7 rounded border border-amber-600 bg-[#241a0d] hover:bg-[#342411] text-amber-300 font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                : "w-full h-7 rounded border border-[#2b3a2e] bg-[#141b16] text-[#55695a] font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
 
-            if (isBlockedByMirror) {
-              btnForcePrev.title = "Action impossible après un Miroir.";
-            } else if (alreadyUsedRound) {
-              btnForcePrev.title = "Action déjà utilisée cette manche.";
+              if (isBlockedByMirror) {
+                btnForcePrev.title = "Action impossible après un Miroir.";
+              } else if (alreadyUsedRound) {
+                btnForcePrev.title = "Action déjà utilisée cette manche.";
+              }
             }
           }
         } else {
@@ -5648,13 +5657,19 @@
             });
           }
 
-          // Bouton relancer ses dés
+          // Bouton relancer ses dés (uniquement en Zbeul)
           if (btnSelfReroll) {
-            const canReroll = !gameState.quintoRerollUsedThisTurn;
-            btnSelfReroll.disabled = !canReroll;
-            btnSelfReroll.className = canReroll
-              ? "mt-1 w-full h-8 rounded border border-[#8f7734] bg-[#1a241d] hover:bg-[#233127] text-dore font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_8px_rgba(212,175,55,0.25)] active:scale-95"
-              : "mt-1 w-full h-8 rounded border border-[#233026] bg-[#111713] text-[#4f5f53] font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
+            if (!gameState.isZbeul) {
+              btnSelfReroll.classList.add('hidden');
+              btnSelfReroll.disabled = true;
+            } else {
+              btnSelfReroll.classList.remove('hidden');
+              const canReroll = !gameState.quintoRerollUsedThisTurn;
+              btnSelfReroll.disabled = !canReroll;
+              btnSelfReroll.className = canReroll
+                ? "mt-1 w-full h-8 rounded border border-[#8f7734] bg-[#1a241d] hover:bg-[#233127] text-dore font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_8px_rgba(212,175,55,0.25)] active:scale-95"
+                : "mt-1 w-full h-8 rounded border border-[#233026] bg-[#111713] text-[#4f5f53] font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
+            }
           }
         }
       } else {
