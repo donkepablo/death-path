@@ -1579,38 +1579,26 @@
       if (msg.type === 'PLAYER_JOIN') {
         const joinInProgress = !['lobby', 'auth'].includes(gameState.status);
         const alreadySeated = Boolean(gameState.players[msg.player.id]);
-        const rejectJoin = (reason) => {
-          if (originConn && originConn.open) {
-          try {
-            originConn.send({
-              type: 'SYNC_STATE',
-              state: buildSanitizedStateFor(msg.player.id)
-            });
-          } catch(e) {}
-        }
+
+        if (originConn) originConn.playerGameId = msg.player.id;
+
+        const existingPlayer = gameState.players[msg.player.id];
+        gameState.players[msg.player.id] = {
+          ...(existingPlayer || {}),
+          ...msg.player,
+          // Conserver impérativement la main déjà distribuée
+          hand: (existingPlayer && existingPlayer.hand && existingPlayer.hand.length > 0)
+            ? existingPlayer.hand
+            : (msg.player.hand || []),
+          isReady: existingPlayer ? existingPlayer.isReady : msg.player.isReady,
+          isAlive: existingPlayer ? existingPlayer.isAlive : true,
+          cylinderRisk: existingPlayer ? existingPlayer.cylinderRisk : 1,
+          items: existingPlayer ? existingPlayer.items : []
         };
         if (!alreadySeated && joinInProgress) { rejectJoin('Partie déjà en cours : impossible de rejoindre.'); return; }
         if (!alreadySeated && Object.keys(gameState.players).length >= 4) { rejectJoin('Table complète (max 4).'); return; }
 
         if (originConn) originConn.playerGameId = msg.player.id;
-        
-        // On enregistre ou met à jour le joueur
-        // Le JOIN arrive 2 fois (BroadcastChannel puis PeerJS, parfois plusieurs secondes plus tard)
-        // et contient isReady:false : on ne doit pas écraser l'état "Prêt" déjà reçu.
-        const existingPlayer = gameState.players[msg.player.id];
-        gameState.players[msg.player.id] = {
-          ...(existingPlayer || {}),
-          ...msg.player,
-          ...(existingPlayer ? {
-            isReady: existingPlayer.isReady,
-            hand: existingPlayer.hand,
-            items: existingPlayer.items,
-            immunityCount: existingPlayer.immunityCount,
-            hasDraftedThisRound: existingPlayer.hasDraftedThisRound,
-            isAlive: existingPlayer.isAlive,
-            cylinderRisk: existingPlayer.cylinderRisk
-          } : {})
-        };
 
         if (!gameState.playerOrder.includes(msg.player.id)) {
           gameState.playerOrder.push(msg.player.id);
@@ -2542,13 +2530,24 @@
         gameState.requiredCard = chosenRank;
         gameState.activePlayerIndex = gameState.playerOrder.indexOf(luckyFirstId);
 
+        // 1. Réinitialiser impérativement la main de tous les joueurs de la table
+        Object.values(gameState.players).forEach(p => {
+          p.hand = [];
+        });
+
+        // 2. Générer le deck
         const deck = generateWeightedClassicDeck(chosenRank);
+
+        // 3. Distribuer STRICTEMENT 5 cartes à chaque joueur vivant
         living.forEach(id => {
-          const hand = [];
+          const p = gameState.players[id];
+          if (!p) return;
+          p.hand = [];
           for (let i = 0; i < 5; i++) {
-            if (deck.length > 0) hand.push(deck.pop());
+            if (deck.length > 0) {
+              p.hand.push(deck.pop());
+            }
           }
-          gameState.players[id].hand = hand;
         });
 
         broadcastEvent({
