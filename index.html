@@ -676,7 +676,7 @@
           </div> <!-- /!\ CE </div> ÉTAIT MANQUANT : IL FERME #quinto-buttons-wrapper /!\ -->
 
           <!-- Actions Skull -->
-          <div id="skull-placement-actions" class="hidden w-full grid-cols-2 gap-2">
+          <div id="skull-placement-actions" class="hidden w-full grid-cols-2 gap-2" style="display: none !important;">
             <button id="btn-skull-play-card" disabled class="h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed">
               <i class="fa-solid fa-hand"></i>
               <span>Poser Tuile</span>
@@ -688,7 +688,7 @@
           </div>
 
           <!-- Panel Enchères Skull -->
-          <div id="skull-bidding-panel" class="hidden w-full items-center gap-1.5 p-1 rounded-lg bg-[#0e1410] border border-[#304435] h-9">
+          <div id="skull-bidding-panel" class="hidden w-full items-center gap-1.5 p-1 rounded-lg bg-[#0e1410] border border-[#304435] h-9" style="display: none !important;">
             <input id="input-skull-bid" type="number" min="1" max="16" class="w-14 h-7 bg-[#162018] border border-[#3b4e40] text-dore font-mono font-bold text-center rounded text-xs focus:outline-none focus:border-dore" />
             <button id="btn-skull-submit-bid" class="flex-1 h-7 rounded bg-[#253d2c] hover:bg-[#32523b] border border-dore text-dore font-title text-[11px] uppercase font-bold tracking-wider active:scale-95 transition-all">
               Surenchérir
@@ -1348,9 +1348,13 @@
           } else {
             if (msg.type === 'SYNC_STATE') {
               gameState = normalizeIncomingState(msg.state);
+              if (msg.state.gameMode) {
+                gameState.gameMode = msg.state.gameMode;
+              }
+              if (typeof msg.state.isZbeul === 'boolean') {
+                gameState.isZbeul = msg.state.isZbeul;
+              }
               renderUI();
-            } else if (msg.type === 'SYNC_EVENT') {
-              handleSyncEvent(msg.event);
             }
           }
         };
@@ -4620,7 +4624,7 @@
         if (el) {
           el.classList.add('hidden');
           el.classList.remove('grid', 'flex');
-          el.style.display = 'none'; // Force le masquage direct
+          el.style.setProperty('display', 'none', 'important'); // Masquage prioritaire absolu
         }
       });
 
@@ -5199,11 +5203,13 @@
 
       // Actions selon la phase
       if (gameState.skullPhase === 'placement') {
-        skullActionsWrapper?.classList.remove('hidden');
-        skullActionsWrapper?.classList.add('grid');
-        bidPanel?.classList.add('hidden');
-        revealNotice?.classList.add('hidden');
-        skullActionsWrapper?.classList.remove('hidden');
+        if (skullActionsWrapper) {
+          skullActionsWrapper.classList.remove('hidden');
+          skullActionsWrapper.classList.add('grid');
+          skullActionsWrapper.style.setProperty('display', 'grid', 'important'); // S'affiche UNIQUEMENT en mode Skull
+        }
+        if (bidPanel) bidPanel.style.setProperty('display', 'none', 'important');
+        if (revealNotice) revealNotice.classList.add('hidden');
 
         const hasNoMoreTiles = (!me || !me.hand || me.hand.length === 0);
         const canPlayTile = isMyTurn && Boolean(selectedSkullTileId) && !hasNoMoreTiles;
