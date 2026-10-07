@@ -4464,49 +4464,55 @@
     }
 
     function botPlaySkullTurn(bot) {
+      if (!isHost || gameState.gameMode !== 'skull') return;
       const living = gameState.playerOrder.filter(id => gameState.players[id]?.isAlive);
       const totalTiles = getTotalSkullPlacedTiles();
-      const allPlacedAtLeastOne = living.every(id => gameState.players[id]?.skullPile?.length >= 1);
+      const allPlacedAtLeastOne = living.every(id => (gameState.players[id]?.skullPile?.length || 0) >= 1);
 
-      if (gameState.skullPhase === 'placement') {
-        if (skullActionsWrapper) {
-          skullActionsWrapper.classList.remove('hidden');
-          skullActionsWrapper.classList.add('grid');
-          skullActionsWrapper.style.display = 'grid'; // Rendre visible uniquement ici
-        } else {
-          const chosenTile = bot.hand[Math.floor(Math.random() * bot.hand.length)];
-          handleSkullPlayTile(bot.id, chosenTile.id);
-        }
-      } else if (gameState.skullPhase === 'bidding') {
-        const currentBid = gameState.skullHighBid;
-        const myPileHasSkull = bot.skullPile && bot.skullPile.some(t => t.type === 'skull');
-        let maxSafeBid = myPileHasSkull ? Math.floor(totalTiles * 0.4) : Math.floor(totalTiles * 0.7);
-        maxSafeBid = Math.max(1, maxSafeBid);
+      // Délai pour simuler la réflexion du bot
+      setTimeout(() => {
+        if (gameState.status !== 'in_round' || gameState.gameMode !== 'skull') return;
 
-        if (currentBid < maxSafeBid && currentBid < totalTiles && Math.random() < 0.6) {
-          handleSkullSubmitBid(bot.id, currentBid + 1);
-        } else {
-          handleSkullPassBid(bot.id);
-        }
-      } else if (gameState.skullPhase === 'revealing') {
-        // 1. Retourner obligatoirement ses propres tuiles
-        const ownUnrevealed = bot.skullPile.filter(t => !t.revealed);
-        if (ownUnrevealed.length > 0) {
-          handleSkullRevealTile(bot.id, bot.id);
-          return;
-        }
+        if (gameState.skullPhase === 'placement') {
+          if (bot.hand && bot.hand.length > 0) {
+            const chosenTile = bot.hand[Math.floor(Math.random() * bot.hand.length)];
+            handleSkullPlayTile(bot.id, chosenTile.id);
+          } else if (allPlacedAtLeastOne && totalTiles > 0) {
+            handleSkullSubmitBid(bot.id, 1);
+          }
+        } else if (gameState.skullPhase === 'bidding') {
+          const currentBid = gameState.skullHighBid;
+          const myPileHasSkull = bot.skullPile && bot.skullPile.some(t => t.type === 'skull');
+          let maxSafeBid = myPileHasSkull ? Math.floor(totalTiles * 0.4) : Math.floor(totalTiles * 0.7);
+          maxSafeBid = Math.max(1, maxSafeBid);
 
-        // 2. Choisir une tuile chez un adversaire
-        const availableTargets = living.filter(id => {
-          const p = gameState.players[id];
-          return p && p.skullPile && p.skullPile.some(t => !t.revealed);
-        });
+          if (currentBid < maxSafeBid && currentBid < totalTiles && Math.random() < 0.6) {
+            handleSkullSubmitBid(bot.id, currentBid + 1);
+          } else {
+            handleSkullPassBid(bot.id);
+          }
+        } else if (gameState.skullPhase === 'revealing') {
+          if (bot.id !== gameState.skullHighBidderId) return;
 
-        if (availableTargets.length > 0) {
-          const targetId = availableTargets[Math.floor(Math.random() * availableTargets.length)];
-          handleSkullRevealTile(bot.id, targetId);
+          // 1. Le bot retourne d'abord ses propres tuiles non révélées
+          const ownUnrevealed = bot.skullPile.filter(t => !t.revealed);
+          if (ownUnrevealed.length > 0) {
+            handleSkullRevealTile(bot.id, bot.id);
+            return;
+          }
+
+          // 2. Sinon, il pioche chez une cible adverse aléatoire ayant encore des tuiles cachées
+          const availableTargets = living.filter(id => {
+            const p = gameState.players[id];
+            return p && p.skullPile && p.skullPile.some(t => !t.revealed);
+          });
+
+          if (availableTargets.length > 0) {
+            const targetId = availableTargets[Math.floor(Math.random() * availableTargets.length)];
+            handleSkullRevealTile(bot.id, targetId);
+          }
         }
-      }
+      }, 1200);
     }
 
     function shouldBotAccuseCards(bot, lastClaim) {
