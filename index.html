@@ -1591,7 +1591,7 @@
         if (!joinInProgress) gameState.status = 'lobby';
         gameState.feltTicker = `${msg.player.name} s'installe à la table.`;
         
-        // Diffusion immédiate à tout le monde (PeerJS + BroadcastChannel)
+        // Diffusion immédiate à tout le monde avec le mode actuel de l'hôte
         broadcastState();
         showToast(`${msg.player.name} a rejoint la table.`);
         return;
@@ -5084,8 +5084,8 @@
         revealNotice?.classList.remove('hidden');
         if (revealNotice) {
           revealNotice.innerText = isHost 
-            ? "Manche terminée ! Lancement de la prochaine manche..." 
-            : "Manche terminée ! En attente de la manche suivante...";
+            ? "Lancement de la prochaine manche..." 
+            : "En attente de la manche suivante...";
         }
         return;
       }
@@ -5214,10 +5214,16 @@
     }
 
     function renderCardPlayerConsole(me) {
-      document.getElementById('my-hand-container').classList.remove('hidden');
-      document.getElementById('cards-action-controls').classList.remove('hidden');
-      document.getElementById('quinto-action-controls').classList.add('hidden');
+      document.getElementById('my-hand-container')?.classList.remove('hidden');
+      document.getElementById('cards-action-controls')?.classList.remove('hidden');
+      document.getElementById('quinto-action-controls')?.classList.add('hidden');
       document.getElementById('quinto-buttons-wrapper')?.classList.add('hidden');
+
+      // AJOUT : masquer les boutons Skull
+      document.getElementById('skull-action-controls')?.classList.add('hidden');
+      document.getElementById('skull-placement-actions')?.classList.add('hidden');
+      document.getElementById('skull-bidding-panel')?.classList.add('hidden');
+      document.getElementById('skull-reveal-notice')?.classList.add('hidden');
 
       const cardCountEl = document.getElementById('my-card-count');
       const container = document.getElementById('my-hand-container');
@@ -5301,6 +5307,11 @@
       document.getElementById('cards-action-controls')?.classList.add('hidden');
       document.getElementById('quinto-action-controls')?.classList.remove('hidden');
       document.getElementById('skull-action-controls')?.classList.add('hidden');
+      
+      // AJOUT INDISPENSABLE : masquer les boutons Skull et Mistigri
+      document.getElementById('skull-placement-actions')?.classList.add('hidden');
+      document.getElementById('skull-bidding-panel')?.classList.add('hidden');
+      document.getElementById('skull-reveal-notice')?.classList.add('hidden');
       
       const qBtns = document.getElementById('quinto-buttons-wrapper');
       if (qBtns) qBtns.classList.remove('hidden');
@@ -5879,7 +5890,11 @@
 
     function setGameMode(selectedMode) {
       gameState.gameMode = selectedMode;
-      sendToHost({ type: 'SET_GAME_MODE', mode: selectedMode });
+      if (isHost) {
+        broadcastState();
+      } else {
+        sendToHost({ type: 'SET_GAME_MODE', mode: selectedMode });
+      }
 
       const config = MODE_CONFIG[selectedMode];
 
