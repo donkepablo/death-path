@@ -1308,6 +1308,14 @@
       }, 2600);
     }
 
+    function broadcastToast(msg) {
+      showToast(msg); // L'hôte l'affiche chez lui
+      broadcastEvent({
+        type: 'TOAST_NOTIF',
+        message: msg
+      }); // Tous les clients connectés le reçoivent
+    }
+
     function showScreen(screenId) {
       if (currentActiveScreen === screenId) return;
       const oldScreen = document.getElementById(currentActiveScreen);
@@ -1503,7 +1511,10 @@
       }
       else if (evt.type === 'SKULL_REVEAL_ANIM') {
         animateSkullRevealVisual(evt.revealerName, evt.targetPlayerId, evt.tile);
-      }
+      } 
+      else if (evt.type === 'TOAST_NOTIF') {
+        showToast(evt.message);
+    }
     }
 
     let _msgCounter = 0;
@@ -1530,7 +1541,7 @@
           } catch(e) {}
         }
         if (!sent) {
-          showToast("Connexion à l'hôte en cours... Réessaie.");
+          broadcastToast("Connexion à l'hôte en cours... Réessaie.");
         }
       }
     }
@@ -1611,7 +1622,7 @@
         
         // Diffusion immédiate à tout le monde avec le mode actuel de l'hôte
         broadcastState();
-        showToast(`${msg.player.name} a rejoint la table.`);
+        broadcastToast(`${msg.player.name} a rejoint la table.`);
         return;
       }
 
@@ -1650,14 +1661,14 @@
         const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
         
         if (player && player.hasForcedReroll) {
-          showToast("Tu as déjà utilisé ton forçage pour cette manche !");
+          broadcastToast("Tu as déjà utilisé ton forçage pour cette manche !");
           return;
         }
 
         if (!gameState.quintoHasRolled && gameState.quintoClaim && !gameState.isMirrorChainActive && !wasPrecededByMirror) {
           executeForcePrevReroll(msg.id);
         } else {
-          showToast("Impossible de forcer la relance après un Miroir !");
+          broadcastToast("Impossible de forcer la relance après un Miroir !");
         }
       } else if (msg.type === 'REQUEST_REPLAY') {
         resetGame();
@@ -1754,7 +1765,7 @@
       p.hasLeft = true;
       p.isAlive = false;
       p.hand = [];
-      showToast(`${p.name} a quitté la partie.`);
+      broadcastToast(`${p.name} a quitté la partie.`);
 
       const living = gameState.playerOrder.filter(pid => gameState.players[pid] && gameState.players[pid].isAlive);
       if (living.length <= 1) {
@@ -1803,14 +1814,14 @@
 
       const currentTurnPlayerId = gameState.playerOrder[gameState.activePlayerIndex];
       if (currentTurnPlayerId !== drawerId) {
-        showToast("Ce n'est pas ton tour !");
+        broadcastToast("Ce n'est pas ton tour !");
         return;
       }
 
       const drawer = gameState.players[drawerId];
       const victim = gameState.players[victimId];
       if (!drawer || !victim || !Array.isArray(victim.hand) || victim.hand.length === 0) {
-        showToast("Ce joueur n'a plus de cartes à piocher !");
+        broadcastToast("Ce joueur n'a plus de cartes à piocher !");
         return;
       }
 
@@ -1845,7 +1856,7 @@
           // Inversion de sens sur les têtes (Roi, Dame, Valet)
           if (['K', 'Q', 'V'].includes(rank)) {
             gameState.playDirection = (gameState.playDirection || 1) * -1;
-            showToast(`INVERSION DE SENS !`);
+            broadcastToast(`INVERSION DE SENS !`);
             audio.chip();
           }
 
@@ -1858,7 +1869,7 @@
             if (holder) {
               gameState.mistigriRevealedPlayerId = holder;
               gameState.mistigriRevealedUntil = Date.now() + 5000;
-              showToast(`RADAR AS !`);
+              broadcastToast(`RADAR AS !`);
               audio.playFaaah();
 
               // Timer pour nettoyer et réactualiser l'affichage une fois les 5 secondes passées
@@ -1887,14 +1898,14 @@
       // 4. Message et sons adaptés
       if (pairsRemoved > 0) {
         audio.chip();
-        showToast(`Paire de ${stolenCard.rank} défaussée.`);
+        broadcastToast(`Paire de ${stolenCard.rank} défaussée.`);
         gameState.feltTicker = `${drawer.name} pioche et défausse aussitôt une paire de ${stolenCard.rank}.`;
       } else {
         gameState.feltTicker = `${drawer.name} a pris une carte à ${victim.name}.`;
       }
 
-      if (victim.hand.length === 0) showToast(`${victim.name} s'est sauvé !`);
-      if (drawer.hand.length === 0) showToast(`${drawer.name} s'est sauvé !`);
+      if (victim.hand.length === 0) broadcastToast(`${victim.name} s'est sauvé !`);
+      if (drawer.hand.length === 0) broadcastToast(`${drawer.name} s'est sauvé !`);
 
       // 5. Mise à jour instantanée de l'affichage sur tous les écrans
       broadcastState();
@@ -1972,7 +1983,7 @@
 
       audio.diceShake();
       gameState.feltTicker = `${player.name} utilise sa Relance et rebrasse ses dés !`;
-      showToast(`${player.name} a relancé ses dés !`);
+      broadcastToast(`${player.name} a relancé ses dés !`);
       broadcastState();
     }
 
@@ -1993,12 +2004,12 @@
           peer = new Peer(targetPeerId, PEER_CONFIG);
 
           peer.on('open', () => {
-            showToast(`Table créée en ligne : ${code}`);
+            broadcastToast(`Table créée en ligne : ${code}`);
           });
 
           peer.on('error', (err) => {
             console.warn("PeerJS error:", err);
-            showToast("Connexion serveur P2P alternative...");
+            broadcastToast("Connexion serveur P2P alternative...");
           });
 
           peer.on('connection', (conn) => {
@@ -2045,7 +2056,7 @@
 
       audio.diceShake();
       gameState.feltTicker = `${activator.name} force ${targetPlayer.name} à re-secouer ses dés !`;
-      showToast(`${targetPlayer.name} doit rejouer !`);
+      broadcastToast(`${targetPlayer.name} doit rejouer !`);
 
       broadcastState();
       checkBotTurnWithDelay();
@@ -2098,7 +2109,7 @@
 
             hostConn.on('open', () => {
               hostConn.send(joinPayload);
-              showToast("Connecté à la table !");
+              broadcastToast("Connecté à la table !");
             });
 
             hostConn.on('data', (data) => {
@@ -2116,7 +2127,7 @@
             });
 
             hostConn.on('close', () => {
-              showToast("Déconnecté de l'hôte.");
+              broadcastToast("Déconnecté de l'hôte.");
               if (!isHost && gameState.status !== 'auth') {
                 closeDenounceModal();
                 closeImmunityPromptModal();
@@ -2279,7 +2290,7 @@
 
       // Interdiction stricte de surenchérir au-delà du nombre total de tuiles posées
       if (val > totalTiles) {
-        showToast(`Impossible : seulement ${totalTiles} tuile(s) posée(s) sur la table !`);
+        broadcastToast(`Impossible : seulement ${totalTiles} tuile(s) posée(s) sur la table !`);
         return;
       }
 
@@ -2361,7 +2372,7 @@
       // Obligation de retourner ses propres tuiles d'abord
       const unrevealedOwn = revealer.skullPile.filter(t => !t.revealed);
       if (revealer.id !== target.id && unrevealedOwn.length > 0) {
-        showToast("Tu dois d'abord retourner toutes tes propres tuiles !");
+        broadcastToast("Tu dois d'abord retourner toutes tes propres tuiles !");
         return;
       }
 
@@ -2401,7 +2412,7 @@
 
           if (isSelfSkullPenalty) {
             gameState.feltTicker = `AUTO-CRÂNE (ZBEUL) ! ${revealer.name} a retourné son propre crâne : DOUBLE TIR ! 💀💀`;
-            showToast(`${revealer.name} prend 2 tirs de barillet !`);
+            broadcastToast(`${revealer.name} prend 2 tirs de barillet !`);
           } else {
             gameState.feltTicker = `CRÂNE DÉCOUVERT ! ${revealer.name} affronte le barillet !`;
           }
@@ -2446,7 +2457,7 @@
             // Manche remportée : pause avec message
             gameState.status = 'skull_round_won';
             gameState.feltTicker = `DÉFI RÉUSSI ! ${revealer.name} marque 1 point (${revealer.skullScore}/2). Manche 2 dans un instant...`;
-            showToast(`${revealer.name} marque 1 point (${revealer.skullScore}/2) !`);
+            broadcastToast(`${revealer.name} marque 1 point (${revealer.skullScore}/2) !`);
             broadcastState();
 
             // L'hôte est le seul à orchestrer le passage à la manche suivante :
@@ -2789,7 +2800,7 @@
 
         setTimeout(() => {
           modal.classList.add('hidden');
-          showToast(`Premier à parler : ${firstPlayerName}`);
+          broadcastToast(`Premier à parler : ${firstPlayerName}`);
           if (onComplete) onComplete();
         }, 2200);
       }, 2600);
@@ -2891,7 +2902,7 @@
 
       if (player.hand.length === 0) {
         gameState.feltTicker = `${player.name} a posé toutes ses cartes et gagne la manche ! 🎉`;
-        showToast(`${player.name} s'est sauvé !`);
+        broadcastToast(`${player.name} s'est sauvé !`);
       } else {
         gameState.feltTicker = `${player.name} a posé ${played.length} carte(s).`;
       }
@@ -3208,7 +3219,7 @@
       const authorName = author ? author.name : 'L\'auteur du 21';
 
       gameState.feltTicker = `21 QUINTO ZBEUL ! ${authorName} est épargné, tous les autres prennent une balle !`;
-      showToast(`21 QUINTO ! Roulette pour les adversaires !`);
+      broadcastToast(`21 QUINTO ! Roulette pour les adversaires !`);
       broadcastState();
 
       const victims = gameState.playerOrder
@@ -3274,7 +3285,7 @@
 
       // Animation / annonce publique de l'égalité
       gameState.feltTicker = `MIROIR ! ${activator.name} a fait exactement ${realScore} et renvoie les dés à ${targetPlayer.name} !`;
-      showToast(`${activator.name} sort le Miroir sur ${targetPlayer.name} !`);
+      broadcastToast(`${activator.name} sort le Miroir sur ${targetPlayer.name} !`);
 
       // 1. On remet les dés à secouer pour la cible
       gameState.quintoRealDice = null;
@@ -3317,7 +3328,7 @@
       gameState.isMirrorChainActive = true;
 
       gameState.feltTicker = `MIROIR ! ${player.name} affirme avoir fait ${gameState.quintoClaim.score} et renvoie les dés à ${targetPlayer.name} !`;
-      showToast(`${player.name} renvoie le Miroir à ${targetPlayer.name} !`);
+      broadcastToast(`${player.name} renvoie le Miroir à ${targetPlayer.name} !`);
 
       gameState.quintoRealDice = null;
       gameState.quintoHasRolled = false;
@@ -3333,7 +3344,7 @@
 
       // Verrou strict côté serveur
       if (gameState.forcedRerollByPlayerId === accuserId) {
-        showToast("Tu l'as forcé à relancer : tu ne peux pas l'accuser !");
+        broadcastToast("Tu l'as forcé à relancer : tu ne peux pas l'accuser !");
         return;
       }
 
@@ -3366,7 +3377,7 @@
       if (gameState.isZbeul && claim.score === 21) {
         gameState.status = 'resolving_bluff';
         gameState.feltTicker = "21 QUINTO ZBEUL ! Hécatombe";
-        showToast("21 QUINTO ZBEUL !");
+        broadcastToast("21 QUINTO ZBEUL !");
         broadcastState();
 
         // Récupérer tous les joueurs vivants SAUF l'auteur du 21
@@ -3803,7 +3814,7 @@
             } else {
               audio.dryHammerClick();
               ticker.innerText = "bouh";
-              showToast(`${targetPlayerName} survit !`);
+              broadcastToast(`${targetPlayerName} survit !`);
               setTimeout(() => {
                 closeDenounceModal();
                 if (onComplete) onComplete();
@@ -3883,7 +3894,7 @@
       });
 
       gameState.feltTicker = "Toutes les mains ont été interverties !";
-      showToast("Mains interverties !");
+      broadcastToast("Mains interverties !");
       audio.cardSlide();
       broadcastState();
     }
@@ -3893,7 +3904,7 @@
       if (!target || !target.isAlive) return;
       target.hand.push({ id: `c_${Date.now()}`, rank: '10', isJoker: false, isRat: true });
       gameState.feltTicker = `Un 10 a été remis à ${target.name} !`;
-      showToast(`${target.name} a reçu un 10 !`);
+      broadcastToast(`${target.name} a reçu un 10 !`);
       audio.chip();
       broadcastState();
     }
@@ -3978,7 +3989,7 @@
         consumePlayerItem(accused, 'immunity');
         gameState.status = 'in_round';
         gameState.feltTicker = `${accused.name} active son Totem d'immunité.`;
-        showToast(`${accused.name} est immunisé !`);
+        broadcastToast(`${accused.name} est immunisé !`);
         audio.chip();
 
         // 1. En mode CARTES : on neutralise la réclamation pour interdire une ré-accusation
@@ -4093,7 +4104,7 @@
         }
         gameState.status = 'resolving_bluff';
         gameState.feltTicker = `${accused.name} active son Pierre - Feuille - Ciseaux !`;
-        showToast(`${accused.name} déclenche le PFC !`);
+        broadcastToast(`${accused.name} déclenche le PFC !`);
         audio.chip();
 
         launchPfcDuel(accuser, accused, (winnerId) => {
@@ -4599,6 +4610,10 @@
     }
 
     function renderTableScreen(me) {
+      const tickerEl = document.getElementById('game-action-ticker');
+      if (tickerEl && gameState.feltTicker) {
+        tickerEl.innerText = gameState.feltTicker;
+      }
       const isMistigri = gameState.gameMode === 'mistigri';
       const isSkull = gameState.gameMode === 'skull';
 
@@ -4901,7 +4916,7 @@
 
     function handleItemActivation(itemId) {
       if (gameState.hasUsedItemThisTurn) {
-        showToast("Un seul item par tour !");
+        broadcastToast("Un seul item par tour !");
         return;
       }
       if (itemId === 'swap_hands') {
@@ -5118,7 +5133,7 @@
       if (gameState.gameMode !== 'skull' || gameState.skullPhase !== 'revealing') return;
       const currentActiveId = gameState.playerOrder[gameState.activePlayerIndex];
       if (currentActiveId !== myId) {
-        showToast("Ce n'est pas ton tour de révéler !");
+        broadcastToast("Ce n'est pas ton tour de révéler !");
         return;
       }
       sendToHost({
@@ -5279,7 +5294,7 @@
 
       const currentActiveId = gameState.playerOrder[gameState.activePlayerIndex];
       if (currentActiveId !== myId) {
-        showToast("Attends ton tour !");
+        broadcastToast("Attends ton tour !");
         return;
       }
 
@@ -5606,7 +5621,7 @@
         selectedHandCardIds = selectedHandCardIds.filter(id => id !== cardId);
       } else {
         if (selectedHandCardIds.length >= 3) {
-          showToast("Maximum 3 cartes.");
+          broadcastToast("Maximum 3 cartes.");
           return;
         }
         selectedHandCardIds.push(cardId);
@@ -5761,7 +5776,7 @@
       const codeInput = document.getElementById('input-room-code');
       const code = codeInput ? codeInput.value.trim().toUpperCase() : '';
       if (!code || code.length < 3) {
-        showToast("Code de table invalide.");
+        broadcastToast("Code de table invalide.");
         return;
       }
       const input = document.getElementById('input-username');
@@ -5775,7 +5790,7 @@
     document.getElementById('btn-add-bot').addEventListener('click', () => {
       if (!isHost) return;
       if (Object.keys(gameState.players).length >= 4) {
-        showToast("Table complète (max 4).");
+        broadcastToast("Table complète (max 4).");
         return;
       }
       const existingNames = Object.values(gameState.players).map(p => p.name);
@@ -5797,7 +5812,7 @@
       };
       gameState.playerOrder.push(botId);
       broadcastState();
-      showToast(`${botName} rejoint la table.`);
+      broadcastToast(`${botName} rejoint la table.`);
     });
 
     document.getElementById('btn-leave-room').addEventListener('click', () => {
@@ -6021,7 +6036,7 @@
         const totalTiles = getTotalSkullPlacedTiles();
         let val = parseInt(input?.value, 10);
         if (val > totalTiles) {
-          showToast(`Maximum possible : ${totalTiles} tuile(s) !`);
+          broadcastToast(`Maximum possible : ${totalTiles} tuile(s) !`);
           if (input) input.value = totalTiles;
           return;
         }
