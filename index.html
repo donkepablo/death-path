@@ -224,7 +224,7 @@
         <i class="fa-solid fa-skull"></i>
       </div>
       <h2 id="exec-title" class="font-title text-2xl text-red-500 font-bold tracking-widest uppercase">ÉLIMINÉ</h2>
-      <p id="exec-desc" class="font-mono text-xs text-stone-300 mt-2 max-w-xs">Le barillet a fait feu.</p>
+      <p id="exec-desc" class="font-mono text-xs text-stone-300 mt-2 max-w-xs">Le barillet a fait feu</p>
     </div>
   </div>
 
@@ -591,48 +591,14 @@
           </div>
 
           <!-- Main Cartes classique -->
-          <div id="my-hand-container" class="w-full h-full flex gap-1.5 sm:gap-2.5 justify-center items-center overflow-visible"></div>
+          <div id="my-hand-container" class="w-full h-full flex gap-1.5 sm:gap-2.5 justify-center items-start pt-0.5 -translate-y-2 overflow-visible"></div>
 
-          <!-- Console Dés Quinto -->
-          <div id="quinto-action-controls" class="hidden w-full max-w-xs h-full flex-col items-center justify-center gap-1.5">
-            <div id="quinto-my-dice-view" class="hidden items-center gap-2.5 bg-[#0d120f]/90 px-3.5 py-1 rounded-lg border border-[#2b3a2e] shadow-inner">
+          <!-- Console Dés Quinto (uniquement l'affichage du tirage, bien haut et centré) -->
+          <div id="quinto-action-controls" class="hidden w-full max-w-xs h-full flex items-center justify-center -translate-y-2">
+            <div id="quinto-my-dice-view" class="hidden items-center gap-2.5 bg-[#0d120f]/95 px-3.5 py-1.5 rounded-lg border border-[#2b3a2e] shadow-inner">
               <span class="text-[10px] uppercase tracking-wider font-mono text-[#7f9284]">Ton tirage :</span>
               <div id="quinto-dice-pair" class="flex gap-1.5"></div>
               <span id="quinto-real-val-tag" class="text-xs font-mono font-bold text-dore"></span>
-            </div>
-
-            <div id="quinto-step-roll" class="w-full grid grid-cols-2 gap-2">
-              <button id="btn-quinto-roll" disabled class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-dice text-sm"></i>
-                <span>Secouer</span>
-              </button>
-              <button id="btn-quinto-bluff-early" disabled class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-bullhorn text-sm"></i>
-                <span>Menteur !</span>
-              </button>
-            </div>
-
-            <div id="quinto-step-choice" class="hidden w-full flex-col gap-1.5">
-              <div class="w-full grid grid-cols-2 gap-2">
-                <button id="btn-quinto-truth" class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
-                  <i class="fa-solid fa-check text-xs"></i>
-                  <span>Vérité</span>
-                </button>
-                <button id="btn-quinto-lie" class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
-                  <i class="fa-solid fa-mask text-xs"></i>
-                  <span>Mentir</span>
-                </button>
-              </div>
-
-              <div id="quinto-lie-input-panel" class="hidden flex-col gap-1 p-1.5 rounded-lg bg-[#0d120f] border border-[#2b3a2e] shadow-lg">
-                <span class="text-[9px] font-mono uppercase tracking-wider text-[#8a9d8f] px-0.5">Annonce supérieure :</span>
-                <div class="flex gap-1.5 items-center">
-                  <select id="select-quinto-claim" class="flex-1 h-7 bg-[#162018] border border-[#2b3a2e] focus:border-dore text-dore font-mono font-bold text-xs rounded px-2 focus:outline-none"></select>
-                  <button id="btn-submit-lie" class="h-7 px-3 rounded border border-dore bg-[#273a2c] hover:bg-[#334c3a] text-[#f7f6f2] font-title text-xs uppercase font-bold tracking-wider transition-all active:scale-95 shadow">
-                    Valider
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -655,6 +621,53 @@
               <i class="fa-solid fa-bullhorn"></i>
               <span>Menteur !</span>
             </button>
+          </div>
+
+          <!-- Actions Dés (Secouer / Menteur / Vérité / Mentir) ancrées dans la barre basse -->
+          <div id="quinto-buttons-wrapper" class="hidden w-full flex-col justify-center">
+            <div id="quinto-step-roll" class="w-full grid grid-cols-2 gap-2">
+              <button id="btn-quinto-roll" disabled class="h-9 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-dice text-sm"></i>
+                <span>Secouer</span>
+              </button>
+              <button id="btn-quinto-bluff-early" disabled class="h-9 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-bullhorn text-sm"></i>
+                <span>Menteur !</span>
+              </button>
+            </div>
+
+            <div id="quinto-step-choice" class="hidden w-full flex-col gap-1.5">
+              <!-- Bouton Miroir (affiché uniquement en cas d'égalité exacte) -->
+              <button id="btn-quinto-mirror" class="hidden w-full h-8 rounded border border-cyan-400 bg-[#0d2229] hover:bg-[#13323c] text-cyan-300 font-title text-xs uppercase tracking-wider font-bold transition-all shadow-[0_0_12px_rgba(34,211,238,0.35)] active:scale-95 flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+                <span id="btn-quinto-mirror-lbl">Miroir ! Renvoie à l'envoyeur</span>
+              </button>
+
+              <div id="quinto-truth-lie-grid" class="w-full grid grid-cols-2 gap-2">
+                <button id="btn-quinto-truth" class="h-9 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-check text-xs"></i>
+                  <span>Vérité</span>
+                </button>
+                <button id="btn-quinto-lie" class="h-9 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-mask text-xs"></i>
+                  <span>Mentir</span>
+                </button>
+              </div>
+
+              <!-- Grille des annonces (Direction Artistique feutre & laiton) -->
+              <!-- Grille des annonces (Vert Feutre de table) -->
+              <div id="quinto-lie-input-panel" class="hidden absolute bottom-14 sm:bottom-16 left-1/2 -translate-x-1/2 w-[310px] sm:w-[340px] flex-col gap-2 p-3 rounded-2xl bg-gradient-to-b from-[#1b4e2a] via-[#153e22] to-[#0e2a17] border-2 border-[#8f7734] shadow-[0_16px_40px_rgba(0,0,0,0.95),inset_0_0_20px_rgba(0,0,0,0.6)] z-50 backdrop-blur-md">
+                <div class="flex items-center justify-between pb-1.5 border-b border-[#2d5d39]/60">
+                  <span class="text-[9px] font-mono uppercase tracking-[0.18em] text-dore font-bold">Annonce supérieure :</span>
+                  <button type="button" onclick="document.getElementById('quinto-lie-input-panel').classList.add('hidden')" class="text-[#96b89f] hover:text-white text-xs px-1">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                </div>
+
+                <!-- Grille des valeurs -->
+                <div id="quinto-claims-grid" class="grid grid-cols-7 gap-1.5 p-0.5"></div>
+              </div>
+            </div>
           </div>
 
           <!-- Actions Skull -->
@@ -1566,6 +1579,8 @@
         handleQuintoClaim(msg.id, msg.claim);
       } else if (msg.type === 'QUINTO_BLUFF') {
         handleQuintoBluff(msg.id);
+        } else if (msg.type === 'QUINTO_MIRROR_CLAIM') {
+        handleQuintoMirrorClaim(msg.id);
       } else if (msg.type === 'REQUEST_REPLAY') {
         resetGame();
       } else if (msg.type === 'CHOOSE_ITEM') {
@@ -1640,6 +1655,8 @@
         if (isHost && gameState.status === 'skull_round_won') {
           startNewRound();
         }
+      }else if (msg.type === 'QUINTO_MIRROR') {
+        handleQuintoMirror(msg.id);
       }
     }
 
@@ -2902,6 +2919,70 @@
       advanceToNextLiving();
     }
 
+    function handleQuintoMirror(activatorId) {
+      if (!isHost || gameState.status !== 'in_round' || !gameState.quintoClaim) return;
+      const targetId = gameState.quintoClaim.playerId;
+      const targetPlayer = gameState.players[targetId];
+      const activator = gameState.players[activatorId];
+      if (!targetPlayer || !activator || !targetPlayer.isAlive || !activator.isAlive) return;
+
+      const realScore = getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1]);
+      if (realScore !== gameState.quintoClaim.score) return;
+
+      audio.chip();
+      audio.playTone('sine', 400, 880, 0.25, 0.25);
+
+      // Animation / annonce publique de l'égalité
+      gameState.feltTicker = `MIROIR ! ${activator.name} a fait exactement ${realScore} et renvoie les dés à ${targetPlayer.name} !`;
+      showToast(`${activator.name} sort le Miroir sur ${targetPlayer.name} !`);
+
+      // 1. On remet les dés à secouer pour la cible
+      gameState.quintoRealDice = null;
+      gameState.quintoHasRolled = false;
+
+      // 2. Le tour revient au joueur précédent qui doit maintenant dépasser son propre score
+      gameState.activePlayerIndex = gameState.playerOrder.indexOf(targetId);
+      gameState.hasUsedItemThisTurn = false;
+
+      broadcastState();
+      checkBotTurnWithDelay();
+    }
+
+    function handleQuintoMirrorClaim(playerId) {
+      if (!isHost || gameState.status !== 'in_round' || !gameState.quintoClaim) return;
+      
+      const targetId = gameState.quintoClaim.playerId;
+      const targetPlayer = gameState.players[targetId];
+      const player = gameState.players[playerId];
+      
+      if (!targetPlayer || !player || !targetPlayer.isAlive || !player.isAlive) return;
+
+      audio.chip();
+      audio.playTone('sine', 420, 880, 0.2, 0.25);
+
+      // Enregistrement de l'annonce Miroir (qu'elle soit vraie ou bluffée)
+      gameState.previousQuintoClaim = gameState.quintoClaim;
+      gameState.quintoClaim = {
+        playerId: player.id,
+        playerName: player.name,
+        score: gameState.previousQuintoClaim.score,
+        realDice: [...(gameState.quintoRealDice || [1, 1])],
+        isMirror: true
+      };
+
+      gameState.feltTicker = `MIROIR ! ${player.name} affirme avoir fait ${gameState.quintoClaim.score} et renvoie les dés à ${targetPlayer.name} !`;
+      showToast(`${player.name} renvoie le Miroir à ${targetPlayer.name} !`);
+
+      // Le gobelet revient au joueur précédent qui doit faire strictement supérieur
+      gameState.quintoRealDice = null;
+      gameState.quintoHasRolled = false;
+      gameState.activePlayerIndex = gameState.playerOrder.indexOf(targetId);
+      gameState.hasUsedItemThisTurn = false;
+
+      broadcastState();
+      checkBotTurnWithDelay();
+    }
+
     function handleQuintoBluff(accuserId) {
       if (!isHost || gameState.status !== 'in_round' || !gameState.quintoClaim) return;
       const accuser = gameState.players[accuserId];
@@ -2986,7 +3067,10 @@
 
       // CAS CLASSIQUE D'ACCUSATION (non-21)
       const realScore = getQuintoScore(claim.realDice[0], claim.realDice[1]);
-      const lied = getQuintoRank(realScore) < getQuintoRank(claim.score);
+      // Si c'était un Miroir, c'est un mensonge si le tirage réel n'est pas EXACTEMENT égal au score
+      const lied = claim.isMirror 
+        ? (realScore !== claim.score)
+        : (getQuintoRank(realScore) < getQuintoRank(claim.score));
 
       broadcastEvent({
         type: 'DENOUNCE_DICE_ANIM',
@@ -3014,7 +3098,7 @@
       if (cylinderBox) cylinderBox.classList.add('hidden');
 
       if (verdict) {
-        verdict.className = "font-title text-sm sm:text-base font-bold text-dore text-center";
+        verdict.className = "font-title text-sm text-sm font-bold text-dore text-center";
         verdict.innerText = `${accuserName} accuse ${accusedName} de mentir !`;
       }
 
@@ -3056,10 +3140,10 @@
 
             setTimeout(() => {
               if (verdict) {
-                verdict.className = "font-title text-base sm:text-lg font-bold text-dore tracking-wide text-center";
+                verdict.className = "font-title text-base text-sm font-bold text-dore tracking-wide text-center";
                 verdict.innerText = lied 
                   ? `${accusedName} a menti !` 
-                  : `${accuserName} s'est fait avoir`;
+                  : `${accuserName} s'est fait avoir...`;
               }
               audio.playFaaah();
               
@@ -3270,7 +3354,7 @@
       triggerRevolverChamberLocal(targetPlayer.name, risk, remainingChambers, isFatal, () => {
         if (isFatal) {
           // Tir fatal : élimination
-          triggerExecution(targetPlayer, `Le coup ${risk}/6 a fait feu.`, () => {
+          triggerExecution(targetPlayer, `Le coup ${risk}/6 a fait feu`, () => {
             if (typeof customOnComplete === 'function') {
               customOnComplete();
             } else {
@@ -3320,7 +3404,7 @@
       cylinderBox.classList.remove('hidden');
       
       const rem = remainingChambers || Math.max(1, 7 - risk);
-      desc.innerText = `${targetPlayerName} presse la détente : 1 chance sur ${rem} !`;
+      desc.innerText = `${targetPlayerName} presse la détente : 1 chance sur ${rem}`;
       ticker.innerText = "Le canon est sur sa tempe...";
 
       let angle = 0;
@@ -3894,6 +3978,13 @@
           setTimeout(() => {
             if (gameState.status !== 'in_round') return;
             const realScore = getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1]);
+            const prevScore = gameState.quintoClaim ? gameState.quintoClaim.score : 0;
+
+            // Réflexe Miroir immédiat du bot en cas d'égalité
+            if (gameState.quintoClaim && realScore === prevScore && gameState.quintoClaim.playerId !== bot.id) {
+              handleQuintoMirror(bot.id);
+              return;
+            }
             const prevRank = gameState.quintoClaim ? getQuintoRank(gameState.quintoClaim.score) : -1;
             const possibleScores = QUINTO_ORDER.filter(s => getQuintoRank(s) > prevRank);
 
@@ -4581,6 +4672,7 @@
       document.getElementById('quinto-action-controls').classList.add('hidden');
       document.getElementById('skull-action-controls').classList.remove('hidden');
       document.getElementById('skull-action-controls').classList.add('flex');
+      document.getElementById('quinto-buttons-wrapper')?.classList.add('hidden');
 
       const consoleTitle = document.getElementById('hand-console-title');
       if (consoleTitle) consoleTitle.innerText = 'Tes Tuiles';
@@ -4739,6 +4831,7 @@
       document.getElementById('my-hand-container').classList.remove('hidden');
       document.getElementById('cards-action-controls').classList.remove('hidden');
       document.getElementById('quinto-action-controls').classList.add('hidden');
+      document.getElementById('quinto-buttons-wrapper')?.classList.add('hidden');
 
       const cardCountEl = document.getElementById('my-card-count');
       const container = document.getElementById('my-hand-container');
@@ -4768,7 +4861,7 @@
         slot.className = `hand-card-slot ${isSelected ? 'selected' : ''}`;
 
         const card = document.createElement('div');
-        card.className = `playing-card w-16 h-24 sm:w-20 sm:h-28 p-1 sm:p-1.5 flex flex-col justify-between cursor-pointer overflow-hidden ${
+        card.className = `playing-card w-14 h-20 sm:w-16 sm:h-24 p-1 flex flex-col justify-between cursor-pointer overflow-hidden ${
           isSelected ? 'border-dore shadow-2xl' : 'border-[#d2cbbe]'
         }`;
 
@@ -4818,9 +4911,13 @@
     }
 
     function renderQuintoPlayerConsole(me) {
-      document.getElementById('my-hand-container').classList.add('hidden');
-      document.getElementById('cards-action-controls').classList.add('hidden');
-      document.getElementById('quinto-action-controls').classList.remove('hidden');
+      document.getElementById('my-hand-container')?.classList.add('hidden');
+      document.getElementById('cards-action-controls')?.classList.add('hidden');
+      document.getElementById('quinto-action-controls')?.classList.remove('hidden');
+      document.getElementById('skull-action-controls')?.classList.add('hidden');
+      
+      const qBtns = document.getElementById('quinto-buttons-wrapper');
+      if (qBtns) qBtns.classList.remove('hidden');
 
       const consoleTitle = document.getElementById('hand-console-title');
       if (consoleTitle) consoleTitle.innerText = 'Tes Dés';
@@ -4838,14 +4935,18 @@
       const realValTag = document.getElementById('quinto-real-val-tag');
 
       if (me?.isAlive && gameState.quintoRealDice && gameState.quintoHasRolled && isMyTurn) {
-        myDiceView.classList.remove('hidden');
-        myDiceView.classList.add('flex');
-        dicePairEl.innerHTML = `
-          <span class="w-5 h-5 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-[11px] shadow border border-dore">${gameState.quintoRealDice[0]}</span>
-          <span class="w-5 h-5 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-[11px] shadow border border-dore">${gameState.quintoRealDice[1]}</span>
-        `;
-        realValTag.innerText = `(${getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1])})`;
-      } else {
+        if (myDiceView) {
+          myDiceView.classList.remove('hidden');
+          myDiceView.classList.add('flex');
+        }
+        if (dicePairEl) {
+          dicePairEl.innerHTML = `
+            <span class="w-5 h-5 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-[11px] shadow border border-dore">${gameState.quintoRealDice[0]}</span>
+            <span class="w-5 h-5 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-[11px] shadow border border-dore">${gameState.quintoRealDice[1]}</span>
+          `;
+        }
+        if (realValTag) realValTag.innerText = `(${getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1])})`;
+      } else if (myDiceView) {
         myDiceView.classList.add('hidden');
         myDiceView.classList.remove('flex');
       }
@@ -4855,69 +4956,124 @@
       const btnRoll = document.getElementById('btn-quinto-roll');
       const btnBluffEarly = document.getElementById('btn-quinto-bluff-early');
       const btnTruth = document.getElementById('btn-quinto-truth');
+      const btnLie = document.getElementById('btn-quinto-lie'); // <--- DÉCLARATION AJOUTÉE ICI
       const selectClaim = document.getElementById('select-quinto-claim');
       const liePanel = document.getElementById('quinto-lie-input-panel');
 
       const prevScore = gameState.quintoClaim ? gameState.quintoClaim.score : 0;
       const prevRank = getQuintoRank(prevScore);
 
-      // DA identique aux boutons du mode Cartes
-      // Style partagé identique pour les deux boutons actifs
-      const BTN_CHOICE_ACTIVE = "py-2 rounded border border-dore bg-[#273a2c] hover:bg-[#334c3a] text-[#f7f6f2] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-lg cursor-pointer";
-      const BTN_CHOICE_DISABLED = "py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5";
+      const BTN_CHOICE_ACTIVE = "h-9 rounded border border-dore bg-[#273a2c] hover:bg-[#334c3a] text-[#f7f6f2] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-lg cursor-pointer";
+      const BTN_CHOICE_DISABLED = "h-9 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5";
 
       if (isMyTurn && !gameState.quintoHasRolled) {
-        stepRoll.classList.remove('hidden');
-        stepChoice.classList.add('hidden');
-        stepChoice.classList.remove('flex');
-        liePanel.classList.add('hidden');
+        if (stepRoll) stepRoll.classList.remove('hidden');
+        if (stepChoice) stepChoice.classList.add('hidden');
+        if (liePanel) liePanel.classList.add('hidden');
 
-        btnRoll.disabled = false;
-        btnRoll.className = BTN_CHOICE_ACTIVE;
+        if (btnRoll) {
+          btnRoll.disabled = false;
+          btnRoll.className = BTN_CHOICE_ACTIVE;
+        }
 
         const canCall = Boolean(gameState.quintoClaim && gameState.quintoClaim.playerId !== myId);
-        btnBluffEarly.disabled = !canCall;
-        btnBluffEarly.className = canCall ? BTN_CHOICE_ACTIVE : BTN_CHOICE_DISABLED;
+        if (btnBluffEarly) {
+          btnBluffEarly.disabled = !canCall;
+          btnBluffEarly.className = canCall ? BTN_CHOICE_ACTIVE : BTN_CHOICE_DISABLED;
+        }
       } else if (isMyTurn && gameState.quintoHasRolled) {
-        stepRoll.classList.add('hidden');
-        stepChoice.classList.remove('hidden');
-        stepChoice.classList.add('flex');
+        if (stepRoll) stepRoll.classList.add('hidden');
+        if (stepChoice) stepChoice.classList.remove('hidden');
 
         const realScore = getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1]);
         const canTellTruth = getQuintoRank(realScore) > prevRank;
+        
+        // 1. Bouton Miroir direct : visible uniquement si tu as fait la VRAIE égalité
+        const isTrueMirror = Boolean(gameState.quintoClaim && realScore === prevScore && gameState.quintoClaim.playerId !== myId);
+        const btnMirror = document.getElementById('btn-quinto-mirror');
+        const btnMirrorLbl = document.getElementById('btn-quinto-mirror-lbl');
 
-        // Bouton Vérité
-        btnTruth.disabled = !canTellTruth;
-        btnTruth.innerHTML = canTellTruth 
-          ? `<i class="fa-solid fa-check text-xs"></i><span>Vérité (${realScore})</span>`
-          : `<i class="fa-solid fa-ban text-xs"></i><span>Vérité (${realScore})</span>`;
-        btnTruth.className = canTellTruth ? BTN_CHOICE_ACTIVE : BTN_CHOICE_DISABLED;
-
-        // Bouton Mentir (même apparence exacte)
-        btnLie.disabled = false;
-        btnLie.innerHTML = `<i class="fa-solid fa-mask text-xs"></i><span>Mentir</span>`;
-        btnLie.className = BTN_CHOICE_ACTIVE;
-
-        selectClaim.innerHTML = '';
-        QUINTO_ORDER.forEach((sc, idx) => {
-          if (idx > prevRank) {
-            const opt = document.createElement('option');
-            opt.value = sc;
-            opt.innerText = sc === 21 ? '21 (Quinto !)' : `${sc}`;
-            selectClaim.appendChild(opt);
+        if (btnMirror) {
+          if (isTrueMirror) {
+            btnMirror.classList.remove('hidden');
+            if (btnMirrorLbl) btnMirrorLbl.innerText = `Miroir (${realScore}) ! Renvoyer à ${gameState.quintoClaim.playerName}`;
+            btnMirror.onclick = () => {
+              sendToHost({ type: 'QUINTO_MIRROR_CLAIM', id: myId });
+            };
+          } else {
+            btnMirror.classList.add('hidden');
           }
-        });
+        }
+
+        // 2. Boutons Vérité & Mentir
+        if (btnTruth) {
+          btnTruth.disabled = !canTellTruth;
+          btnTruth.innerHTML = canTellTruth 
+            ? `<i class="fa-solid fa-check text-xs"></i><span>Vérité (${realScore})</span>`
+            : `<i class="fa-solid fa-ban text-xs"></i><span>Vérité (${realScore})</span>`;
+          btnTruth.className = canTellTruth ? BTN_CHOICE_ACTIVE : BTN_CHOICE_DISABLED;
+        }
+
+        if (btnLie) {
+          btnLie.disabled = false;
+          btnLie.innerHTML = `<i class="fa-solid fa-mask text-xs"></i><span>Mentir</span>`;
+          btnLie.className = BTN_CHOICE_ACTIVE;
+        }
+
+        // 3. Grille : la valeur de l'égalité reste cliquable pour pouvoir la bluffer
+        const claimsGrid = document.getElementById('quinto-claims-grid');
+        if (claimsGrid) {
+          claimsGrid.innerHTML = '';
+          QUINTO_ORDER.forEach((sc, idx) => {
+            const isMirrorVal = Boolean(gameState.quintoClaim && sc === prevScore);
+            const isSelectable = idx > prevRank || isMirrorVal;
+            const isQuinto = sc === 21;
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.disabled = !isSelectable;
+
+            if (isSelectable) {
+              btn.className = `h-8 rounded-lg border-2 font-mono font-bold text-xs flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-md ${
+                isQuinto 
+                  ? 'bg-[#1e1705] border-dore text-dore shadow-[0_0_10px_rgba(212,175,55,0.45)] hover:bg-[#2b2108]' 
+                  : 'bg-[#1b4324] border-[#296839] text-[#f4f7f2] hover:border-dore hover:text-dore hover:bg-[#20522c]'
+              }`;
+            } else {
+              btn.className = 'h-8 rounded-lg border-2 border-[#142819] bg-[#0c180e] text-[#1e3c23] font-mono text-xs cursor-not-allowed opacity-35';
+            }
+
+            btn.innerText = sc;
+
+            if (isSelectable) {
+              btn.onclick = () => {
+                document.getElementById('quinto-lie-input-panel')?.classList.add('hidden');
+                if (isMirrorVal) {
+                  // Clic sur l'égalité dans la grille = Miroir (bluffé ou non)
+                  sendToHost({ type: 'QUINTO_MIRROR_CLAIM', id: myId });
+                } else {
+                  sendToHost({ type: 'QUINTO_CLAIM', id: myId, claim: sc });
+                }
+              };
+            }
+
+            claimsGrid.appendChild(btn);
+          });
+        }
       } else {
-        stepRoll.classList.remove('hidden');
-        stepChoice.classList.add('hidden');
-        stepChoice.classList.remove('flex');
-        liePanel.classList.add('hidden');
-
-        btnRoll.disabled = true;
-        btnRoll.className = BTN_CHOICE_DISABLED;
-
-        btnBluffEarly.disabled = true;
-        btnBluffEarly.className = BTN_CHOICE_DISABLED;
+        if (stepRoll) stepRoll.classList.remove('hidden');
+        if (stepChoice) stepChoice.classList.add('hidden');
+        if (liePanel) liePanel.classList.add('hidden');
+        document.getElementById('btn-quinto-mirror')?.classList.add('hidden');
+        
+        if (btnRoll) {
+          btnRoll.disabled = true;
+          btnRoll.className = BTN_CHOICE_DISABLED;
+        }
+        if (btnBluffEarly) {
+          btnBluffEarly.disabled = true;
+          btnBluffEarly.className = BTN_CHOICE_DISABLED;
+        }
       }
     }
 
@@ -5009,13 +5165,6 @@
       if (liePanel) {
         liePanel.classList.toggle('hidden');
         liePanel.classList.toggle('flex');
-      }
-    });
-
-    document.getElementById('btn-submit-lie').addEventListener('click', () => {
-      const select = document.getElementById('select-quinto-claim');
-      if (select && select.value) {
-        sendToHost({ type: 'QUINTO_CLAIM', id: myId, claim: select.value });
       }
     });
 
