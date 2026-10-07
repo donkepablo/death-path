@@ -2803,7 +2803,7 @@
 
         setTimeout(() => {
           modal.classList.add('hidden');
-          broadcastToast(`Premier à parler : ${firstPlayerName}`);
+          showToast(`Premier à parler : ${firstPlayerName}`);
           if (onComplete) onComplete();
         }, 2200);
       }, 2600);
