@@ -1590,6 +1590,15 @@
         // Un JOIN dupliqué (PeerJS + BroadcastChannel) ne doit jamais renvoyer la table au lobby en pleine partie
         if (!joinInProgress) gameState.status = 'lobby';
         gameState.feltTicker = `${msg.player.name} s'installe à la table.`;
+
+        if (originConn && originConn.open) {
+          try {
+            originConn.send({
+              type: 'SYNC_STATE',
+              state: buildSanitizedStateFor(msg.player.id)
+            });
+          } catch(e) {}
+        }
         
         // Diffusion immédiate à tout le monde avec le mode actuel de l'hôte
         broadcastState();
@@ -4584,7 +4593,7 @@
       const skullPlacement = document.getElementById('skull-placement-actions');
       if (skullPlacement) {
         skullPlacement.classList.add('hidden');
-        skullPlacement.classList.remove('grid'); // Supprime l'affichage en grille
+        skullPlacement.classList.remove('grid');
       }
       const isDice = gameState.gameMode === 'dice';
 
@@ -4711,6 +4720,13 @@
       document.getElementById('skull-action-controls')?.classList.add('hidden');
       document.getElementById('skull-placement-actions')?.classList.add('hidden');
       document.getElementById('skull-bidding-panel')?.classList.add('hidden');
+
+      const skullBidding = document.getElementById('skull-bidding-panel');
+      if (skullBidding) {
+        skullBidding.classList.add('hidden');
+        skullBidding.classList.remove('flex');
+      }
+
       document.getElementById('skull-reveal-notice')?.classList.add('hidden');
 
       // Branchement strict sans écrasement mutuel
@@ -5071,6 +5087,7 @@
     }
 
     function renderSkullPlayerConsole(me) {
+      if (gameState.gameMode !== 'skull') return;
       document.getElementById('my-hand-container')?.classList.add('hidden');
       document.getElementById('cards-action-controls')?.classList.add('hidden');
       document.getElementById('quinto-action-controls')?.classList.add('hidden');
