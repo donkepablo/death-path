@@ -676,7 +676,7 @@
           </div> <!-- /!\ CE </div> ÉTAIT MANQUANT : IL FERME #quinto-buttons-wrapper /!\ -->
 
           <!-- Actions Skull -->
-          <div id="skull-placement-actions" class="hidden w-full grid grid-cols-2 gap-2">
+          <div id="skull-placement-actions" class="hidden w-full grid-cols-2 gap-2">
             <button id="btn-skull-play-card" disabled class="h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed">
               <i class="fa-solid fa-hand"></i>
               <span>Poser Tuile</span>
@@ -4697,6 +4697,15 @@
 
       renderSeatsAroundTable();
       renderInventoryConsole(me);
+
+      // SÉCURITÉ ABSOLUE : masquer tous les blocs de contrôles du bas avant d'activer le bon
+      document.getElementById('cards-action-controls')?.classList.add('hidden');
+      document.getElementById('quinto-buttons-wrapper')?.classList.add('hidden');
+      document.getElementById('quinto-action-controls')?.classList.add('hidden');
+      document.getElementById('skull-action-controls')?.classList.add('hidden');
+      document.getElementById('skull-placement-actions')?.classList.add('hidden');
+      document.getElementById('skull-bidding-panel')?.classList.add('hidden');
+      document.getElementById('skull-reveal-notice')?.classList.add('hidden');
 
       // Branchement strict sans écrasement mutuel
       if (isMistigri) {
