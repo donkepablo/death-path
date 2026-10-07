@@ -1041,12 +1041,21 @@
     };
 
     const AVATAR_PRESETS = [
-      { id: 'av_1', icon: 'fa-solid fa-user' },
-      { id: 'av_2', icon: 'fa-solid fa-user-astronaut' },
-      { id: 'av_3', icon: 'fa-solid fa-user-ninja' },
-      { id: 'av_4', icon: 'fa-solid fa-user-graduate' },
+      { id: 'av_1', icon: 'fa-solid fa-user', name: 'Classique' },
+      { id: 'av_2', icon: 'fa-solid fa-user-astronaut', name: 'Astronaute' },
+      { id: 'av_3', icon: 'fa-solid fa-user-ninja', name: 'Ninja' },
+      { id: 'av_4', icon: 'fa-solid fa-user-graduate', name: 'Scolaire' },
       { id: 'custom', icon: 'fa-solid fa-plus', isCustom: true }
     ];
+
+    // Liste filtrée des 4 icônes jouables uniquement
+    const PLAYABLE_AVATARS = ['av_1', 'av_2', 'av_3', 'av_4'];
+
+    function getRandomPlayableAvatar(excludeList = []) {
+      const pool = PLAYABLE_AVATARS.filter(id => !excludeList.includes(id));
+      const targetPool = pool.length > 0 ? pool : PLAYABLE_AVATARS;
+      return targetPool[Math.floor(Math.random() * targetPool.length)];
+    }
 
     let selectedAvatarId = 'av_1';
     let customAvatarBase64 = null;
@@ -1112,11 +1121,11 @@
       reader.readAsDataURL(file);
     }
 
-    function getAvatarIcon(avatarId) {
-      if (avatarId && avatarId.startsWith('data:image')) {
-        return `<img src="${avatarId}" class="w-full h-full rounded-full object-cover" />`;
+    function getAvatarIcon(avatarData) {
+      if (avatarData && avatarData.startsWith('data:image')) {
+        return `<img src="${avatarData}" class="w-full h-full rounded-full object-cover" />`;
       }
-      const found = AVATAR_PRESETS.find(a => a.id === avatarId);
+      const found = AVATAR_PRESETS.find(a => a.id === avatarData && !a.isCustom);
       return `<i class="${found ? found.icon : 'fa-solid fa-user'}"></i>`;
     }
 
@@ -2077,10 +2086,14 @@
 
       setupBroadcastChannel(cleanCode);
 
+      const myAvatar = (selectedAvatarId === 'custom' && customAvatarBase64) 
+        ? customAvatarBase64 
+        : (selectedAvatarId !== 'custom' ? selectedAvatarId : getRandomPlayableAvatar());
+
       const localPlayerData = {
         id: myId,
         name: myName,
-        avatar: (selectedAvatarId === 'custom' && customAvatarBase64) ? customAvatarBase64 : selectedAvatarId,
+        avatar: myAvatar,
         isBot: false,
         isReady: false,
         isAlive: true,
@@ -2421,7 +2434,7 @@
 
           if (isSelfSkullPenalty) {
             gameState.feltTicker = `AUTO-CRÂNE (ZBEUL) ! ${revealer.name} a retourné son propre crâne : DOUBLE TIR ! 💀💀`;
-            broadcastToast(`${revealer.name} prend 2 tirs de barillet !`);
+            showToast(`${revealer.name} prend 2 tirs de barillet !`);
           } else {
             gameState.feltTicker = `CRÂNE DÉCOUVERT ! ${revealer.name} affronte le barillet !`;
           }
@@ -3835,7 +3848,7 @@
             } else {
               audio.dryHammerClick();
               ticker.innerText = "bouh";
-              broadcastToast(`${targetPlayerName} survit !`);
+              showToast(`${targetPlayerName} survit !`);
               setTimeout(() => {
                 closeDenounceModal();
                 if (onComplete) onComplete();
@@ -5866,19 +5879,48 @@
       isHost = true;
       gameState.code = 'SOLO';
 
+      const myAvatar = (selectedAvatarId === 'custom' && customAvatarBase64) 
+        ? customAvatarBase64 
+        : (selectedAvatarId !== 'custom' ? selectedAvatarId : 'av_1');
+
       const tempPlayers = {
-        [myId]: { id: myId, name: myName, avatar: (selectedAvatarId === 'custom' && customAvatarBase64) ? customAvatarBase64 : selectedAvatarId, isBot: false, isReady: true, isAlive: true, cylinderRisk: 1, hand: [], items: [], hasDraftedThisRound: false }
+        [myId]: { 
+          id: myId, 
+          name: myName, 
+          avatar: myAvatar, 
+          isBot: false, 
+          isReady: true, 
+          isAlive: true, 
+          cylinderRisk: 1, 
+          hand: [], 
+          items: [], 
+          hasDraftedThisRound: false 
+        }
       };
 
       const usedNames = [myName];
-      const botAvatarPool = AVATAR_PRESETS.map(a => a.id).filter(a => a !== selectedAvatarId);
+      const usedAvatars = [myAvatar];
 
       for (let i = 1; i <= 3; i++) {
         const bName = getRandomPlayerName(usedNames);
         usedNames.push(bName);
+        
+        // Tire un avatar parmi le basique, l'astronaute, le ninja et le scolaire non utilisés
+        const bAvatar = getRandomPlayableAvatar(usedAvatars);
+        usedAvatars.push(bAvatar);
+
         const bId = 'bot_' + i;
         tempPlayers[bId] = {
-          id: bId, name: bName, avatar: botAvatarPool[(i - 1) % botAvatarPool.length], isBot: true, isReady: true, isAlive: true, cylinderRisk: 1, hand: [], items: [], hasDraftedThisRound: false
+          id: bId, 
+          name: bName, 
+          avatar: bAvatar, 
+          isBot: true, 
+          isReady: true, 
+          isAlive: true, 
+          cylinderRisk: 1, 
+          hand: [], 
+          items: [], 
+          hasDraftedThisRound: false 
         };
       }
 
@@ -5896,15 +5938,15 @@
 
     document.getElementById('btn-create-room').addEventListener('click', () => {
       audio.init();
-      const input = document.getElementById('input-username');
-      myName = (input && input.value.trim()) || `Joueur_${Math.floor(Math.random() * 900 + 100)}`;
-      isHost = true;
+      const myAvatar = (selectedAvatarId === 'custom' && customAvatarBase64) 
+        ? customAvatarBase64 
+        : (selectedAvatarId !== 'custom' ? selectedAvatarId : 'av_1');
 
       gameState.players = {
         [myId]: {
           id: myId,
           name: myName,
-          avatar: (selectedAvatarId === 'custom' && customAvatarBase64) ? customAvatarBase64 : selectedAvatarId,
+          avatar: myAvatar,
           isBot: false,
           isReady: true,
           isAlive: true,
@@ -5915,6 +5957,9 @@
           hasDraftedThisRound: false
         }
       };
+      const input = document.getElementById('input-username');
+      myName = (input && input.value.trim()) || `Joueur_${Math.floor(Math.random() * 900 + 100)}`;
+      isHost = true;
       gameState.playerOrder = [myId];
       gameState.status = 'lobby';
 
@@ -5949,11 +5994,13 @@
       const botName = getRandomPlayerName(existingNames);
       const botId = 'bot_' + Math.random().toString(36).substring(2, 6);
       const randomAv = AVATAR_PRESETS[Math.floor(Math.random() * AVATAR_PRESETS.length)].id;
+      const existingAvatars = Object.values(gameState.players).map(p => p.avatar);
+      const botAvatar = getRandomPlayableAvatar(existingAvatars);
 
       gameState.players[botId] = {
         id: botId,
         name: botName,
-        avatar: randomAv,
+        avatar: botAvatar,
         isBot: true,
         isReady: true,
         isAlive: true,
