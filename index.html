@@ -1557,8 +1557,13 @@
         const alreadySeated = Boolean(gameState.players[msg.player.id]);
         const rejectJoin = (reason) => {
           if (originConn && originConn.open) {
-            try { originConn.send({ type: 'TOAST', message: reason }); } catch(e) {}
-          }
+          try {
+            originConn.send({
+              type: 'SYNC_STATE',
+              state: buildSanitizedStateFor(msg.player.id)
+            });
+          } catch(e) {}
+        }
         };
         if (!alreadySeated && joinInProgress) { rejectJoin('Partie déjà en cours : impossible de rejoindre.'); return; }
         if (!alreadySeated && Object.keys(gameState.players).length >= 4) { rejectJoin('Table complète (max 4).'); return; }
@@ -2095,11 +2100,14 @@
             hostConn.on('data', (data) => {
               if (data && data.type === 'SYNC_STATE') {
                 gameState = normalizeIncomingState(data.state);
+                // Synchroniser le mode localement pour le client
+                if (data.state.gameMode) {
+                  gameState.gameMode = data.state.gameMode;
+                }
+                if (typeof data.state.isZbeul === 'boolean') {
+                  gameState.isZbeul = data.state.isZbeul;
+                }
                 renderUI();
-              } else if (data && data.type === 'SYNC_EVENT') {
-                handleSyncEvent(data.event);
-              } else if (data && data.type === 'TOAST') {
-                showToast(data.message);
               }
             });
 
@@ -4410,10 +4418,10 @@
       const allPlacedAtLeastOne = living.every(id => gameState.players[id]?.skullPile?.length >= 1);
 
       if (gameState.skullPhase === 'placement') {
-        const canBid = allPlacedAtLeastOne && totalTiles >= living.length;
-        // Si le bot n'a plus de cartes en main ou décide d'ouvrir les enchères
-        if (!bot.hand || bot.hand.length === 0 || (canBid && Math.random() < 0.35)) {
-          handleSkullSubmitBid(bot.id, 1);
+        if (skullActionsWrapper) {
+          skullActionsWrapper.classList.remove('hidden');
+          skullActionsWrapper.classList.add('grid');
+          skullActionsWrapper.style.display = 'grid'; // Rendre visible uniquement ici
         } else {
           const chosenTile = bot.hand[Math.floor(Math.random() * bot.hand.length)];
           handleSkullPlayTile(bot.id, chosenTile.id);
@@ -4596,6 +4604,25 @@
         skullPlacement.classList.remove('grid');
       }
       const isDice = gameState.gameMode === 'dice';
+
+      // SÉCURITÉ ABSOLUE : masquer tous les blocs d'actions
+      const allActionPanels = [
+        'cards-action-controls',
+        'quinto-buttons-wrapper',
+        'quinto-action-controls',
+        'skull-action-controls',
+        'skull-placement-actions',
+        'skull-bidding-panel',
+        'skull-reveal-notice'
+      ];
+      allActionPanels.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add('hidden');
+          el.classList.remove('grid', 'flex');
+          el.style.display = 'none'; // Force le masquage direct
+        }
+      });
 
       // MISE À JOUR DU BADGE EN HAUT À GAUCHE
       const targetTitle = document.getElementById('game-target-title');
@@ -5348,7 +5375,10 @@
       document.getElementById('skull-reveal-notice')?.classList.add('hidden');
       
       const qBtns = document.getElementById('quinto-buttons-wrapper');
-      if (qBtns) qBtns.classList.remove('hidden');
+      if (qBtns) {
+        qBtns.classList.remove('hidden');
+        qBtns.style.display = 'flex';
+      }
 
       const consoleTitle = document.getElementById('hand-console-title');
       if (consoleTitle) consoleTitle.innerText = 'Tes Dés';
