@@ -5468,7 +5468,15 @@
 
       document.getElementById('my-hand-container')?.classList.add('hidden');
       document.getElementById('cards-action-controls')?.classList.add('hidden');
-      document.getElementById('quinto-action-controls')?.classList.remove('hidden');
+      
+      // Nettoyer display: none !important et forcer flex
+      const qActionControls = document.getElementById('quinto-action-controls');
+      if (qActionControls) {
+        qActionControls.classList.remove('hidden');
+        qActionControls.style.removeProperty('display');
+        qActionControls.style.setProperty('display', 'flex', 'important');
+      }
+
       document.getElementById('skull-action-controls')?.classList.add('hidden');
       document.getElementById('skull-placement-actions')?.classList.add('hidden');
       document.getElementById('skull-bidding-panel')?.classList.add('hidden');
@@ -5477,7 +5485,8 @@
       const qBtns = document.getElementById('quinto-buttons-wrapper');
       if (qBtns) {
         qBtns.classList.remove('hidden');
-        qBtns.style.display = 'flex';
+        qBtns.style.removeProperty('display');
+        qBtns.style.setProperty('display', 'flex', 'important');
       }
 
       const consoleTitle = document.getElementById('hand-console-title');
@@ -5495,23 +5504,24 @@
       const dicePairEl = document.getElementById('quinto-dice-pair');
       const realValTag = document.getElementById('quinto-real-val-tag');
 
-      // Affiche les dés dès que le joueur a secoué pendant son tour
+      // Affiche les dés si le joueur a secoué pendant son tour
       if (me?.isAlive && gameState.quintoRealDice && gameState.quintoHasRolled && isMyTurn) {
         if (myDiceView) {
           myDiceView.classList.remove('hidden');
-          myDiceView.classList.add('flex');
+          myDiceView.style.removeProperty('display');
+          myDiceView.style.setProperty('display', 'flex', 'important');
         }
         if (dicePairEl) {
           dicePairEl.innerHTML = `
-            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded-md flex items-center justify-center text-xs shadow border border-dore font-mono">${gameState.quintoRealDice[0]}</span>
-            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded-md flex items-center justify-center text-xs shadow border border-dore font-mono">${gameState.quintoRealDice[1]}</span>
+            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-xs shadow border border-dore font-mono">${gameState.quintoRealDice[0]}</span>
+            <span class="w-6 h-6 bg-[#faf8f5] text-noir font-bold rounded flex items-center justify-center text-xs shadow border border-dore font-mono">${gameState.quintoRealDice[1]}</span>
           `;
         }
         if (realValTag) realValTag.innerText = `(${getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1])})`;
       } else {
         if (myDiceView) {
           myDiceView.classList.add('hidden');
-          myDiceView.classList.remove('flex');
+          myDiceView.style.setProperty('display', 'none', 'important');
         }
       }
 
