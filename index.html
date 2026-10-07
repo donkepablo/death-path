@@ -643,8 +643,8 @@
 
             <!-- Étape 2 : Après avoir secoué (Vérité / Mentir / Relancer mes dés) -->
             <div id="quinto-step-choice" class="hidden w-full flex-col gap-2.5">
-              <!-- Bouton Miroir (affiché uniquement en cas d'égalité exacte) -->
-              <button id="btn-quinto-mirror" class="hidden w-full h-8 rounded border border-cyan-400 bg-[#0d2229] hover:bg-[#13323c] text-cyan-300 font-title text-xs uppercase tracking-wider font-bold transition-all shadow-[0_0_12px_rgba(34,211,238,0.35)] active:scale-95 flex items-center justify-center gap-1.5">
+              <!-- Bouton Miroir aligné sur la DA du jeu -->
+              <button id="btn-quinto-mirror" class="hidden w-full h-8 rounded border border-[#8f7734] bg-[#161e18] hover:bg-[#202b23] hover:border-dore text-dore font-title text-[11px] uppercase tracking-wider font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5 mb-2.5">
                 <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
                 <span id="btn-quinto-mirror-lbl">Miroir ! Renvoie à l'envoyeur</span>
               </button>
@@ -660,7 +660,7 @@
                 </button>
               </div>
 
-              <!-- Bouton relance aligné sur la DA (fond sombre #161e18, bordure laiton/doré, texte doré) avec marge haute (mt-1) -->
+              <!-- Bouton relance aligné sur la DA -->
               <button id="btn-quinto-self-reroll" class="mt-1 w-full h-8 rounded border border-[#485d4d] bg-[#161e18] hover:bg-[#202b23] hover:border-dore text-[#dbe3dc] hover:text-dore font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-md">
                 <i class="fa-solid fa-arrows-rotate text-dore text-xs"></i>
                 <span>Relancer mes dés</span>
@@ -671,7 +671,8 @@
                 ...
                 <div id="quinto-claims-grid" class="grid grid-cols-7 gap-1.5 p-0.5"></div>
               </div>
-            </div> <!-- Ferme #quinto-step-choice -->
+            </div>
+            <!-- Ferme #quinto-step-choice -->
 
           </div> <!-- /!\ CE </div> ÉTAIT MANQUANT : IL FERME #quinto-buttons-wrapper /!\ -->
 
@@ -5645,7 +5646,9 @@
           if (btnMirror) {
             if (isTrueMirror) {
               btnMirror.classList.remove('hidden');
-              if (btnMirrorLbl) btnMirrorLbl.innerText = `Miroir (${realScore}) ! Renvoyer à ${gameState.quintoClaim.playerName}`;
+              if (btnMirrorLbl) {
+                btnMirrorLbl.innerText = `Miroir (${realScore}) ! Renvoyer à ${gameState.quintoClaim.playerName}`;
+              }
               btnMirror.onclick = () => {
                 sendToHost({ type: 'QUINTO_MIRROR_CLAIM', id: myId });
               };
