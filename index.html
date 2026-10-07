@@ -666,16 +666,14 @@
                 <span>Relancer mes dés</span>
               </button>
 
-              <div id="quinto-lie-input-panel" class="hidden absolute bottom-14 sm:bottom-16 left-1/2 -translate-x-1/2 w-[310px] sm:w-[340px] flex-col gap-2 p-3 rounded-2xl bg-gradient-to-b from-[#1b4e2a] via-[#153e22] to-[#0e2a17] border-2 border-[#8f7734] shadow-[0_16px_40px_rgba(0,0,0,0.95),inset_0_0_20px_rgba(0,0,0,0.6)] z-50 backdrop-blur-md">
-                <div class="flex items-center justify-between pb-1.5 border-b border-[#2d5d39]/60">
-                  <span class="text-[9px] font-mono uppercase tracking-[0.18em] text-dore font-bold">Annonce supérieure :</span>
-                  <button type="button" onclick="document.getElementById('quinto-lie-input-panel').classList.add('hidden')" class="text-[#96b89f] hover:text-white text-xs px-1">
-                    <i class="fa-solid fa-xmark"></i>
-                  </button>
-                </div>
+              <!-- Panel Annonce Quinto -->
+              <div id="quinto-lie-input-panel" class="hidden absolute bottom-14 ...">
+                ...
                 <div id="quinto-claims-grid" class="grid grid-cols-7 gap-1.5 p-0.5"></div>
               </div>
-            </div>
+            </div> <!-- Ferme #quinto-step-choice -->
+
+          </div> <!-- /!\ CE </div> ÉTAIT MANQUANT : IL FERME #quinto-buttons-wrapper /!\ -->
 
           <!-- Actions Skull -->
           <div id="skull-placement-actions" class="hidden w-full grid grid-cols-2 gap-2">
@@ -704,7 +702,6 @@
           <div id="skull-reveal-notice" class="hidden text-center text-xs font-mono text-dore">
             Clique sur une carte pour la révéler
           </div>
-        </div>
 
       </div>
     </section>
@@ -5030,12 +5027,16 @@
     }
 
     function renderSkullPlayerConsole(me) {
-      document.getElementById('my-hand-container').classList.add('hidden');
-      document.getElementById('cards-action-controls').classList.add('hidden');
-      document.getElementById('quinto-action-controls').classList.add('hidden');
-      document.getElementById('skull-action-controls').classList.remove('hidden');
-      document.getElementById('skull-action-controls').classList.add('flex');
+      document.getElementById('my-hand-container')?.classList.add('hidden');
+      document.getElementById('cards-action-controls')?.classList.add('hidden');
+      document.getElementById('quinto-action-controls')?.classList.add('hidden');
       document.getElementById('quinto-buttons-wrapper')?.classList.add('hidden');
+
+      const skullControls = document.getElementById('skull-action-controls');
+      if (skullControls) {
+        skullControls.classList.remove('hidden');
+        skullControls.classList.add('flex');
+      }
 
       const btnPlay = document.getElementById('btn-skull-play-card');
       const btnOpenBid = document.getElementById('btn-skull-open-bid');
@@ -5070,7 +5071,6 @@
           : "w-full h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold cursor-not-allowed flex items-center justify-center";
         btnNextRound.innerText = isHost ? "Passer à la manche suivante" : "En attente de l'hôte...";
         
-        document.getElementById('cards-action-controls')?.classList.add('hidden');
         skullActionsWrapper?.classList.add('hidden');
         bidPanel?.classList.add('hidden');
         revealNotice?.classList.add('hidden');
@@ -5081,61 +5081,67 @@
 
       // Rendu des tuiles en main
       const container = document.getElementById('skull-hand-tiles');
-      container.innerHTML = '';
-      if (!me || !me.isAlive) return;
+      if (container) {
+        container.innerHTML = '';
+        if (me && me.isAlive) {
+          (me.hand || []).forEach(tile => {
+            const isSel = selectedSkullTileId === tile.id;
+            const isSkull = tile.type === 'skull';
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `w-14 h-20 rounded-xl border-2 flex flex-col items-center justify-between p-2 transition-all shadow-lg ${
+              isSel 
+                ? 'border-dore bg-white scale-105 shadow-[0_0_15px_rgba(212,175,55,0.7)] -translate-y-2' 
+                : 'border-[#d2cbbe] bg-[#faf8f5] hover:border-dore hover:-translate-y-1'
+            }`;
+            btn.innerHTML = `
+              <i class="fa-solid ${tile.icon} text-lg mt-0.5"></i>
+              <span class="text-[9px] font-mono font-bold uppercase tracking-wider ${isSkull ? 'text-rose-800' : 'text-emerald-800'}">${tile.name}</span>
+              <span class="text-[8px] font-mono font-bold text-stone-400">SKULL</span>
+            `;
+            btn.onclick = () => {
+              if (isMyTurn && gameState.skullPhase === 'placement') {
+                selectedSkullTileId = (selectedSkullTileId === tile.id) ? null : tile.id;
+                renderSkullPlayerConsole(me);
+              }
+            };
+            container.appendChild(btn);
+          });
+        }
+      }
 
-      (me.hand || []).forEach(tile => {
-        const isSel = selectedSkullTileId === tile.id;
-        const isSkull = tile.type === 'skull';
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = `w-14 h-20 rounded-xl border-2 flex flex-col items-center justify-between p-2 transition-all shadow-lg ${
-          isSel 
-            ? 'border-dore bg-white scale-105 shadow-[0_0_15px_rgba(212,175,55,0.7)] -translate-y-2' 
-            : 'border-[#d2cbbe] bg-[#faf8f5] hover:border-dore hover:-translate-y-1'
-        }`;
-        btn.innerHTML = `
-          <i class="fa-solid ${tile.icon} text-lg mt-0.5"></i>
-          <span class="text-[9px] font-mono font-bold uppercase tracking-wider ${isSkull ? 'text-rose-800' : 'text-emerald-800'}">${tile.name}</span>
-          <span class="text-[8px] font-mono font-bold text-stone-400">SKULL</span>
-        `;
-        btn.onclick = () => {
-          if (isMyTurn && gameState.skullPhase === 'placement') {
-            selectedSkullTileId = (selectedSkullTileId === tile.id) ? null : tile.id;
-            renderSkullPlayerConsole(me);
-          }
-        };
-        container.appendChild(btn);
-      });
-
-      // Phases d'actions
+      // Gestion des panneaux selon la phase de jeu
       if (gameState.skullPhase === 'placement') {
-        bidPanel.classList.add('hidden');
-        revealNotice.classList.add('hidden');
-        skullActionsWrapper.classList.remove('hidden');
+        bidPanel?.classList.add('hidden');
+        revealNotice?.classList.add('hidden');
+        skullActionsWrapper?.classList.remove('hidden');
 
-        const hasNoMoreTiles = (!me.hand || me.hand.length === 0);
+        const hasNoMoreTiles = (!me || !me.hand || me.hand.length === 0);
         const canPlayTile = isMyTurn && Boolean(selectedSkullTileId) && !hasNoMoreTiles;
 
-        btnPlay.disabled = !canPlayTile;
-        btnPlay.className = !canPlayTile
-          ? "h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed"
-          : "h-9 rounded-lg border border-dore bg-[#243828] hover:bg-[#2d4833] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer flex items-center justify-center gap-1.5";
+        if (btnPlay) {
+          btnPlay.disabled = !canPlayTile;
+          btnPlay.className = !canPlayTile
+            ? "h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed"
+            : "h-9 rounded-lg border border-dore bg-[#243828] hover:bg-[#2d4833] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer flex items-center justify-center gap-1.5";
+        }
 
         const canOpenBid = isMyTurn && (hasNoMoreTiles || (allPlacedAtLeastOne && totalTiles >= 1));
-        btnOpenBid.disabled = !canOpenBid;
-        btnOpenBid.className = !canOpenBid
-          ? "h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed"
-          : "h-9 rounded-lg border border-dore bg-[#243828] hover:bg-[#2d4833] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer flex items-center justify-center gap-1.5";
+        if (btnOpenBid) {
+          btnOpenBid.disabled = !canOpenBid;
+          btnOpenBid.className = !canOpenBid
+            ? "h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed"
+            : "h-9 rounded-lg border border-dore bg-[#243828] hover:bg-[#2d4833] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer flex items-center justify-center gap-1.5" + (hasNoMoreTiles ? " animate-bounce" : "");
+        }
 
       } else if (gameState.skullPhase === 'bidding') {
-        skullActionsWrapper.classList.add('hidden');
-        revealNotice.classList.add('hidden');
+        skullActionsWrapper?.classList.add('hidden');
+        revealNotice?.classList.add('hidden');
 
         const hasPassed = (gameState.skullPassers || []).includes(myId);
         if (isMyTurn && !hasPassed) {
-          bidPanel.classList.remove('hidden');
-          bidPanel.classList.add('flex');
+          bidPanel?.classList.remove('hidden');
+          bidPanel?.classList.add('flex');
           const minBid = Math.min(totalTiles, (gameState.skullHighBid || 0) + 1);
           const input = document.getElementById('input-skull-bid');
           if (input) {
@@ -5144,19 +5150,20 @@
             input.value = minBid;
           }
         } else {
-          bidPanel.classList.add('hidden');
-          bidPanel.classList.remove('flex');
+          bidPanel?.classList.add('hidden');
+          bidPanel?.classList.remove('flex');
         }
+
       } else if (gameState.skullPhase === 'revealing') {
-        skullActionsWrapper.classList.add('hidden');
-        bidPanel.classList.add('hidden');
-        bidPanel.classList.remove('flex');
+        skullActionsWrapper?.classList.add('hidden');
+        bidPanel?.classList.add('hidden');
+        bidPanel?.classList.remove('flex');
 
         if (isMyTurn && gameState.skullHighBidderId === myId) {
-          revealNotice.classList.remove('hidden');
-          revealNotice.innerText = 'Clique sur une carte pour la révéler';
+          revealNotice?.classList.remove('hidden');
+          if (revealNotice) revealNotice.innerText = 'Clique sur un tapis pour révéler une tuile';
         } else {
-          revealNotice.classList.add('hidden');
+          revealNotice?.classList.add('hidden');
         }
       }
     }
