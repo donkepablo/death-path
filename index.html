@@ -1130,12 +1130,22 @@
     function generateWeightedClassicDeck(targetRank) {
       const deck = [];
       let uid = 1;
-      for (let i = 0; i < 5; i++) deck.push({ id: `c_${uid++}`, rank: targetRank, isJoker: false, isRat: false });
+
+      // 6 cartes de la figure demandée
+      for (let i = 0; i < 6; i++) deck.push({ id: `c_${uid++}`, rank: targetRank, isJoker: false, isRat: false });
+
+      // 4 cartes pour chacune des 3 autres figures (12 cartes)
       CARD_RANKS.filter(r => r !== targetRank).forEach(other => {
-        for (let i = 0; i < 3; i++) deck.push({ id: `c_${uid++}`, rank: other, isJoker: false, isRat: false });
+        for (let i = 0; i < 4; i++) deck.push({ id: `c_${uid++}`, rank: other, isJoker: false, isRat: false });
       });
-      for (let i = 0; i < 3; i++) deck.push({ id: `c_${uid++}`, rank: 'JOKER', isJoker: true, isRat: false });
+
+      // 4 Jokers
+      for (let i = 0; i < 4; i++) deck.push({ id: `c_${uid++}`, rank: 'JOKER', isJoker: true, isRat: false });
+
+      // 2 cartes 10
       for (let i = 0; i < 2; i++) deck.push({ id: `c_${uid++}`, rank: '10', isJoker: false, isRat: true });
+
+      // Total : 6 + 12 + 4 + 2 = 24 cartes (largement suffisant pour 4 x 5 = 20)
       for (let i = deck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [deck[i], deck[j]] = [deck[j], deck[i]];
@@ -1621,7 +1631,7 @@
         
         // Diffusion immédiate à tout le monde avec le mode actuel de l'hôte
         broadcastState();
-        broadcastToast(`${msg.player.name} a rejoint la table.`);
+        showToast(`${msg.player.name} a rejoint la table.`);
         return;
       }
 
