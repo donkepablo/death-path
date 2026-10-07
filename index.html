@@ -2165,19 +2165,26 @@
     }
 
     function setupSkullRound(living) {
+      // Retenir qui a gagné le défi précédent pour lui donner la priorité
+      const previousWinnerId = gameState.skullHighBidderId;
+      const starterId = (previousWinnerId && gameState.players[previousWinnerId]?.isAlive)
+        ? previousWinnerId
+        : living[Math.floor(Math.random() * living.length)];
+
       gameState.status = 'in_round';
       gameState.skullPhase = 'placement';
       gameState.skullHighBid = 0;
       gameState.skullHighBidderId = null;
-      gameState.skullPassers = [];
+      gameState.skullPassers = []; // INDISPENSABLE : vide les passeurs pour débloquer l'autre joueur
       gameState.skullRevealedCards = [];
       gameState.skullTargetCount = 0;
       gameState.tableCardsCount = 0;
+      gameState.isRevealingAnimationRunning = false;
       selectedSkullTileId = null;
 
+      // On redistribue les 4 tuiles complètes aux 2 joueurs
       living.forEach(id => {
         const p = gameState.players[id];
-        // On redonne 4 tuiles complètes pour la nouvelle manche
         p.hand = [
           { id: `sk_${id}_1`, type: 'flower', name: 'Fleur', icon: 'fa-spa text-emerald-700' },
           { id: `sk_${id}_2`, type: 'flower', name: 'Fleur', icon: 'fa-spa text-emerald-700' },
@@ -2188,16 +2195,20 @@
         if (typeof p.skullScore !== 'number') p.skullScore = 0;
       });
 
-      // Le vainqueur du défi précédent (ou un joueur vivant tiré au sort) commence la nouvelle manche
-      const starterId = (gameState.skullHighBidderId && gameState.players[gameState.skullHighBidderId]?.isAlive)
-        ? gameState.skullHighBidderId
-        : living[Math.floor(Math.random() * living.length)];
-
+      // Donner la main au premier joueur
       gameState.activePlayerIndex = gameState.playerOrder.indexOf(starterId);
-      gameState.feltTicker = `Nouvelle manche : ${gameState.players[starterId].name} commence en posant une tuile.`;
+      const starter = gameState.players[starterId];
+      gameState.feltTicker = `Nouvelle manche : ${starter ? starter.name : '...'} commence en posant une tuile.`;
 
       broadcastState();
-      checkBotTurnWithDelay();
+
+      if (starter && starter.isBot) {
+        setTimeout(() => {
+          if (isHost && gameState.status === 'in_round' && gameState.skullPhase === 'placement') {
+            botPlaySkullTurn(starter);
+          }
+        }, 800);
+      }
     }
 
     function handleSkullPlayTile(playerId, tileId) {
@@ -2411,17 +2422,20 @@
             gameState.feltTicker = `${revealer.name} valide son 2e point et remporte la partie ! 🏆`;
             broadcastState();
           } else {
-            // Manche remportée : notification puis relance automatique après 3 secondes
+            // Manche remportée : pause avec message
             gameState.status = 'skull_round_won';
-            gameState.feltTicker = `DÉFI RÉUSSI ! ${revealer.name} marque 1 point (${revealer.skullScore}/2). Préparez-vous pour la manche suivante...`;
-            showToast(`${revealer.name} marque 1 point !`);
+            gameState.feltTicker = `DÉFI RÉUSSI ! ${revealer.name} marque 1 point (${revealer.skullScore}/2). Manche 2 dans un instant...`;
+            showToast(`${revealer.name} marque 1 point (${revealer.skullScore}/2) !`);
             broadcastState();
 
-            setTimeout(() => {
-              if (isHost && gameState.status === 'skull_round_won') {
-                startNewRound();
-              }
-            }, 3000);
+            // L'hôte est le seul à orchestrer le passage à la manche suivante :
+            if (isHost) {
+              setTimeout(() => {
+                if (gameState.status === 'skull_round_won') {
+                  startNewRound();
+                }
+              }, 2200);
+            }
           }
           return;
         }
