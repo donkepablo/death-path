@@ -5757,6 +5757,17 @@
           btnBluffEarly.className = BTN_CHOICE_DISABLED;
           btnBluffEarly.title = "Ce n'est pas ton tour.";
         }
+        
+        // MASQUAGE STRICT HORS DE MON TOUR
+        if (btnForcePrev) {
+          btnForcePrev.classList.add('hidden');
+          btnForcePrev.disabled = true;
+        }
+        if (btnSelfReroll) {
+          btnSelfReroll.classList.add('hidden');
+          btnSelfReroll.disabled = true;
+        }
+
         // Afficher uniquement si le mode Zbeul est activé
         if (btnForcePrev) {
           if (!gameState.isZbeul) {
