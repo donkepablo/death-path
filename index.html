@@ -1513,7 +1513,10 @@
       } 
       else if (evt.type === 'TOAST_NOTIF') {
         showToast(evt.message);
-    }
+      }
+      if (evt.type === 'LOTTERY_ANIM') {
+        runLotteryCardAnimationLocal(evt.chosenRank, evt.firstPlayerName);
+      }
     }
 
     let _msgCounter = 0;
@@ -2520,8 +2523,7 @@
         gameState.tableCardsCount = 0;
         gameState.lastClaim = null;
         gameState.feltTicker = "Mélange des cartes...";
-        broadcastState();
-
+        
         const chosenRank = CARD_RANKS[Math.floor(Math.random() * CARD_RANKS.length)];
         const luckyFirstId = living[Math.floor(Math.random() * living.length)];
         const active = gameState.players[luckyFirstId];
@@ -2537,12 +2539,17 @@
           gameState.players[id].hand = hand;
         });
 
+        // 1. On synchronise d'abord l'état pour que tous les clients affichent la table de jeu
+        broadcastState();
+
+        // 2. On diffuse l'animation à tout le monde
         broadcastEvent({
           type: 'LOTTERY_ANIM',
           chosenRank: chosenRank,
           firstPlayerName: active.name
         });
 
+        // 3. L'hôte joue l'animation en local
         runLotteryCardAnimationLocal(chosenRank, active.name, () => {
           gameState.status = 'in_round';
           gameState.feltTicker = `Le sort désigne ${active.name} pour ouvrir la manche.`;
@@ -2747,6 +2754,7 @@
       if (!modal || !cardFrame) return;
 
       modal.classList.remove('hidden');
+      modal.style.setProperty('display', 'flex', 'important'); // <-- Force l'affichage visible
       if (statusEl) {
         statusEl.className = "font-mono text-xs text-dore animate-pulse";
         statusEl.innerText = "Tirage de la figure...";
@@ -2799,6 +2807,7 @@
 
         setTimeout(() => {
           modal.classList.add('hidden');
+          modal.style.setProperty('display', 'none', 'important'); // <-- Referme proprement
           broadcastToast(`Premier à parler : ${firstPlayerName}`);
           if (onComplete) onComplete();
         }, 2200);
