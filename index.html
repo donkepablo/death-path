@@ -1649,11 +1649,13 @@
         } else if (msg.type === 'QUINTO_MIRROR_CLAIM') {
         handleQuintoMirrorClaim(msg.id);
       } else if (msg.type === 'QUINTO_SELF_REROLL') {
-  if (gameState.quintoHasRolled && !gameState.quintoRerollUsedThisTurn) {
-    gameState.quintoRerollUsedThisTurn = true;
-    executeDiceReroll(msg.id);
-  }
+        if (!gameState.isZbeul) return; // Ignorer hors mode Zbeul
+        if (gameState.quintoHasRolled && !gameState.quintoRerollUsedThisTurn) {
+          gameState.quintoRerollUsedThisTurn = true;
+          executeDiceReroll(msg.id);
+        }
       } else if (msg.type === 'QUINTO_FORCE_PREV') {
+        if (!gameState.isZbeul) return; // Ignorer hors mode Zbeul
         const player = gameState.players[msg.id];
         const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
         
@@ -5671,12 +5673,43 @@
           btnBluffEarly.className = BTN_CHOICE_DISABLED;
           btnBluffEarly.title = "Ce n'est pas ton tour.";
         }
+        // Afficher uniquement si le mode Zbeul est activé
         if (btnForcePrev) {
-          btnForcePrev.classList.add('hidden');
-          btnForcePrev.disabled = true;
+          if (!gameState.isZbeul) {
+            btnForcePrev.classList.add('hidden');
+            btnForcePrev.disabled = true;
+          } else {
+            const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
+            const isBlockedByMirror = Boolean(gameState.isMirrorChainActive || wasPrecededByMirror);
+            const alreadyUsedRound = Boolean(me && me.hasForcedReroll);
+            const canForce = hasPrevClaim && !alreadyUsedRound && !isBlockedByMirror;
+
+            btnForcePrev.classList.toggle('hidden', !hasPrevClaim || alreadyUsedRound);
+            btnForcePrev.disabled = !canForce;
+            btnForcePrev.className = canForce
+              ? "w-full h-7 rounded border border-amber-600 bg-[#241a0d] hover:bg-[#342411] text-amber-300 font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              : "w-full h-7 rounded border border-[#2b3a2e] bg-[#141b16] text-[#55695a] font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
+
+            if (isBlockedByMirror) {
+              btnForcePrev.title = "Action impossible après un Miroir.";
+            } else if (alreadyUsedRound) {
+              btnForcePrev.title = "Action déjà utilisée cette manche.";
+            }
+          }
         }
+        // Afficher uniquement si le mode Zbeul est activé
         if (btnSelfReroll) {
-          btnSelfReroll.disabled = true;
+          if (!gameState.isZbeul) {
+            btnSelfReroll.classList.add('hidden');
+            btnSelfReroll.disabled = true;
+          } else {
+            btnSelfReroll.classList.remove('hidden');
+            const canReroll = !gameState.quintoRerollUsedThisTurn;
+            btnSelfReroll.disabled = !canReroll;
+            btnSelfReroll.className = canReroll
+              ? "mt-1 w-full h-8 rounded border border-[#8f7734] bg-[#1a241d] hover:bg-[#233127] text-dore font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_8px_rgba(212,175,55,0.25)] active:scale-95"
+              : "mt-1 w-full h-8 rounded border border-[#233026] bg-[#111713] text-[#4f5f53] font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
+          }
         }
       }
     }
