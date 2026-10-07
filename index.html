@@ -1349,7 +1349,7 @@
             handleClientMessage(msg.action, null);
           } else {
             if (msg.type === 'SYNC_STATE') {
-              gameState = msg.state;
+              gameState = normalizeIncomingState(msg.state);
               renderUI();
             } else if (msg.type === 'SYNC_EVENT') {
               handleSyncEvent(msg.event);
@@ -1357,6 +1357,13 @@
           }
         };
       } catch (err) {}
+    }
+
+    function normalizeIncomingState(st) {
+      if (st && typeof st.mistigriRevealedRemaining === 'number') {
+        st.mistigriRevealedUntil = st.mistigriRevealedPlayerId ? Date.now() + st.mistigriRevealedRemaining : 0;
+      }
+      return st;
     }
 
     function buildSanitizedStateFor(recipientPlayerId) {
@@ -1372,6 +1379,15 @@
           clone.players[pId].hand = clone.players[pId].hand.map(c => ({ id: c.id, hidden: true }));
         }
       });
+      // Mode dés : seul le joueur dont c'est le tour connaît ses dés ; la mise annoncée ne les contient jamais
+      const activeIdForDice = gameState.playerOrder[gameState.activePlayerIndex];
+      if (recipientPlayerId !== activeIdForDice) clone.quintoRealDice = null;
+      if (clone.quintoClaim) delete clone.quintoClaim.realDice;
+      if (clone.previousQuintoClaim) delete clone.previousQuintoClaim.realDice;
+
+      // Les horloges des appareils diffèrent : on envoie le temps restant plutôt qu'une heure absolue
+      clone.mistigriRevealedRemaining = Math.max(0, (gameState.mistigriRevealedUntil || 0) - Date.now());
+
       if (clone.status !== 'resolving_bluff' && clone.lastClaim && clone.lastClaim.cardObjects) {
         clone.lastClaim.cardObjects = clone.lastClaim.cardObjects.map(c => ({ id: c.id, hidden: true }));
       }
@@ -1539,6 +1555,16 @@
       }
 
       if (msg.type === 'PLAYER_JOIN') {
+        const joinInProgress = !['lobby', 'auth'].includes(gameState.status);
+        const alreadySeated = Boolean(gameState.players[msg.player.id]);
+        const rejectJoin = (reason) => {
+          if (originConn && originConn.open) {
+            try { originConn.send({ type: 'TOAST', message: reason }); } catch(e) {}
+          }
+        };
+        if (!alreadySeated && joinInProgress) { rejectJoin('Partie déjà en cours : impossible de rejoindre.'); return; }
+        if (!alreadySeated && Object.keys(gameState.players).length >= 4) { rejectJoin('Table complète (max 4).'); return; }
+
         if (originConn) originConn.playerGameId = msg.player.id;
         
         // On enregistre ou met à jour le joueur
@@ -1563,7 +1589,8 @@
           gameState.playerOrder.push(msg.player.id);
         }
 
-        gameState.status = 'lobby';
+        // Un JOIN dupliqué (PeerJS + BroadcastChannel) ne doit jamais renvoyer la table au lobby en pleine partie
+        if (!joinInProgress) gameState.status = 'lobby';
         gameState.feltTicker = `${msg.player.name} s'installe à la table.`;
         
         // Diffusion immédiate à tout le monde (PeerJS + BroadcastChannel)
@@ -1571,6 +1598,8 @@
         showToast(`${msg.player.name} a rejoint la table.`);
         return;
       }
+
+      broadcastState();
 
       if (msg.type === 'TOGGLE_READY') {
         console.log('[HOST] TOGGLE_READY reçu', msg);
@@ -1655,11 +1684,7 @@
       } else if (msg.type === 'DECIDE_PFC') {
         handlePfcDecision(msg.id, msg.usePfc);
       } else if (msg.type === 'PLAYER_LEAVE') {
-        if (gameState.players[msg.id]) {
-          delete gameState.players[msg.id];
-          gameState.playerOrder = gameState.playerOrder.filter(id => id !== msg.id);
-          broadcastState();
-        }
+        handlePlayerDeparture(msg.id);
       } else if (msg.type === 'USE_ITEM_REROLL') {
         const player = gameState.players[msg.id];
         if (player && consumePlayerItem(player, 'reroll')) {
@@ -1691,6 +1716,70 @@
       }else if (msg.type === 'QUINTO_MIRROR') {
         handleQuintoMirror(msg.id);
       }
+    }
+
+    // Départ (volontaire ou coupure réseau) d'un joueur humain
+    function handlePlayerDeparture(id) {
+      if (!isHost) return;
+      const p = gameState.players[id];
+      if (!p || id === myId) return;
+
+      // Lobby / fin de partie : on retire simplement le joueur
+      if (gameState.status === 'lobby' || gameState.status === 'game_ended' || gameState.status === 'auth') {
+        delete gameState.players[id];
+        gameState.playerOrder = gameState.playerOrder.filter(pid => pid !== id);
+        broadcastState();
+        return;
+      }
+
+      if (p.hasLeft) return; // départ déjà traité (message reçu 2 fois)
+
+      const wasActive = gameState.playerOrder[gameState.activePlayerIndex] === id;
+      p.hasLeft = true;
+      p.isAlive = false;
+      p.hand = [];
+      showToast(`${p.name} a quitté la partie.`);
+
+      const living = gameState.playerOrder.filter(pid => gameState.players[pid] && gameState.players[pid].isAlive);
+      if (living.length <= 1) {
+        broadcastEvent({ type: 'CLOSE_DENOUNCE_MODAL' });
+        broadcastEvent({ type: 'ITEM_DRAFT_END' });
+        gameState.status = 'game_ended';
+        broadcastState();
+        return;
+      }
+
+      gameState.feltTicker = `${p.name} a quitté la table.`;
+
+      // Un prompt (totem / PFC) en attente sur le joueur parti : on le débloque
+      if (gameState.immunityPending && gameState.immunityPending.accusedId === id) {
+        handleImmunityDecision(id, false);
+        return;
+      }
+      if (gameState.pfcPromptPending && gameState.pfcPromptPending.accusedId === id) {
+        handlePfcDecision(id, false);
+        return;
+      }
+
+      if (gameState.status === 'item_draft') {
+        broadcastState();
+        checkIfDraftComplete();
+        return;
+      }
+
+      const flowBusy = gameState.immunityPending || gameState.pfcPromptPending || gameState.pfcDuel || gameState.status === 'resolving_bluff';
+      if (wasActive && gameState.status === 'in_round' && !flowBusy) {
+        if (gameState.gameMode === 'skull' || gameState.gameMode === 'mistigri') {
+          // Piles / mains incomplètes : la manche est relancée sans lui
+          broadcastState();
+          setTimeout(() => { if (isHost && gameState.status === 'in_round') startNewRound(); }, 1500);
+        } else {
+          advanceToNextLiving();
+        }
+        return;
+      }
+
+      broadcastState();
     }
 
     function handleMistigriDraw(drawerId, victimId, cardIndex) {
@@ -1901,11 +1990,7 @@
             conn.on('data', (data) => handleClientMessage(data, conn));
             conn.on('close', () => {
               connections = connections.filter(c => c !== conn);
-              if (conn.playerGameId && gameState.players[conn.playerGameId]) {
-                delete gameState.players[conn.playerGameId];
-                gameState.playerOrder = gameState.playerOrder.filter(id => id !== conn.playerGameId);
-                broadcastState();
-              }
+              if (conn.playerGameId) handlePlayerDeparture(conn.playerGameId);
             });
           });
         } catch (e) {
@@ -2002,7 +2087,7 @@
 
             hostConn.on('data', (data) => {
               if (data && data.type === 'SYNC_STATE') {
-                gameState = data.state;
+                gameState = normalizeIncomingState(data.state);
                 renderUI();
               } else if (data && data.type === 'SYNC_EVENT') {
                 handleSyncEvent(data.event);
@@ -2013,6 +2098,17 @@
 
             hostConn.on('close', () => {
               showToast("Déconnecté de l'hôte.");
+              if (!isHost && gameState.status !== 'auth') {
+                closeDenounceModal();
+                closeImmunityPromptModal();
+                closePfcPromptModal();
+                const draftModal = document.getElementById('modal-item-draft');
+                if (draftModal) draftModal.classList.add('hidden');
+                gameState.status = 'auth';
+                gameState.players = {};
+                gameState.playerOrder = [];
+                renderUI();
+              }
             });
 
             hostConn.on('error', (err) => {
@@ -4348,6 +4444,13 @@
        UI RENDERING
        ------------------------------------------------------------- */
     function resetGame() {
+      // Les joueurs partis pendant la partie ne reviennent pas comme fantômes
+      Object.keys(gameState.players).forEach(pid => {
+        if (gameState.players[pid].hasLeft) {
+          delete gameState.players[pid];
+          gameState.playerOrder = gameState.playerOrder.filter(x => x !== pid);
+        }
+      });
       gameState.status = 'lobby';
       gameState.tableCardsCount = 0;
       gameState.lastClaim = null;
@@ -4934,23 +5037,30 @@
       document.getElementById('skull-action-controls').classList.add('flex');
       document.getElementById('quinto-buttons-wrapper')?.classList.add('hidden');
 
+      const btnPlay = document.getElementById('btn-skull-play-card');
+      const btnOpenBid = document.getElementById('btn-skull-open-bid');
+      const bidPanel = document.getElementById('skull-bidding-panel');
+      const revealNotice = document.getElementById('skull-reveal-notice');
+      const skullActionsWrapper = document.getElementById('skull-placement-actions');
+
       const consoleTitle = document.getElementById('hand-console-title');
       if (consoleTitle) consoleTitle.innerText = 'Tes Tuiles';
       const consoleCount = document.getElementById('hand-console-count');
       if (consoleCount) consoleCount.innerText = `(${me && me.hand ? me.hand.length : 0})`;
 
-      // GESTION DU PASSAGE À LA MANCHE SUIVANTE SANS DÉCALER LA MISE EN PAGE
-      let btnNextRound = document.getElementById('btn-skull-next-round');
-      const skullActionsWrapper = document.getElementById('skull-placement-actions');
-      const actionsContainer = skullActionsWrapper?.parentElement;
+      const isMyTurn = gameState.playerOrder[gameState.activePlayerIndex] === myId;
+      const totalTiles = getTotalSkullPlacedTiles();
+      const living = gameState.playerOrder.filter(id => gameState.players[id]?.isAlive);
+      const allPlacedAtLeastOne = living.every(id => (gameState.players[id]?.skullPile?.length || 0) >= 1);
 
+      // Gestion de la fin de manche Skull
+      let btnNextRound = document.getElementById('btn-skull-next-round');
+      const actionsContainer = skullActionsWrapper?.parentElement;
       if (gameState.status === 'skull_round_won') {
         if (!btnNextRound) {
           btnNextRound = document.createElement('button');
           btnNextRound.id = 'btn-skull-next-round';
-          btnNextRound.onclick = () => {
-            sendToHost({ type: 'SKULL_NEXT_ROUND', id: myId });
-          };
+          btnNextRound.onclick = () => sendToHost({ type: 'SKULL_NEXT_ROUND', id: myId });
           if (actionsContainer) actionsContainer.appendChild(btnNextRound);
         }
         btnNextRound.classList.remove('hidden');
@@ -4960,49 +5070,35 @@
           : "w-full h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold cursor-not-allowed flex items-center justify-center";
         btnNextRound.innerText = isHost ? "Passer à la manche suivante" : "En attente de l'hôte...";
         
-        // Masquer les autres actions pour garder la hauteur identique
         document.getElementById('cards-action-controls')?.classList.add('hidden');
         skullActionsWrapper?.classList.add('hidden');
-        document.getElementById('skull-bidding-panel')?.classList.add('hidden');
-        document.getElementById('skull-reveal-notice')?.classList.add('hidden');
+        bidPanel?.classList.add('hidden');
+        revealNotice?.classList.add('hidden');
+        return;
       } else if (btnNextRound) {
         btnNextRound.classList.add('hidden');
       }
 
-      // Si le joueur n'a plus de tuiles en main, il DOIT ouvrir les enchères
-      const hasNoMoreTiles = (!me.hand || me.hand.length === 0);
-      if (hasNoMoreTiles && isMyTurn && gameState.skullPhase === 'placement') {
-        btnPlay.disabled = true;
-        btnOpenBid.disabled = false;
-        btnOpenBid.classList.add('animate-bounce'); // incitation visuelle
-      }
-
+      // Rendu des tuiles en main
       const container = document.getElementById('skull-hand-tiles');
       container.innerHTML = '';
       if (!me || !me.isAlive) return;
-
-      const isMyTurn = gameState.playerOrder[gameState.activePlayerIndex] === myId;
-      const totalTiles = getTotalSkullPlacedTiles();
-      const living = gameState.playerOrder.filter(id => gameState.players[id]?.isAlive);
-      const allPlacedAtLeastOne = living.every(id => gameState.players[id]?.skullPile?.length >= 1);
 
       (me.hand || []).forEach(tile => {
         const isSel = selectedSkullTileId === tile.id;
         const isSkull = tile.type === 'skull';
         const btn = document.createElement('button');
-        
+        btn.type = 'button';
         btn.className = `w-14 h-20 rounded-xl border-2 flex flex-col items-center justify-between p-2 transition-all shadow-lg ${
           isSel 
             ? 'border-dore bg-white scale-105 shadow-[0_0_15px_rgba(212,175,55,0.7)] -translate-y-2' 
             : 'border-[#d2cbbe] bg-[#faf8f5] hover:border-dore hover:-translate-y-1'
         }`;
-        
         btn.innerHTML = `
           <i class="fa-solid ${tile.icon} text-lg mt-0.5"></i>
           <span class="text-[9px] font-mono font-bold uppercase tracking-wider ${isSkull ? 'text-rose-800' : 'text-emerald-800'}">${tile.name}</span>
           <span class="text-[8px] font-mono font-bold text-stone-400">SKULL</span>
         `;
-        
         btn.onclick = () => {
           if (isMyTurn && gameState.skullPhase === 'placement') {
             selectedSkullTileId = (selectedSkullTileId === tile.id) ? null : tile.id;
@@ -5012,44 +5108,39 @@
         container.appendChild(btn);
       });
 
-      const btnPlay = document.getElementById('btn-skull-play-card');
-      const btnOpenBid = document.getElementById('btn-skull-open-bid');
-      const bidPanel = document.getElementById('skull-bidding-panel');
-      const revealNotice = document.getElementById('skull-reveal-notice');
-
+      // Phases d'actions
       if (gameState.skullPhase === 'placement') {
         bidPanel.classList.add('hidden');
         revealNotice.classList.add('hidden');
-        document.getElementById('skull-placement-actions').classList.remove('hidden');
+        skullActionsWrapper.classList.remove('hidden');
 
-        btnPlay.disabled = !isMyTurn || !selectedSkullTileId;
-        btnPlay.className = (!isMyTurn || !selectedSkullTileId)
-          ? "py-2.5 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all cursor-not-allowed"
-          : "py-2.5 rounded-lg border border-dore bg-[#243828] hover:bg-[#2d4833] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer";
+        const hasNoMoreTiles = (!me.hand || me.hand.length === 0);
+        const canPlayTile = isMyTurn && Boolean(selectedSkullTileId) && !hasNoMoreTiles;
 
-        const canOpenBid = isMyTurn && allPlacedAtLeastOne && totalTiles >= 1;
+        btnPlay.disabled = !canPlayTile;
+        btnPlay.className = !canPlayTile
+          ? "h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed"
+          : "h-9 rounded-lg border border-dore bg-[#243828] hover:bg-[#2d4833] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer flex items-center justify-center gap-1.5";
+
+        const canOpenBid = isMyTurn && (hasNoMoreTiles || (allPlacedAtLeastOne && totalTiles >= 1));
         btnOpenBid.disabled = !canOpenBid;
         btnOpenBid.className = !canOpenBid
-          ? "py-2.5 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all cursor-not-allowed"
-          : "py-2.5 rounded-lg border border-dore bg-[#243828] hover:bg-[#2d4833] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer";
-      } else if (gameState.skullPhase === 'bidding') {
-        if (skullActionsWrapper) skullActionsWrapper.classList.add('hidden');
-        if (revealNotice) revealNotice.classList.add('hidden');
+          ? "h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed"
+          : "h-9 rounded-lg border border-dore bg-[#243828] hover:bg-[#2d4833] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer flex items-center justify-center gap-1.5";
 
-        const hasPassed = gameState.skullPassers.includes(myId);
+      } else if (gameState.skullPhase === 'bidding') {
+        skullActionsWrapper.classList.add('hidden');
+        revealNotice.classList.add('hidden');
+
+        const hasPassed = (gameState.skullPassers || []).includes(myId);
         if (isMyTurn && !hasPassed) {
           bidPanel.classList.remove('hidden');
           bidPanel.classList.add('flex');
-          
           const minBid = Math.min(totalTiles, (gameState.skullHighBid || 0) + 1);
-          const lbl = document.getElementById('skull-min-bid-lbl');
-          if (lbl) lbl.innerText = minBid;
-          
           const input = document.getElementById('input-skull-bid');
           if (input) {
             input.min = minBid;
             input.max = totalTiles;
-            // Pré-remplissage systématique à +1 (modifiable librement par le joueur)
             input.value = minBid;
           }
         } else {
@@ -5594,6 +5685,12 @@
       if (peer) {
         try { peer.destroy(); } catch(e) {}
       }
+      peer = null;
+      hostConn = null;
+      connections = [];
+      isHost = true;
+      gameState.players = {};
+      gameState.playerOrder = [];
       gameState.status = 'auth';
       showScreen('screen-auth');
     });
