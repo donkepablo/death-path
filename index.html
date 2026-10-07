@@ -5612,27 +5612,36 @@
           }
 
           if (btnForcePrev) {
-            // STRICTEMENT RÉSERVÉ AU MODE ZBEUL ET UNIQUEMENT QUAND C'EST TON TOUR
-            if (!gameState.isZbeul || !isMyTurn) {
-              btnForcePrev.classList.add('hidden');
-              btnForcePrev.disabled = true;
+            const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
+            const isBlockedByMirror = Boolean(gameState.isMirrorChainActive || wasPrecededByMirror);
+            const alreadyUsedRound = Boolean(me && me.hasForcedReroll);
+            
+            // CONDITION ABSOLUE : Mode Zbeul actif + C'est mon tour + Je n'ai pas encore secoué + Il y a une annonce précédente + Non bloqué par miroir/utilisation
+            const canForce = Boolean(
+              gameState.isZbeul &&
+              isMyTurn &&
+              !gameState.quintoHasRolled &&
+              hasPrevClaim &&
+              !alreadyUsedRound &&
+              !isBlockedByMirror
+            );
+
+            // Masquer complètement si ce n'est pas mon tour ou si le mode Zbeul est désactivé, ou s'il n'y a pas d'annonce précédente
+            const shouldHide = !gameState.isZbeul || !isMyTurn || !hasPrevClaim || alreadyUsedRound;
+
+            btnForcePrev.classList.toggle('hidden', shouldHide);
+            btnForcePrev.disabled = !canForce;
+            
+            btnForcePrev.className = canForce
+              ? "w-full h-7 rounded border border-amber-600 bg-[#241a0d] hover:bg-[#342411] text-amber-300 font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              : "w-full h-7 rounded border border-[#2b3a2e] bg-[#141b16] text-[#55695a] font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
+
+            if (isBlockedByMirror) {
+              btnForcePrev.title = "Action impossible après un Miroir.";
+            } else if (alreadyUsedRound) {
+              btnForcePrev.title = "Action déjà utilisée cette manche.";
             } else {
-              const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
-              const isBlockedByMirror = Boolean(gameState.isMirrorChainActive || wasPrecededByMirror);
-              const alreadyUsedRound = Boolean(me && me.hasForcedReroll);
-              const canForce = hasPrevClaim && !alreadyUsedRound && !isBlockedByMirror && isMyTurn;
-
-              btnForcePrev.classList.toggle('hidden', !hasPrevClaim || alreadyUsedRound);
-              btnForcePrev.disabled = !canForce;
-              btnForcePrev.className = canForce
-                ? "w-full h-7 rounded border border-amber-600 bg-[#241a0d] hover:bg-[#342411] text-amber-300 font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                : "w-full h-7 rounded border border-[#2b3a2e] bg-[#141b16] text-[#55695a] font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
-
-              if (isBlockedByMirror) {
-                btnForcePrev.title = "Action impossible après un Miroir.";
-              } else if (alreadyUsedRound) {
-                btnForcePrev.title = "Action déjà utilisée cette manche.";
-              }
+              btnForcePrev.title = "";
             }
           }
         } else {
