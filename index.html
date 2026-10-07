@@ -592,7 +592,7 @@
           <div id="my-hand-container" class="w-full h-full flex gap-1.5 sm:gap-2.5 justify-center items-start pt-2 overflow-visible"></div>
 
           <!-- Console Dés Quinto (uniquement l'affichage du tirage, bien haut et centré) -->
-          <div id="quinto-action-controls" class="hidden w-full max-w-xs h-full flex items-center justify-center -translate-y-2">
+          <div id="quinto-action-controls" class="hidden w-full max-w-xs h-full items-center justify-center">
             <div id="quinto-my-dice-view" class="hidden items-center gap-2.5 bg-[#0d120f]/95 px-3.5 py-1.5 rounded-lg border border-[#2b3a2e] shadow-inner">
               <span class="text-[10px] uppercase tracking-wider font-mono text-[#7f9284]">Ton tirage :</span>
               <div id="quinto-dice-pair" class="flex gap-1.5"></div>
@@ -1393,18 +1393,22 @@
             c.revealed ? c : { id: c.id, hidden: true }
           );
         }
-        // Masquer les cartes en main des adversaires tout en conservant le nombre de cartes
+        // Masquer les cartes en main des adversaires
         if (pId !== recipientPlayerId && clone.players[pId].hand) {
           clone.players[pId].hand = clone.players[pId].hand.map(c => ({ id: c.id, hidden: true }));
         }
       });
-      // Mode dés : seul le joueur dont c'est le tour connaît ses dés ; la mise annoncée ne les contient jamais
+
+      // Mode DÉS : seuls les adversaires voient les dés masqués.
+      // Le joueur actif (qu'il soit hôte ou client) doit OBLIGATOIREMENT recevoir ses dés réels.
       const activeIdForDice = gameState.playerOrder[gameState.activePlayerIndex];
-      if (recipientPlayerId !== activeIdForDice) clone.quintoRealDice = null;
+      if (recipientPlayerId && recipientPlayerId !== activeIdForDice) {
+        clone.quintoRealDice = null;
+      }
+
       if (clone.quintoClaim) delete clone.quintoClaim.realDice;
       if (clone.previousQuintoClaim) delete clone.previousQuintoClaim.realDice;
 
-      // Les horloges des appareils diffèrent : on envoie le temps restant plutôt qu'une heure absolue
       clone.mistigriRevealedRemaining = Math.max(0, (gameState.mistigriRevealedUntil || 0) - Date.now());
 
       if (clone.status !== 'resolving_bluff' && clone.lastClaim && clone.lastClaim.cardObjects) {
@@ -5473,7 +5477,7 @@
       document.getElementById('skull-bidding-panel')?.classList.add('hidden');
       document.getElementById('skull-reveal-notice')?.classList.add('hidden');
 
-      // 1. Déverrouillage impératif du conteneur haut des dés
+      // 1. Déverrouillage des panneaux dés
       const qActionControls = document.getElementById('quinto-action-controls');
       if (qActionControls) {
         qActionControls.classList.remove('hidden');
@@ -5481,7 +5485,6 @@
         qActionControls.style.setProperty('display', 'flex', 'important');
       }
 
-      // 2. Déverrouillage des boutons du bas
       const qBtns = document.getElementById('quinto-buttons-wrapper');
       if (qBtns) {
         qBtns.classList.remove('hidden');
@@ -5504,16 +5507,15 @@
       const dicePairEl = document.getElementById('quinto-dice-pair');
       const realValTag = document.getElementById('quinto-real-val-tag');
 
-      // 3. Affichage du tirage dès que le joueur actif possède des dés
-      const hasDiceToDisplay = Boolean(
-        me?.isAlive &&
+      // 2. CONDITION STRICTE : Visible UNIQUEMENT si c'est mon tour ET que j'ai RÉELLEMENT secoué les dés
+      const hasRolledDiceNow = Boolean(
         isMyTurn &&
-        gameState.quintoRealDice &&
+        gameState.quintoHasRolled === true &&
         Array.isArray(gameState.quintoRealDice) &&
         gameState.quintoRealDice.length === 2
       );
 
-      if (hasDiceToDisplay) {
+      if (hasRolledDiceNow) {
         if (myDiceView) {
           myDiceView.classList.remove('hidden');
           myDiceView.style.removeProperty('display');
