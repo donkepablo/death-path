@@ -384,15 +384,17 @@
     </section>
 
     <!-- SCREEN 3: GAME -->
-    <section id="screen-game" class="screen-view entering hidden w-full h-full flex flex-col justify-between items-center relative overflow-hidden">
-      <div class="w-full max-w-4xl flex items-center justify-between px-3 py-1.5 z-20 bg-[#141a16]/90 backdrop-blur-sm border-b border-[#243327] rounded-b-lg flex-shrink-0">
+    <section id="screen-game" class="screen-view entering hidden w-full h-full flex flex-col justify-between items-center relative overflow-hidden select-none">
+      
+      <!-- HEADER TABLE : HAUTEUR STRICTEMENT FIGÉE (h-10) -->
+      <div class="w-full max-w-4xl h-10 flex items-center justify-between px-3 z-20 bg-[#141a16]/90 backdrop-blur-sm border-b border-[#243327] rounded-b-lg flex-shrink-0">
         <div class="flex items-center gap-2">
-          <div id="game-target-badge" class="flex flex-col justify-center px-2.5 py-1 rounded border border-[#465b4c] bg-[#101411] font-title text-xs font-bold text-dore shadow leading-tight">
+          <div id="game-target-badge" class="flex flex-col justify-center px-2.5 py-0.5 rounded border border-[#465b4c] bg-[#101411] font-title text-xs font-bold text-dore shadow leading-tight">
             <span id="game-target-title">TIRAGE EN COURS...</span>
           </div>
         </div>
 
-        <div id="game-action-ticker" class="absolute left-1/2 -translate-x-1/2 text-xs font-mono text-[#dbe3dc] truncate max-w-[320px] sm:max-w-lg md:max-w-xl text-center pointer-events-none select-none">
+        <div id="game-action-ticker" class="absolute left-1/2 -translate-x-1/2 text-xs font-mono text-[#dbe3dc] truncate max-w-[300px] sm:max-w-md text-center pointer-events-none">
           Silence à la table.
         </div>
 
@@ -402,11 +404,12 @@
         </div>
       </div>
 
-      <div class="relative w-full flex-1 max-w-5xl flex items-center justify-center my-auto px-2 sm:px-4 py-1.5">
-        <div class="table-wood-rim w-full h-[62vh] sm:h-[65vh] max-h-[460px] p-2 sm:p-3 flex items-center justify-center">
+      <!-- CENTRE : LE TAPIS DE JEU RESTE DANS UNE ZONE FIGÉE SANS EXPANSION -->
+      <div class="relative w-full flex-1 max-w-5xl flex items-center justify-center px-2 sm:px-4 py-1 min-h-0 overflow-hidden">
+        <div class="table-wood-rim w-full h-full max-h-[460px] p-2 sm:p-3 flex items-center justify-center flex-shrink-0">
           <div class="table-brass-rim w-full h-full flex items-center justify-center">
             <div id="poker-felt" class="table-felt w-full h-full flex flex-col items-center justify-between p-3 relative overflow-hidden">
-              <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04] font-title text-8xl text-white select-none">
+              <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04] font-title text-8xl text-white">
                 ♠
               </div>
 
@@ -417,7 +420,6 @@
                 <div id="seat-left" class="vip-seat flex flex-col items-center"></div>
                 <div id="seat-right" class="vip-seat flex flex-col items-center"></div>
               </div>
-
               <!-- CENTRE DU FEUTRE -->
               <div id="table-felt-center" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10 flex flex-col items-center justify-center">
                 <div id="center-cards-display" class="relative w-20 h-28 sm:w-24 sm:h-32 flex items-center justify-center">
@@ -557,9 +559,11 @@
         </div>
       </div>
 
-      <!-- HAND / DICE CONSOLE -->
-      <div class="w-full bg-[#141a16]/95 border-t border-[#243327] px-4 pt-2 pb-4 min-h-[170px] flex flex-col items-center justify-start gap-1.5 z-30 shadow-2xl flex-shrink-0">        
-        <div class="w-full max-w-2xl flex items-center justify-between text-xs font-mono">
+      <!-- HAND / DICE CONSOLE : HAUTEUR TOTALEMENT FIXE, ZÉRO SOUBRESAUT -->
+      <div class="w-full h-[185px] max-h-[185px] bg-[#141a16]/95 border-t border-[#243327] px-4 py-2 flex flex-col items-center justify-between z-30 shadow-2xl flex-shrink-0 overflow-hidden">        
+        
+        <!-- BARRE TITRE & BARILLET (h-5 fixe) -->
+        <div class="w-full max-w-2xl h-5 flex items-center justify-between text-xs font-mono flex-shrink-0">
           <div class="flex items-center gap-2">
             <span id="hand-console-title" class="text-dore font-title text-[11px] font-bold uppercase tracking-wider">Ta main</span>
             <span id="hand-console-count" class="text-[#7f9284]">(<span id="my-card-count">0</span>)</span>
@@ -571,119 +575,118 @@
           </div>
         </div>
 
-        <!-- BARRE D'INVENTAIRE MULTI-ITEMS (ZBEUL) -->
-        <div id="my-inventory-bar" class="hidden w-full max-w-2xl items-center justify-between bg-[#0c100e]/90 border border-[#233126] rounded-lg px-2.5 py-1 text-xs font-mono">
-          <div class="flex items-center gap-2 overflow-x-auto py-0.5">
-            <span class="text-dore flex items-center gap-1 flex-shrink-0 text-sm" title="Inventaire">
-              <i class="fa-solid fa-briefcase"></i>
-              <span id="inventory-count-tag" class="text-[10px] font-bold text-stone-300">0</span>
-            </span>
-            <div class="h-3.5 w-px bg-[#233126] mx-0.5 flex-shrink-0"></div>
-            <div id="my-inventory-items-container" class="flex items-center gap-1.5 overflow-x-auto py-0.5"></div>
-          </div>
-          <span id="inventory-usage-state" class="text-[9px] font-mono text-[#8a9b8e] whitespace-nowrap pl-2 flex-shrink-0">1 seul item utilisable par tour</span>
-        </div>
-
-        <!-- INTERFACE CARTES -->
-        <div id="my-hand-container" class="w-full max-w-2xl flex gap-1.5 sm:gap-2.5 justify-center items-center py-1 overflow-visible min-h-[120px]"></div>
-
-        <div id="cards-action-controls" class="w-full max-w-xs grid grid-cols-2 gap-2 pb-0.5">
-          <button id="btn-play-selection" disabled class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-hand"></i>
-            <span id="btn-play-label">Poser (0)</span>
-          </button>
-          <button id="btn-call-bluff" disabled class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-bullhorn"></i>
-            <span>Menteur !</span>
-          </button>
-        </div>
-
-        <!-- INTERFACE DÉS (QUINTO) -->
-        <div id="quinto-action-controls" class="hidden w-full max-w-xs flex-col items-center p-0 my-auto gap-2.5">          
-          <div id="quinto-my-dice-view" class="hidden items-center gap-2.5 bg-[#0d120f]/90 px-3.5 py-1.5 rounded-lg border border-[#2b3a2e] shadow-inner">
-            <span class="text-[10px] uppercase tracking-wider font-mono text-[#7f9284]">Ton tirage :</span>
-            <div id="quinto-dice-pair" class="flex gap-1.5"></div>
-            <span id="quinto-real-val-tag" class="text-xs font-mono font-bold text-dore"></span>
+        <!-- ZONE CENTRALE DE LA CONSOLE : HAUTEUR FIXÉE À 100px -->
+        <div class="w-full max-w-2xl h-[100px] flex items-center justify-center flex-shrink-0 relative">
+          <!-- Inventaire Zbeul (positionné sans déplacer les cartes) -->
+          <div id="my-inventory-bar" class="hidden absolute -top-5 left-0 right-0 items-center justify-between bg-[#0c100e]/90 border border-[#233126] rounded px-2 py-0.5 text-[10px] font-mono z-20">
+            <div class="flex items-center gap-1.5 overflow-x-auto py-0.5">
+              <span class="text-dore flex items-center gap-1 flex-shrink-0" title="Inventaire">
+                <i class="fa-solid fa-briefcase"></i>
+                <span id="inventory-count-tag" class="text-[9px] font-bold text-stone-300">0</span>
+              </span>
+              <div class="h-3 w-px bg-[#233126] mx-0.5 flex-shrink-0"></div>
+              <div id="my-inventory-items-container" class="flex items-center gap-1 overflow-x-auto py-0.5"></div>
+            </div>
+            <span id="inventory-usage-state" class="text-[8px] font-mono text-[#8a9b8e] whitespace-nowrap pl-2 flex-shrink-0">1 seul item par tour</span>
           </div>
 
-          <div id="quinto-step-roll" class="w-full grid grid-cols-2 gap-2">
-            <button id="btn-quinto-roll" disabled class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
-              <i class="fa-solid fa-dice text-sm"></i>
-              <span>Secouer</span>
+          <!-- Main Cartes classique -->
+          <div id="my-hand-container" class="w-full h-full flex gap-1.5 sm:gap-2.5 justify-center items-center overflow-visible"></div>
+
+          <!-- Console Dés Quinto -->
+          <div id="quinto-action-controls" class="hidden w-full max-w-xs h-full flex-col items-center justify-center gap-1.5">
+            <div id="quinto-my-dice-view" class="hidden items-center gap-2.5 bg-[#0d120f]/90 px-3.5 py-1 rounded-lg border border-[#2b3a2e] shadow-inner">
+              <span class="text-[10px] uppercase tracking-wider font-mono text-[#7f9284]">Ton tirage :</span>
+              <div id="quinto-dice-pair" class="flex gap-1.5"></div>
+              <span id="quinto-real-val-tag" class="text-xs font-mono font-bold text-dore"></span>
+            </div>
+
+            <div id="quinto-step-roll" class="w-full grid grid-cols-2 gap-2">
+              <button id="btn-quinto-roll" disabled class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-dice text-sm"></i>
+                <span>Secouer</span>
+              </button>
+              <button id="btn-quinto-bluff-early" disabled class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-bullhorn text-sm"></i>
+                <span>Menteur !</span>
+              </button>
+            </div>
+
+            <div id="quinto-step-choice" class="hidden w-full flex-col gap-1.5">
+              <div class="w-full grid grid-cols-2 gap-2">
+                <button id="btn-quinto-truth" class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-check text-xs"></i>
+                  <span>Vérité</span>
+                </button>
+                <button id="btn-quinto-lie" class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-mask text-xs"></i>
+                  <span>Mentir</span>
+                </button>
+              </div>
+
+              <div id="quinto-lie-input-panel" class="hidden flex-col gap-1 p-1.5 rounded-lg bg-[#0d120f] border border-[#2b3a2e] shadow-lg">
+                <span class="text-[9px] font-mono uppercase tracking-wider text-[#8a9d8f] px-0.5">Annonce supérieure :</span>
+                <div class="flex gap-1.5 items-center">
+                  <select id="select-quinto-claim" class="flex-1 h-7 bg-[#162018] border border-[#2b3a2e] focus:border-dore text-dore font-mono font-bold text-xs rounded px-2 focus:outline-none"></select>
+                  <button id="btn-submit-lie" class="h-7 px-3 rounded border border-dore bg-[#273a2c] hover:bg-[#334c3a] text-[#f7f6f2] font-title text-xs uppercase font-bold tracking-wider transition-all active:scale-95 shadow">
+                    Valider
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Console Skull -->
+          <div id="skull-action-controls" class="hidden w-full max-w-md h-full flex-col items-center justify-center gap-1">
+            <div id="skull-hand-tiles" class="flex gap-2 justify-center items-center"></div>
+          </div>
+        </div>
+
+        <!-- ZONE INFÉRIEURE : BOUTONS D'ACTIONS (HAUTEUR STRICTEMENT FIGÉE À 42px) -->
+        <div class="w-full max-w-xs h-[42px] flex items-center justify-center flex-shrink-0">
+          
+          <!-- Actions Cartes -->
+          <div id="cards-action-controls" class="w-full grid grid-cols-2 gap-2">
+            <button id="btn-play-selection" disabled class="h-9 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-hand"></i>
+              <span id="btn-play-label">Poser (0)</span>
             </button>
-            <button id="btn-quinto-bluff-early" disabled class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
-              <i class="fa-solid fa-bullhorn text-sm"></i>
+            <button id="btn-call-bluff" disabled class="h-9 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-bullhorn"></i>
               <span>Menteur !</span>
             </button>
           </div>
 
-          <div id="quinto-step-choice" class="hidden w-full flex-col gap-2.5">
-            <div class="w-full grid grid-cols-2 gap-2">
-              <button id="btn-quinto-truth" class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-check text-xs"></i>
-                <span>Vérité</span>
-              </button>
-              <button id="btn-quinto-lie" class="py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-mask text-xs"></i>
-                <span>Mentir</span>
-              </button>
-            </div>
+          <!-- Actions Skull -->
+          <div id="skull-placement-actions" class="hidden w-full grid grid-cols-2 gap-2">
+            <button id="btn-skull-play-card" disabled class="h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed">
+              <i class="fa-solid fa-hand"></i>
+              <span>Poser Tuile</span>
+            </button>
+            <button id="btn-skull-open-bid" disabled class="h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed">
+              <i class="fa-solid fa-fire"></i>
+              <span>Lancer Défi</span>
+            </button>
+          </div>
 
-            <!-- Panneau de sélection du mensonge -->
-            <div id="quinto-lie-input-panel" class="hidden flex-col gap-1.5 p-2 rounded-lg bg-[#0d120f] border border-[#2b3a2e] shadow-lg">
-              <span class="text-[9px] font-mono uppercase tracking-wider text-[#8a9d8f] px-0.5">Annonce supérieure :</span>
-              <div class="flex gap-1.5 items-center">
-                <select id="select-quinto-claim" class="flex-1 h-8 bg-[#162018] border border-[#2b3a2e] focus:border-dore text-dore font-mono font-bold text-xs rounded px-2 focus:outline-none">
-                </select>
-                <button id="btn-submit-lie" class="h-8 px-3 rounded border border-dore bg-[#273a2c] hover:bg-[#334c3a] text-[#f7f6f2] font-title text-xs uppercase font-bold tracking-wider transition-all active:scale-95 shadow">
-                  Valider
-                </button>
-              </div>
-            </div>
+          <!-- Panel Enchères Skull -->
+          <div id="skull-bidding-panel" class="hidden w-full items-center gap-1.5 p-1 rounded-lg bg-[#0e1410] border border-[#304435] h-9">
+            <input id="input-skull-bid" type="number" min="1" max="16" class="w-14 h-7 bg-[#162018] border border-[#3b4e40] text-dore font-mono font-bold text-center rounded text-xs focus:outline-none focus:border-dore" />
+            <button id="btn-skull-submit-bid" class="flex-1 h-7 rounded bg-[#253d2c] hover:bg-[#32523b] border border-dore text-dore font-title text-[11px] uppercase font-bold tracking-wider active:scale-95 transition-all">
+              Surenchérir
+            </button>
+            <button id="btn-skull-pass-bid" class="px-2 h-7 rounded bg-[#1c221e] hover:bg-stone-800 border border-stone-700 text-stone-300 font-title text-[11px] uppercase font-bold tracking-wider active:scale-95 transition-all">
+              Passer
+            </button>
+          </div>
+
+          <!-- Notice Révélation Skull -->
+          <div id="skull-reveal-notice" class="hidden text-center text-xs font-mono text-dore">
+            Clique sur une carte pour la révéler
           </div>
         </div>
 
-        <!-- INTERFACE SKULL -->
-        <div id="skull-action-controls" class="hidden w-full max-w-md flex-col items-center p-0 my-auto gap-2">
-          <!-- Tuiles en main -->
-          <div id="skull-hand-tiles" class="flex gap-2 justify-center items-center py-1"></div>
-
-          <!-- Boutons d'action Skull -->
-          <div class="w-full flex flex-col gap-1.5">
-            <div id="skull-placement-actions" class="w-full grid grid-cols-2 gap-2">
-              <button id="btn-skull-play-card" disabled class="py-2.5 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed">
-                <i class="fa-solid fa-hand"></i>
-                <span>Poser Tuile</span>
-              </button>
-              <button id="btn-skull-open-bid" disabled class="py-2.5 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed">
-                <i class="fa-solid fa-fire"></i>
-                <span>Lancer Défi</span>
-              </button>
-            </div>
-
-            <!-- Panel Surenchère -->
-            <div id="skull-bidding-panel" class="hidden flex-col gap-1.5 p-2 rounded-lg bg-[#0e1410] border border-[#304435]">
-              <div class="flex items-center justify-between text-[10px] font-mono text-[#8a9d8f]">
-                <span>Ton enchère (min: <strong id="skull-min-bid-lbl" class="text-dore">1</strong>) :</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <input id="input-skull-bid" type="number" min="1" max="16" class="w-20 h-9 bg-[#162018] border border-[#3b4e40] text-dore font-mono font-bold text-center rounded focus:outline-none focus:border-dore" />
-                <button id="btn-skull-submit-bid" class="flex-1 h-9 rounded bg-[#253d2c] hover:bg-[#32523b] border border-dore text-dore font-title text-xs uppercase font-bold tracking-wider active:scale-95 transition-all">
-                  Surenchérir
-                </button>
-                <button id="btn-skull-pass-bid" class="px-3 h-9 rounded bg-[#1c221e] hover:bg-stone-800 border border-stone-700 text-stone-300 font-title text-xs uppercase font-bold tracking-wider active:scale-95 transition-all">
-                  Passer
-                </button>
-              </div>
-            </div>
-
-            <!-- Guide Révélation -->
-            <div id="skull-reveal-notice" class="hidden text-center text-xs font-mono text-dore animate-pulse">
-              Clique sur les disques pour les retourner !
-            </div>
-          </div>
-        </div>
-
+      </div>
     </section>
 
     <!-- SCREEN 4: GAME OVER -->
@@ -1171,7 +1174,6 @@
     function purgePlayerPairs(player) {
       if (!player || !Array.isArray(player.hand)) return 0;
 
-      // On regroupe par Clé = Valeur + Teinte (ex: "5_black", "5_red")
       const groups = {};
 
       player.hand.forEach(c => {
@@ -1188,12 +1190,10 @@
       const retained = [];
       let pairsRemoved = 0;
 
-      // Si on a 2 cartes de même couleur et même rang (ex: 5♠ et 5♣), elles forment une paire
       Object.keys(groups).forEach(key => {
         const list = groups[key];
         if (list.length >= 2) {
           pairsRemoved++;
-          // S'il y avait un doublon imprévu (3 cartes), on garde la carte restante
           if (list.length > 2) {
             retained.push(...list.slice(2));
           }
@@ -1202,12 +1202,18 @@
         }
       });
 
-      // On conserve le Mistigri
+      // Réinsérer le Mistigri
       player.hand.forEach(c => {
         if (c.isMistigri || c.rank === 'M') {
           retained.push(c);
         }
       });
+
+      // MÉLANGE ALÉATOIRE de la main pour que le Mistigri ne reste pas à droite
+      for (let i = retained.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [retained[i], retained[j]] = [retained[j], retained[i]];
+      }
 
       player.hand = retained;
       return pairsRemoved;
@@ -1453,9 +1459,6 @@
       else if (evt.type === 'SKULL_REVEAL_ANIM') {
         animateSkullRevealVisual(evt.revealerName, evt.targetPlayerId, evt.tile);
       }
-      else if (evt.type === 'SKULL_TILE_THROWN_ANIM') {
-        throwSkullTileVisualEffect(evt.playerId);
-      }
     }
 
     let _msgCounter = 0;
@@ -1633,6 +1636,10 @@
       }
       else if (msg.type === 'MISTIGRI_DRAW') {
         handleMistigriDraw(msg.id, msg.victimId, msg.cardIndex);
+      } else if (msg.type === 'SKULL_NEXT_ROUND') {
+        if (isHost && gameState.status === 'skull_round_won') {
+          startNewRound();
+        }
       }
     }
 
@@ -1652,14 +1659,31 @@
         return;
       }
 
-      // 1. Extraction sécurisée de la carte
+      // 1. Extraction de la carte
       const validIndex = Math.max(0, Math.min(victim.hand.length - 1, cardIndex));
       const stolenCard = victim.hand.splice(validIndex, 1)[0];
       if (!stolenCard) return;
 
       drawer.hand.push(stolenCard);
 
-      // 2. Animations et sons
+      // Mélange immédiat de la main du voleur et de la victime
+      if (drawer.hand.length > 1) {
+        for (let i = drawer.hand.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [drawer.hand[i], drawer.hand[j]] = [drawer.hand[j], drawer.hand[i]];
+        }
+      }
+      if (victim.hand.length > 1) {
+        for (let i = victim.hand.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [victim.hand[i], victim.hand[j]] = [victim.hand[j], victim.hand[i]];
+        }
+      }
+
+      // 2. Défausse IMMÉDIATE de la paire sur le coup
+      const pairsRemoved = purgePlayerPairs(drawer);
+
+      // 3. Audio & animation de vol
       audio.cardSlide();
       broadcastEvent({
         type: 'MISTIGRI_STEAL_ANIM',
@@ -1669,36 +1693,23 @@
       });
       animateMistigriDrawVisual(victimId, drawerId, stolenCard.isMistigri);
 
-      // 3. Mélange du paquet de la victime
-      if (victim.hand.length > 1) {
-        for (let i = victim.hand.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [victim.hand[i], victim.hand[j]] = [victim.hand[j], victim.hand[i]];
-        }
+      // 4. Message et sons adaptés
+      if (pairsRemoved > 0) {
+        audio.chip();
+        showToast(`Paire de ${stolenCard.rank} défaussée.`);
+        gameState.feltTicker = `${drawer.name} pioche et défausse aussitôt une paire de ${stolenCard.rank}.`;
+      } else {
+        gameState.feltTicker = `${drawer.name} a pris une carte à ${victim.name}.`;
       }
 
-      // 4. Mise à jour immédiate de l'affichage pour voir la carte arriver
+      if (victim.hand.length === 0) showToast(`${victim.name} s'est sauvé !`);
+      if (drawer.hand.length === 0) showToast(`${drawer.name} s'est sauvé !`);
+
+      // 5. Mise à jour instantanée de l'affichage sur tous les écrans
       broadcastState();
 
-      // 5. Résolution après temporisation (pour voir la carte)
+      // 6. Temporisation uniquement pour laisser le temps de voir l'animation avant de changer de tour
       setTimeout(() => {
-        const pairsRemoved = purgePlayerPairs(drawer);
-        if (pairsRemoved > 0) {
-          audio.chip();
-          showToast(`Paire de ${stolenCard.rank} défaussée !`);
-          gameState.feltTicker = `${drawer.name} forme une paire de ${stolenCard.rank}.`;
-        } else {
-          gameState.feltTicker = `${drawer.name} a pris une carte à ${victim.name}.`;
-        }
-
-        if (victim.hand.length === 0) {
-          showToast(`${victim.name} s'est sauvé !`);
-        }
-        if (drawer.hand.length === 0) {
-          showToast(`${drawer.name} s'est sauvé !`);
-        }
-
-        // 6. Vérifier la fin de manche (il ne reste qu'un seul joueur avec des cartes)
         const livingWithCards = gameState.playerOrder.filter(id => {
           const p = gameState.players[id];
           return p && p.isAlive && Array.isArray(p.hand) && p.hand.length > 0;
@@ -1997,12 +2008,7 @@
       const tile = player.hand.splice(idx, 1)[0];
       player.skullPile.push(tile);
 
-      // Déclenchement local et diffusion multijoueur
-      broadcastEvent({
-        type: 'SKULL_TILE_THROWN_ANIM',
-        playerId: playerId
-      });
-      throwSkullTileVisualEffect(playerId);
+      audio.cardSlide(); // Son immédiat sans animation volante
 
       gameState.feltTicker = `${player.name} a posé une tuile face cachée.`;
       advanceSkullPlacementTurn();
@@ -2031,7 +2037,14 @@
       if (!isHost || gameState.status !== 'in_round') return;
       const val = parseInt(bidValue, 10);
       const totalTiles = getTotalSkullPlacedTiles();
-      if (isNaN(val) || val <= gameState.skullHighBid || val > totalTiles) return;
+
+      if (isNaN(val) || val <= gameState.skullHighBid) return;
+
+      // Interdiction stricte de surenchérir au-delà du nombre total de tuiles posées
+      if (val > totalTiles) {
+        showToast(`Impossible : seulement ${totalTiles} tuile(s) posée(s) sur la table !`);
+        return;
+      }
 
       gameState.skullPhase = 'bidding';
       gameState.skullHighBid = val;
@@ -2041,6 +2054,7 @@
       audio.chip();
       gameState.feltTicker = `${player.name} monte le défi à ${val} tuile(s) !`;
 
+      // Si l'enchère atteint le total maximal possible de la table, passage automatique à la révélation
       if (val === totalTiles) {
         startSkullRevealingPhase();
         return;
@@ -2107,7 +2121,7 @@
       const target = gameState.players[targetPlayerId];
       if (!target || !target.skullPile || target.skullPile.length === 0) return;
 
-      // Doit retourner toutes ses tuiles en premier
+      // Obligation de retourner ses propres tuiles d'abord
       const unrevealedOwn = revealer.skullPile.filter(t => !t.revealed);
       if (revealer.id !== target.id && unrevealedOwn.length > 0) {
         showToast("Tu dois d'abord retourner toutes tes propres tuiles !");
@@ -2121,10 +2135,8 @@
       gameState.isRevealingAnimationRunning = true;
 
       const tileToReveal = availableTiles[availableTiles.length - 1];
-      tileToReveal.revealed = true;
-      gameState.skullRevealedCards.push({ player: target.name, tile: tileToReveal });
 
-      // Lancement de l'animation pour tout le monde
+      // On déclenche l'animation
       broadcastEvent({
         type: 'SKULL_REVEAL_ANIM',
         revealerName: revealer.name,
@@ -2136,11 +2148,13 @@
       gameState.feltTicker = `${revealer.name} retourne un disque chez ${target.name}...`;
       broadcastState();
 
-      // Durée nécessaire pour laisser l'animation 3D se terminer complètement (1,8s)
+      // On attend la fin complète du retournement avant de comptabiliser
       setTimeout(() => {
         gameState.isRevealingAnimationRunning = false;
+        tileToReveal.revealed = true;
+        gameState.skullRevealedCards.push({ player: target.name, tile: tileToReveal });
 
-        // 1. CRÂNE DÉCOUVERT
+        // 1. CRÂNE RÉVÉLÉ : Échec immédiat
         if (tileToReveal.type === 'skull') {
           audio.playFaaah();
           gameState.status = 'resolving_bluff';
@@ -2153,33 +2167,33 @@
           return;
         }
 
-        // 2. FLEUR VALIDÉE
         const currentCount = gameState.skullRevealedCards.length;
         const targetCount = gameState.skullTargetCount;
         gameState.feltTicker = `Fleur révélée (${currentCount}/${targetCount})`;
 
-        // 3. OBJECTIF ATTEINT (Dernière carte)
+        // 2. CONTRAT REMPLI (Toutes les fleurs requises ont été retournées)
         if (currentCount >= targetCount) {
           revealer.skullScore = (revealer.skullScore || 0) + 1;
           audio.chip();
 
           if (revealer.skullScore >= 2) {
+            // Victoire finale (2/2 points)
             gameState.status = 'game_ended';
             gameState.feltTicker = `${revealer.name} valide son 2e point et remporte la partie ! 🏆`;
             broadcastState();
           } else {
-            gameState.feltTicker = `DÉFI RÉUSSI ! ${revealer.name} marque un point (${revealer.skullScore}/2) !`;
+            // Manche remportée (1/2 point) : pause explicite pour afficher le bouton
+            gameState.status = 'skull_round_won';
+            gameState.feltTicker = `DÉFI RÉUSSI ! ${revealer.name} marque 1 point (${revealer.skullScore}/2).`;
             broadcastState();
-            // Délai généreux pour bien contempler la victoire de la manche
-            setTimeout(startNewRound, 3000);
           }
           return;
         }
 
-        // Si le défi continue (il reste des tuiles à retourner)
+        // Si le contrat nécessite encore d'autres cartes
         broadcastState();
         checkBotTurnWithDelay();
-      }, 1800); // 1800ms au lieu de 1500ms : l'animation entière a le temps d'atterrir
+      }, 1800);
     }
 
     function proceedWithRoundStart(living) {
@@ -2650,58 +2664,52 @@
 
     function throwSkullTileVisualEffect(playerId) {
       let source = null;
+      let target = null;
+
       if (playerId === myId) {
         source = document.getElementById('skull-hand-tiles') || document.getElementById('seat-bottom');
+        target = document.getElementById('seat-bottom');
       } else {
         const others = gameState.playerOrder.filter(id => id !== myId);
         const idx = others.indexOf(playerId);
         const seatId = idx === 0 ? 'seat-left' : (idx === 1 ? 'seat-top' : 'seat-right');
         source = document.getElementById(seatId);
+        target = document.getElementById(seatId);
       }
-      const target = document.getElementById('skull-pile-top') || document.getElementById('center-skull-display') || document.getElementById('table-felt-center');
       if (!source || !target) return;
 
       const sRect = source.getBoundingClientRect();
       const tRect = target.getBoundingClientRect();
 
-      // Tuile volante avec le même style que les cartes/piles du jeu
       const thrown = document.createElement('div');
-      thrown.className = 'thrown-card-anim w-14 h-20 sm:w-16 sm:h-24 rounded-xl border-2 border-[#8f7734] bg-[#142318] p-2 flex flex-col items-center justify-between shadow-2xl';
+      thrown.className = 'thrown-card-anim w-11 h-15 rounded-lg border-2 border-[#8f7734] bg-[#142318] p-1 flex flex-col items-center justify-between shadow-2xl';
       thrown.innerHTML = `
-        <div class="w-full flex justify-between text-[10px] text-dore opacity-80 pointer-events-none">
+        <div class="w-full flex justify-between text-[7px] text-dore opacity-80 pointer-events-none">
           <i class="fa-solid fa-fan"></i><i class="fa-solid fa-skull"></i>
         </div>
-        <i class="fa-solid fa-layer-group text-2xl text-dore/70 my-auto pointer-events-none"></i>
-        <div class="w-full flex justify-between text-[10px] text-dore opacity-80 rotate-180 pointer-events-none">
+        <i class="fa-solid fa-layer-group text-lg text-dore/70 my-auto pointer-events-none"></i>
+        <div class="w-full flex justify-between text-[7px] text-dore opacity-80 rotate-180 pointer-events-none">
           <i class="fa-solid fa-fan"></i><i class="fa-solid fa-skull"></i>
         </div>
       `;
 
-      // Position de départ centrée sur l'émetteur
-      const startX = sRect.left + sRect.width / 2 - 28;
-      const startY = sRect.top + sRect.height / 2 - 40;
-      thrown.style.left = `${startX}px`;
-      thrown.style.top = `${startY}px`;
-      thrown.style.transform = 'scale(0.85) rotate(-8deg)';
+      thrown.style.left = `${sRect.left + sRect.width / 2 - 22}px`;
+      thrown.style.top = `${sRect.top + sRect.height / 2 - 30}px`;
+      thrown.style.transform = 'scale(0.9) rotate(-6deg)';
       thrown.style.opacity = '1';
       document.body.appendChild(thrown);
 
-      // Trajectoire calquée sur les cartes (courbe d'accélération + rotation)
-      const targetRot = (Math.random() * 16 - 8); // Entre -8° et +8°
-      const targetOffsetX = (Math.random() * 8 - 4);
-      const targetOffsetY = (Math.random() * 6 - 3);
+      audio.cardSlide();
 
       setTimeout(() => {
-        thrown.style.left = `${tRect.left + tRect.width / 2 - 28 + targetOffsetX}px`;
-        thrown.style.top = `${tRect.top + tRect.height / 2 - 40 + targetOffsetY}px`;
-        thrown.style.transform = `scale(1) rotate(${targetRot}deg)`;
-        thrown.style.opacity = '0.95';
+        thrown.style.left = `${tRect.left + tRect.width / 2 - 22}px`;
+        thrown.style.top = `${tRect.top + tRect.height / 2 - 30}px`;
+        thrown.style.transform = `scale(1) rotate(${Math.floor(Math.random() * 8 - 4)}deg)`;
 
-        // Disparition douce au moment où la tuile se dépose sur le tas
         setTimeout(() => {
           thrown.style.opacity = '0';
           setTimeout(() => thrown.remove(), 160);
-        }, 450);
+        }, 320);
       }, 30);
     }
 
@@ -2774,7 +2782,6 @@
     }
 
     function animateSkullRevealVisual(revealerName, targetPlayerId, tile) {
-      // Trouver la source (siège du joueur dont on retourne la tuile)
       let sourceEl = null;
       if (targetPlayerId === myId) {
         sourceEl = document.getElementById('seat-bottom');
@@ -2791,64 +2798,58 @@
       const tRect = targetEl.getBoundingClientRect();
 
       const isSkull = tile.type === 'skull';
+      const haloColor = isSkull 
+        ? 'border-rose-700 shadow-[0_0_24px_rgba(190,18,60,0.7)] ring-2 ring-rose-600/50' 
+        : 'border-emerald-600 shadow-[0_0_24px_rgba(5,150,105,0.65)] ring-2 ring-emerald-500/50';
 
-      // 1. Dos de carte identique à la pile de Skull
       const disc = document.createElement('div');
-      disc.className = 'thrown-card-anim w-14 h-20 sm:w-16 sm:h-24 rounded-xl border-2 border-[#8f7734] bg-[#142318] p-2 flex flex-col items-center justify-between shadow-2xl transition-all duration-500 ease-out z-[999]';
+      disc.className = 'thrown-card-anim w-12 h-16 sm:w-14 sm:h-20 rounded-xl border-2 border-[#8f7734] bg-[#142318] p-1.5 flex flex-col items-center justify-between shadow-2xl z-[999]';
       disc.innerHTML = `
-        <div class="w-full flex justify-between text-[10px] text-dore">
+        <div class="w-full flex justify-between text-[7px] text-dore">
           <i class="fa-solid fa-fan"></i><i class="fa-solid fa-skull"></i>
         </div>
-        <i class="fa-solid fa-hourglass-half text-2xl text-dore animate-pulse"></i>
-        <div class="w-full flex justify-between text-[10px] text-dore rotate-180">
+        <i class="fa-solid fa-hourglass-half text-lg text-dore animate-pulse"></i>
+        <div class="w-full flex justify-between text-[7px] text-dore rotate-180">
           <i class="fa-solid fa-fan"></i><i class="fa-solid fa-skull"></i>
         </div>
       `;
 
-      // Départ depuis le joueur
-      disc.style.left = `${sRect.left + sRect.width / 2 - 32}px`;
-      disc.style.top = `${sRect.top + sRect.height / 2 - 44}px`;
-      disc.style.transform = 'scale(0.7) rotate(-10deg)';
+      // Départ centré sur le siège d'origine
+      disc.style.left = `${sRect.left + sRect.width / 2}px`;
+      disc.style.top = `${sRect.top + sRect.height / 2}px`;
+      disc.style.transform = 'translate(-50%, -50%) scale(0.8) rotate(-6deg)';
       document.body.appendChild(disc);
 
       audio.cardSlide();
 
-      // Trajet vers le centre
-      requestAnimationFrame(() => {
-        disc.style.left = `${tRect.left + tRect.width / 2 - 32}px`;
-        disc.style.top = `${tRect.top + tRect.height / 2 - 48}px`;
-        disc.style.transform = 'scale(1.25) rotate(0deg)';
+      // Cible : plein centre du feutre
+      const centerX = tRect.left + tRect.width / 2;
+      const centerY = tRect.top + tRect.height / 2;
 
-        // 2. Flip 3D
+      requestAnimationFrame(() => {
+        disc.style.left = `${centerX}px`;
+        disc.style.top = `${centerY}px`;
+        disc.style.transform = 'translate(-50%, -50%) scale(1.2) rotate(0deg)';
+
         setTimeout(() => {
           disc.style.transition = 'transform 0.22s ease-in';
-          disc.style.transform = 'scale(1.35) rotateY(90deg)';
+          disc.style.transform = 'translate(-50%, -50%) scale(1.25) rotateY(90deg)';
 
           setTimeout(() => {
             audio.chip();
 
-            // 3. Face avant : design calqué sur les tuiles en main
-            const haloColor = isSkull 
-              ? 'border-rose-700 shadow-[0_0_22px_rgba(190,18,60,0.65)] ring-2 ring-rose-600/40' 
-              : 'border-emerald-600 shadow-[0_0_22px_rgba(5,150,105,0.6)] ring-2 ring-emerald-500/40';
-
-            disc.className = `thrown-card-anim w-14 h-20 sm:w-16 sm:h-24 rounded-xl border-2 bg-[#faf8f5] p-2 flex flex-col items-center justify-between select-none z-[999] ${haloColor}`;
+            disc.className = `thrown-card-anim w-12 h-16 sm:w-14 sm:h-20 rounded-xl border-2 bg-[#faf8f5] p-1.5 flex items-center justify-center select-none z-[999] ${haloColor}`;
             disc.innerHTML = `
-              <i class="fa-solid ${tile.icon} text-xl mt-0.5 ${isSkull ? 'text-rose-700 animate-bounce' : 'text-emerald-700'}"></i>
-              <span class="text-[10px] font-mono font-bold uppercase tracking-wider ${isSkull ? 'text-rose-800' : 'text-emerald-800'}">
-                ${tile.name}
-              </span>
-              <span class="text-[8px] font-mono font-bold text-stone-400">SKULL</span>
+              <i class="fa-solid ${tile.icon} text-2xl ${isSkull ? 'text-rose-700 animate-bounce' : 'text-emerald-700'}"></i>
             `;
 
             disc.style.transition = 'transform 0.22s ease-out';
-            disc.style.transform = 'scale(1.25) rotateY(0deg)';
+            disc.style.transform = 'translate(-50%, -50%) scale(1.25) rotateY(0deg)';
 
-            // 4. Sortie en douceur
             setTimeout(() => {
               disc.style.transition = 'all 0.35s ease-in';
               disc.style.opacity = '0';
-              disc.style.transform = 'scale(0.85) translateY(-16px)';
+              disc.style.transform = 'translate(-50%, -60%) scale(0.9)';
               setTimeout(() => disc.remove(), 360);
             }, 850);
           }, 230);
@@ -3269,7 +3270,7 @@
       triggerRevolverChamberLocal(targetPlayer.name, risk, remainingChambers, isFatal, () => {
         if (isFatal) {
           // Tir fatal : élimination
-          triggerExecution(targetPlayer, `La chambre (${risk}/6) a fait feu.`, () => {
+          triggerExecution(targetPlayer, `Le coup ${risk}/6 a fait feu.`, () => {
             if (typeof customOnComplete === 'function') {
               customOnComplete();
             } else {
@@ -4048,7 +4049,7 @@
       } else if (gameState.status === 'lobby') {
         showScreen('screen-lobby');
         renderLobbyScreen(me);
-      } else if (gameState.status === 'item_draft' || gameState.status === 'lottery_draw' || gameState.status === 'in_round' || gameState.status === 'resolving_bluff') {
+      } else if (gameState.status === 'item_draft' || gameState.status === 'lottery_draw' || gameState.status === 'in_round' || gameState.status === 'resolving_bluff' || gameState.status === 'skull_round_won') {
         showScreen('screen-game');
         renderTableScreen(me);
         updateDraftCounter();
@@ -4119,7 +4120,15 @@
         if (isDice) {
           targetTitle.innerText = "MODE : DÉS";
         } else if (isSkull) {
-          targetTitle.innerText = gameState.skullPhase === 'bidding' ? `DÉFI : ${gameState.skullHighBid || 1}` : "MODE : SKULL";
+          if (gameState.skullPhase === 'bidding') {
+            targetTitle.innerText = `DÉFI : ${gameState.skullHighBid || 1}`;
+          } else if (gameState.skullPhase === 'revealing') {
+            const done = gameState.skullRevealedCards ? gameState.skullRevealedCards.length : 0;
+            const target = gameState.skullTargetCount || gameState.skullHighBid || 1;
+            targetTitle.innerText = `DÉFI : ${done}/${target}`;
+          } else {
+            targetTitle.innerText = "MODE : SKULL";
+          }
         } else if (isMistigri) {
           targetTitle.innerText = "MODE : MISTIGRI";
         } else {
@@ -4189,7 +4198,7 @@
           centerSkull.classList.remove('flex');
         } else {
           centerSkull.classList.remove('hidden');
-          centerSkull.classList.add('flex');
+          centerSkull.classList.add('hidden');
 
           const totalPlaced = getTotalSkullPlacedTiles();
           const countEl = document.getElementById('skull-pile-center-count');
@@ -4248,7 +4257,7 @@
       if (!me || !me.isAlive) return;
 
       if (!me.hand || me.hand.length === 0) {
-        container.innerHTML = `<div class="font-mono text-green-400 text-xs py-3 font-bold text-center">Tu n'as plus aucune carte ! Tu es sauvé ! 🎉</div>`;
+        container.innerHTML = `<div class="font-mono text-green-400 text-xs py-3 font-bold text-center">Tu n'as plus aucune carte.</div>`;
         return;
       }
 
@@ -4382,18 +4391,24 @@
 
     function renderSeatsAroundTable() {
       const otherPlayers = gameState.playerOrder.filter(id => id !== myId).map(id => gameState.players[id]).filter(Boolean);
-      const seats = [document.getElementById('seat-left'), document.getElementById('seat-top'), document.getElementById('seat-right')];
-      seats.forEach(s => s.innerHTML = '');
+      const seatConfigs = [
+        { el: document.getElementById('seat-left'), pos: 'left' },
+        { el: document.getElementById('seat-top'), pos: 'top' },
+        { el: document.getElementById('seat-right'), pos: 'right' }
+      ];
+      seatConfigs.forEach(s => { if (s.el) s.el.innerHTML = ''; });
 
       otherPlayers.forEach((p, idx) => {
-        if (seats[idx]) renderSingleSeat(seats[idx], p);
+        if (seatConfigs[idx] && seatConfigs[idx].el) {
+          renderSingleSeat(seatConfigs[idx].el, p, false, seatConfigs[idx].pos);
+        }
       });
 
       const me = gameState.players[myId];
-      if (me) renderSingleSeat(document.getElementById('seat-bottom'), me, true);
+      if (me) renderSingleSeat(document.getElementById('seat-bottom'), me, true, 'bottom');
     }
 
-    function renderSingleSeat(container, player, isLocal = false) {
+    function renderSingleSeat(container, player, isLocal = false, seatPosition = 'top') {
       const activeId = gameState.playerOrder[gameState.activePlayerIndex];
       const isActiveTurn = activeId === player.id;
       const avIcon = getAvatarIcon(player.avatar);
@@ -4409,7 +4424,6 @@
         const currentActiveId = gameState.playerOrder[gameState.activePlayerIndex];
         const isMyTurn = currentActiveId === myId;
         const targetVictimId = getMistigriVictimId(myId);
-        
         const canDrawFromThisPlayer = isMyTurn && (targetVictimId === player.id);
 
         let cardPicks = '';
@@ -4427,31 +4441,89 @@
           `;
         }
 
-        // pl-2.5 est remplacé par une largeur automatique parfaitement centrée
         mistigriTargetHtml = `
-          <div class="mt-1.5 flex flex-col items-center justify-center w-full">
-            <div class="inline-flex items-center justify-center">
-              ${cardPicks}
-            </div>
+          <div class="mt-1 flex flex-col items-center justify-center w-full">
+            <div class="inline-flex items-center justify-center">${cardPicks}</div>
             ${canDrawFromThisPlayer ? '<span class="text-[8px] font-mono text-dore animate-pulse mt-0.5 font-bold uppercase text-center">Clique pour piocher</span>' : ''}
           </div>
         `;
       }
 
-      let skullPileBadge = '';
+      // RENDU DES CARTES SKULL RÉDUITES AVEC VRAIES ICÔNES FONTAWESOME
+      let skullPileHtml = '';
       if (gameState.gameMode === 'skull' && player.isAlive) {
         const pile = player.skullPile || [];
         const isRevealing = gameState.skullPhase === 'revealing';
         const isMyTurnToReveal = isRevealing && activeId === myId;
-        const canClick = isMyTurnToReveal && pile.some(t => !t.revealed);
+        const unrevealedCount = pile.filter(t => !t.revealed).length;
+        
+        // Vraie règle Skull : vider sa propre pile en premier
+        const myUnrevealedOwn = (gameState.players[myId]?.skullPile || []).filter(t => !t.revealed).length;
+        const canClick = isMyTurnToReveal && unrevealedCount > 0 && (player.id === myId || myUnrevealedOwn === 0);
 
-        skullPileBadge = `
-          <div class="mt-1 flex items-center justify-center gap-1 cursor-pointer" onclick="handlePileClick('${player.id}')">
-            <div class="px-2 py-0.5 rounded-full border ${canClick ? 'border-dore bg-dore/20 animate-bounce' : 'border-[#2d4032] bg-[#121914]'} flex items-center gap-1.5 shadow">
-              <i class="fa-solid fa-layer-group text-[9px] text-dore"></i>
-              <span class="font-mono text-[9px] font-bold text-dore">${pile.length}</span>
-            </div>
-            ${player.skullScore ? `<span class="text-[10px] text-yellow-400 font-bold ml-0.5" title="Victoires"><i class="fa-solid fa-trophy text-[8px] mr-0.5"></i>${player.skullScore}/2</span>` : ''}
+        let stackPlacementStyle = '';
+        if (seatPosition === 'left') {
+          stackPlacementStyle = 'left: 160px; top: 50%; transform: translateY(-50%);';
+        } else if (seatPosition === 'right') {
+          stackPlacementStyle = 'right: 160px; top: 50%; transform: translateY(-50%);';
+        } else if (seatPosition === 'top') {
+          stackPlacementStyle = 'top: 100px; left: 50%; transform: translateX(-50%);';
+        } else if (seatPosition === 'bottom') {
+          stackPlacementStyle = 'bottom: 100px; left: 50%; transform: translateX(-50%);';
+        }
+
+        let stackVisual = '';
+        if (pile.length > 0) {
+          stackVisual = pile.map((tile, i) => {
+            const isTop = i === pile.length - 1;
+            const isRevealed = tile.revealed;
+
+            let offsetX = 0;
+            let offsetY = 0;
+            const fanSpread = (i - (pile.length - 1) / 2) * 5;
+
+            if (seatPosition === 'top') {
+              offsetY = i * 4;
+              offsetX = fanSpread;
+            } else if (seatPosition === 'bottom') {
+              offsetY = -i * 4;
+              offsetX = fanSpread;
+            } else if (seatPosition === 'left') {
+              offsetX = i * 5;
+              offsetY = fanSpread;
+            } else if (seatPosition === 'right') {
+              offsetX = -i * 5;
+              offsetY = fanSpread;
+            }
+
+            const rot = (i - (pile.length - 1) / 2) * 6;
+            const isSkull = tile.type === 'skull';
+            const tileIconClass = isSkull ? 'fa-solid fa-skull text-rose-700' : 'fa-solid fa-spa text-emerald-700';
+
+            return `
+              <div class="absolute w-[36px] h-[50px] rounded-md border flex-shrink-0 transition-transform ${
+                isRevealed
+                  ? (isSkull ? 'bg-[#faf8f5] border-rose-700 shadow-[0_0_10px_rgba(190,18,60,0.5)]' : 'bg-[#faf8f5] border-emerald-600 shadow-[0_0_10px_rgba(5,150,105,0.4)]')
+                  : (canClick && isTop 
+                      ? 'bg-[#18271c] border-dore text-dore shadow-[0_0_8px_rgba(212,175,55,0.4)] cursor-pointer hover:border-white transition-colors' 
+                      : 'bg-[#142318] border-[#8f7734] text-dore/80 shadow-md pointer-events-none')
+              } flex flex-col items-center justify-center p-1 select-none"
+              style="transform: translate(${offsetX}px,${offsetY}px) rotate(${rot}deg); z-index:${i + 1};">
+                ${isRevealed 
+                  ? `<i class="${tileIconClass} text-base pointer-events-none"></i>` 
+                  : `<span class="text-xs text-dore/60 pointer-events-none">♠</span>`
+                }
+              </div>
+            `;
+          }).join('');
+        }
+
+        skullPileHtml = `
+          <div class="absolute w-[44px] h-[58px] flex items-center justify-center z-40 cursor-pointer" 
+               style="${stackPlacementStyle}" 
+               onclick="event.stopPropagation(); handlePileClick('${player.id}')">
+            ${stackVisual}
+            ${canClick ? '<span class="absolute -bottom-4 text-[8px] font-mono text-dore/90 font-bold uppercase tracking-wider z-50 whitespace-nowrap pointer-events-none">Révéler</span>' : ''}
           </div>
         `;
       }
@@ -4460,13 +4532,15 @@
       const hasWonRound = (isCards || gameState.gameMode === 'mistigri') && player.isAlive && (!player.hand || player.hand.length === 0) && gameState.status === 'in_round';
       const cardCountTxt = !player.isAlive ? 'Éliminé' : hasWonRound ? 'Sauvé !' : `${player.hand ? player.hand.length : 0}c`;
 
+      // Le bloc d'avatar conserve une dimension stricte et fixe (relative min-w-[70px])
       container.innerHTML = `
-        <div class="flex flex-col items-center select-none">
+        <div class="relative flex flex-col items-center justify-center min-w-[70px] select-none">
           <div class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 ${
             !player.isAlive ? 'border-[#223126] bg-[#111713] opacity-35' :
             isActiveTurn ? 'border-dore bg-[#19271d] ring-2 ring-dore/60 shadow-[0_0_18px_rgba(212,175,55,0.65)]' : 'border-[#384c3c] bg-[#111713]'
           } flex items-center justify-center shadow-lg transition-all duration-300">
             ${player.isAlive ? avIcon : '<i class="fa-solid fa-skull text-[#506253]"></i>'}
+            ${player.skullScore ? `<span class="absolute -top-1 -right-1 text-[9px] text-yellow-400 font-bold bg-[#141b16] px-1 rounded-full border border-[#3b4e40]"><i class="fa-solid fa-trophy text-[7px] mr-0.5"></i>${player.skullScore}/2</span>` : ''}
           </div>
 
           <div class="mt-1 w-full flex flex-col items-center justify-center text-center">
@@ -4478,21 +4552,27 @@
               <span>•</span>
               <div class="flex gap-0.5 items-center justify-center">${revolverPips}</div>
             </div>
-            ${skullPileBadge}
             ${mistigriTargetHtml}
           </div>
+
+          <!-- Layer indépendant des cartes Skull -->
+          ${skullPileHtml}
         </div>
       `;
     }
 
     function handlePileClick(targetPlayerId) {
-      if (gameState.gameMode === 'skull' && gameState.skullPhase === 'revealing') {
-        sendToHost({
-          type: 'SKULL_REVEAL_PILE',
-          id: myId,
-          targetPlayerId: targetPlayerId
-        });
+      if (gameState.gameMode !== 'skull' || gameState.skullPhase !== 'revealing') return;
+      const currentActiveId = gameState.playerOrder[gameState.activePlayerIndex];
+      if (currentActiveId !== myId) {
+        showToast("Ce n'est pas ton tour de révéler !");
+        return;
       }
+      sendToHost({
+        type: 'SKULL_REVEAL_PILE',
+        id: myId,
+        targetPlayerId: targetPlayerId
+      });
     }
 
     function renderSkullPlayerConsole(me) {
@@ -4506,6 +4586,36 @@
       if (consoleTitle) consoleTitle.innerText = 'Tes Tuiles';
       const consoleCount = document.getElementById('hand-console-count');
       if (consoleCount) consoleCount.innerText = `(${me && me.hand ? me.hand.length : 0})`;
+
+      // GESTION DU PASSAGE À LA MANCHE SUIVANTE SANS DÉCALER LA MISE EN PAGE
+      let btnNextRound = document.getElementById('btn-skull-next-round');
+      const skullActionsWrapper = document.getElementById('skull-placement-actions');
+      const actionsContainer = skullActionsWrapper?.parentElement;
+
+      if (gameState.status === 'skull_round_won') {
+        if (!btnNextRound) {
+          btnNextRound = document.createElement('button');
+          btnNextRound.id = 'btn-skull-next-round';
+          btnNextRound.onclick = () => {
+            sendToHost({ type: 'SKULL_NEXT_ROUND', id: myId });
+          };
+          if (actionsContainer) actionsContainer.appendChild(btnNextRound);
+        }
+        btnNextRound.classList.remove('hidden');
+        btnNextRound.disabled = !isHost;
+        btnNextRound.className = isHost 
+          ? "w-full h-9 rounded-lg border border-dore bg-[#273a2c] hover:bg-[#334c3a] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer flex items-center justify-center"
+          : "w-full h-9 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold cursor-not-allowed flex items-center justify-center";
+        btnNextRound.innerText = isHost ? "Passer à la manche suivante" : "En attente de l'hôte...";
+        
+        // Masquer les autres actions pour garder la hauteur identique
+        document.getElementById('cards-action-controls')?.classList.add('hidden');
+        skullActionsWrapper?.classList.add('hidden');
+        document.getElementById('skull-bidding-panel')?.classList.add('hidden');
+        document.getElementById('skull-reveal-notice')?.classList.add('hidden');
+      } else if (btnNextRound) {
+        btnNextRound.classList.add('hidden');
+      }
 
       // Si le joueur n'a plus de tuiles en main, il DOIT ouvrir les enchères
       const hasNoMoreTiles = (!me.hand || me.hand.length === 0);
@@ -4571,27 +4681,37 @@
           ? "py-2.5 rounded-lg border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] font-title text-xs uppercase tracking-wider font-bold transition-all cursor-not-allowed"
           : "py-2.5 rounded-lg border border-dore bg-[#243828] hover:bg-[#2d4833] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all shadow-lg active:scale-95 cursor-pointer";
       } else if (gameState.skullPhase === 'bidding') {
-        document.getElementById('skull-placement-actions').classList.add('hidden');
-        revealNotice.classList.add('hidden');
+        if (skullActionsWrapper) skullActionsWrapper.classList.add('hidden');
+        if (revealNotice) revealNotice.classList.add('hidden');
 
         const hasPassed = gameState.skullPassers.includes(myId);
         if (isMyTurn && !hasPassed) {
           bidPanel.classList.remove('hidden');
           bidPanel.classList.add('flex');
-          const minBid = gameState.skullHighBid + 1;
-          document.getElementById('skull-min-bid-lbl').innerText = minBid;
+          
+          const minBid = Math.min(totalTiles, (gameState.skullHighBid || 0) + 1);
+          const lbl = document.getElementById('skull-min-bid-lbl');
+          if (lbl) lbl.innerText = minBid;
+          
           const input = document.getElementById('input-skull-bid');
-          input.min = minBid;
-          input.max = totalTiles;
-          if (parseInt(input.value, 10) < minBid || !input.value) input.value = minBid;
+          if (input) {
+            input.min = minBid;
+            input.max = totalTiles;
+            // Pré-remplissage systématique à +1 (modifiable librement par le joueur)
+            input.value = minBid;
+          }
         } else {
           bidPanel.classList.add('hidden');
+          bidPanel.classList.remove('flex');
         }
       } else if (gameState.skullPhase === 'revealing') {
-        document.getElementById('skull-placement-actions').classList.add('hidden');
+        skullActionsWrapper.classList.add('hidden');
         bidPanel.classList.add('hidden');
+        bidPanel.classList.remove('flex');
+
         if (isMyTurn && gameState.skullHighBidderId === myId) {
           revealNotice.classList.remove('hidden');
+          revealNotice.innerText = 'Clique sur une carte pour la révéler';
         } else {
           revealNotice.classList.add('hidden');
         }
@@ -5195,7 +5315,14 @@
         sendToHost({ type: 'SKULL_SUBMIT_BID', id: myId, bid: 1 });
       }},
       { id: 'btn-skull-submit-bid', action: () => {
-        const val = document.getElementById('input-skull-bid')?.value;
+        const input = document.getElementById('input-skull-bid');
+        const totalTiles = getTotalSkullPlacedTiles();
+        let val = parseInt(input?.value, 10);
+        if (val > totalTiles) {
+          showToast(`Maximum possible : ${totalTiles} tuile(s) !`);
+          if (input) input.value = totalTiles;
+          return;
+        }
         if (val) sendToHost({ type: 'SKULL_SUBMIT_BID', id: myId, bid: val });
       }},
       { id: 'btn-skull-pass-bid', action: () => {
