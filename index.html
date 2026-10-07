@@ -1408,16 +1408,14 @@
             c.revealed ? c : { id: c.id, hidden: true }
           );
         }
-        // Masquer les cartes en main des adversaires
+        // Masquer les cartes en main des autres joueurs, mais LAISSER VISIBLES celles du destinataire (qu'il soit hôte ou client)
         if (pId !== recipientPlayerId && clone.players[pId].hand) {
           clone.players[pId].hand = clone.players[pId].hand.map(c => ({ id: c.id, hidden: true }));
         }
       });
 
       // Mode DÉS : seuls les adversaires voient les dés masqués.
-      // Le joueur actif (qu'il soit hôte ou client) doit OBLIGATOIREMENT recevoir ses dés réels.
       const activeIdForDice = gameState.playerOrder[gameState.activePlayerIndex];
-      // Si le destinataire n'est PAS le joueur actif, on masque les dés
       if (recipientPlayerId && recipientPlayerId !== activeIdForDice) {
         clone.quintoRealDice = null;
       }
