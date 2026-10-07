@@ -4414,7 +4414,6 @@
             const realScore = getQuintoScore(gameState.quintoRealDice[0], gameState.quintoRealDice[1]);
             const prevScore = gameState.quintoClaim ? gameState.quintoClaim.score : 0;
 
-            // Réflexe Miroir immédiat du bot en cas d'égalité
             if (gameState.quintoClaim && realScore === prevScore && gameState.quintoClaim.playerId !== bot.id) {
               handleQuintoMirror(bot.id);
               return;
