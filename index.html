@@ -1120,8 +1120,7 @@
       return `<i class="${found ? found.icon : 'fa-solid fa-user'}"></i>`;
     }
 
-    //const CLASSIC_PLAYER_NAMES = ['Patrick Bruel', 'Netanyahu', 'Norman Fait des Vidéos', 'Bonnie Blue', 'Jeffrey Epstein', 'Le Mec à Milla'];
-    const CLASSIC_PLAYER_NAMES = ['1', '2', '3', '4', '5', '6'];
+    const CLASSIC_PLAYER_NAMES = ['Patrick Bruel', 'Netanyahu', 'Norman Fait des Vidéos', 'Bonnie Blue', 'Jeffrey Epstein', 'Le Mec à Milla'];
     function getRandomPlayerName(existingNames = []) {
       const available = CLASSIC_PLAYER_NAMES.filter(n => !existingNames.includes(n));
       const pool = available.length > 0 ? available : CLASSIC_PLAYER_NAMES;
