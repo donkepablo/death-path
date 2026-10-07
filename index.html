@@ -3798,7 +3798,15 @@
             setTimeout(() => {
               closeDenounceModal();
               broadcastEvent({ type: 'CLOSE_DENOUNCE_MODAL' });
-              startNewRound();
+              
+              // Relance adaptée selon le mode de jeu
+              if (gameState.gameMode === 'skull') {
+                gameState.status = 'in_round';
+                // Si on était en train de révéler à Skull et qu'on rate, la manche s'arrête ou on avance
+                startNewRound();
+              } else {
+                startNewRound();
+              }
             }, 1800);
           }
         }
@@ -3890,7 +3898,12 @@
           gameState.status = 'game_ended';
           broadcastState();
         } else {
-          startNewRound();
+          // Si on est en mode Skull, on nettoie les tuiles et relance une manche Skull propre
+          if (gameState.gameMode === 'skull') {
+            startNewRound();
+          } else {
+            startNewRound();
+          }
         }
       }, 2800);
     }
