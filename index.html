@@ -2225,7 +2225,6 @@
     }
 
     function setupSkullRound(living) {
-      // Retenir qui a gagné le défi précédent pour lui donner la priorité
       const previousWinnerId = gameState.skullHighBidderId;
       const starterId = (previousWinnerId && gameState.players[previousWinnerId]?.isAlive)
         ? previousWinnerId
@@ -2235,16 +2234,17 @@
       gameState.skullPhase = 'placement';
       gameState.skullHighBid = 0;
       gameState.skullHighBidderId = null;
-      gameState.skullPassers = []; // INDISPENSABLE : vide les passeurs pour débloquer l'autre joueur
+      gameState.skullPassers = [];
       gameState.skullRevealedCards = [];
       gameState.skullTargetCount = 0;
       gameState.tableCardsCount = 0;
       gameState.isRevealingAnimationRunning = false;
       selectedSkullTileId = null;
 
-      // On redistribue les 4 tuiles complètes aux 2 joueurs
+      // Distribution des 4 tuiles pour chaque joueur vivant
       living.forEach(id => {
         const p = gameState.players[id];
+        if (!p) return;
         p.hand = [
           { id: `sk_${id}_1`, type: 'flower', name: 'Fleur', icon: 'fa-spa text-emerald-700' },
           { id: `sk_${id}_2`, type: 'flower', name: 'Fleur', icon: 'fa-spa text-emerald-700' },
@@ -2255,7 +2255,6 @@
         if (typeof p.skullScore !== 'number') p.skullScore = 0;
       });
 
-      // Donner la main au premier joueur
       gameState.activePlayerIndex = gameState.playerOrder.indexOf(starterId);
       const starter = gameState.players[starterId];
       gameState.feltTicker = `Nouvelle manche : ${starter ? starter.name : '...'} commence en posant une tuile.`;
@@ -5248,6 +5247,8 @@
 
     function renderSkullPlayerConsole(me) {
       if (gameState.gameMode !== 'skull') return;
+      
+      // Masquer les autres conteneurs de main / actions
       document.getElementById('my-hand-container')?.classList.add('hidden');
       document.getElementById('cards-action-controls')?.classList.add('hidden');
       document.getElementById('quinto-action-controls')?.classList.add('hidden');
@@ -5257,6 +5258,7 @@
       if (skullControls) {
         skullControls.classList.remove('hidden');
         skullControls.classList.add('flex');
+        skullControls.style.removeProperty('display');
       }
 
       const btnPlay = document.getElementById('btn-skull-play-card');
@@ -5299,26 +5301,28 @@
         selectedSkullTileId = me.hand[0].id;
       }
 
-      // Rendu des tuiles en main
+      // RENDU VISUEL DES CARTES / TUILES SKULL DANS LA CONSOLE DU BAS
       const container = document.getElementById('skull-hand-tiles');
       if (container) {
         container.innerHTML = '';
-        if (me && me.isAlive) {
-          (me.hand || []).forEach(tile => {
+        if (me && me.isAlive && Array.isArray(me.hand)) {
+          me.hand.forEach(tile => {
             const isSel = selectedSkullTileId === tile.id;
             const isSkull = tile.type === 'skull';
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = `w-14 h-20 rounded-xl border-2 flex flex-col items-center justify-between p-2 transition-all shadow-lg ${
+            btn.className = `w-14 h-20 rounded-xl border-2 flex flex-col items-center justify-between p-2 transition-all shadow-lg cursor-pointer ${
               isSel 
-                ? 'border-dore bg-white scale-105 shadow-[0_0_15px_rgba(212,175,55,0.7)] -translate-y-2' 
+                ? 'border-dore bg-[#faf8f5] scale-105 shadow-[0_0_15px_rgba(212,175,55,0.7)] -translate-y-2' 
                 : 'border-[#d2cbbe] bg-[#faf8f5] hover:border-dore hover:-translate-y-1'
             }`;
+            
             btn.innerHTML = `
               <i class="fa-solid ${tile.icon} text-lg mt-0.5"></i>
               <span class="text-[9px] font-mono font-bold uppercase tracking-wider ${isSkull ? 'text-rose-800' : 'text-emerald-800'}">${tile.name}</span>
               <span class="text-[8px] font-mono font-bold text-stone-400">SKULL</span>
             `;
+            
             btn.onclick = () => {
               if (isMyTurn && gameState.skullPhase === 'placement') {
                 selectedSkullTileId = tile.id;
@@ -5330,12 +5334,12 @@
         }
       }
 
-      // Actions selon la phase
+      // Actions selon la phase du jeu Skull
       if (gameState.skullPhase === 'placement') {
         if (skullActionsWrapper) {
           skullActionsWrapper.classList.remove('hidden');
           skullActionsWrapper.classList.add('grid');
-          skullActionsWrapper.style.setProperty('display', 'grid', 'important'); // S'affiche UNIQUEMENT en mode Skull
+          skullActionsWrapper.style.setProperty('display', 'grid', 'important');
         }
         if (bidPanel) bidPanel.style.setProperty('display', 'none', 'important');
         if (revealNotice) revealNotice.classList.add('hidden');
@@ -5366,6 +5370,7 @@
         if (isMyTurn && !hasPassed) {
           bidPanel?.classList.remove('hidden');
           bidPanel?.classList.add('flex');
+          bidPanel?.style.removeProperty('display');
           const minBid = Math.min(totalTiles, (gameState.skullHighBid || 0) + 1);
           const input = document.getElementById('input-skull-bid');
           if (input) {
@@ -5757,7 +5762,7 @@
           btnBluffEarly.className = BTN_CHOICE_DISABLED;
           btnBluffEarly.title = "Ce n'est pas ton tour.";
         }
-        
+
         // MASQUAGE STRICT HORS DE MON TOUR
         if (btnForcePrev) {
           btnForcePrev.classList.add('hidden');
