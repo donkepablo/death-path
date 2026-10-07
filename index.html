@@ -266,14 +266,13 @@
       <div class="text-center space-y-1">
         <div class="text-2xl text-dore mb-1 tracking-widest font-title font-bold">♠</div>
         <h2 class="text-4xl font-title font-bold tracking-[0.12em] text-[#f7f6f2] uppercase">PROUT BLUFF</h2>
-        <p class="text-[#899c8e] text-xs font-mono">Bluff ou fdp</p>
       </div>
 
       <div class="bg-[#171d19]/95 border border-[#28382c] rounded-xl p-4 backdrop-blur-md space-y-3 shadow-2xl">
         <!-- CHAMP PSEUDO À RÉINSÉRER ICI -->
         <div>
           <label class="block text-[10px] font-mono tracking-widest text-[#95a89b] uppercase mb-1">Ton nom</label>
-          <input id="input-username" type="text" maxlength="16" placeholder="Ton blaze" 
+          <input id="input-username" type="text" maxlength="20" placeholder="Ton blaze" 
             class="w-full bg-[#0f1411] border border-[#233126] focus:border-dore rounded-lg py-2 px-3 text-[#e8ece9] placeholder-[#4f6154] text-sm focus:outline-none transition-colors font-mono" />
         </div>
 
@@ -591,7 +590,7 @@
           </div>
 
           <!-- Main Cartes classique -->
-          <div id="my-hand-container" class="w-full h-full flex gap-1.5 sm:gap-2.5 justify-center items-start pt-0.5 -translate-y-2 overflow-visible"></div>
+          <div id="my-hand-container" class="w-full h-full flex gap-1.5 sm:gap-2.5 justify-center items-start pt-2 overflow-visible"></div>
 
           <!-- Console Dés Quinto (uniquement l'affichage du tirage, bien haut et centré) -->
           <div id="quinto-action-controls" class="hidden w-full max-w-xs h-full flex items-center justify-center -translate-y-2">
@@ -1185,10 +1184,9 @@
     }
 
     function purgePlayerPairs(player) {
-      if (!player || !Array.isArray(player.hand)) return 0;
+      if (!player || !Array.isArray(player.hand)) return { count: 0, purgedRanks: [] };
 
       const groups = {};
-
       player.hand.forEach(c => {
         if (!c.isMistigri && c.rank !== 'M') {
           const isRed = (c.suit === '♥' || c.suit === '♦');
@@ -1201,12 +1199,13 @@
       });
 
       const retained = [];
-      let pairsRemoved = 0;
+      const purgedRanks = [];
 
       Object.keys(groups).forEach(key => {
         const list = groups[key];
         if (list.length >= 2) {
-          pairsRemoved++;
+          const rank = list[0].rank;
+          purgedRanks.push(rank);
           if (list.length > 2) {
             retained.push(...list.slice(2));
           }
@@ -1222,14 +1221,14 @@
         }
       });
 
-      // MÉLANGE ALÉATOIRE de la main pour que le Mistigri ne reste pas à droite
+      // Mélange aléatoire de la main
       for (let i = retained.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [retained[i], retained[j]] = [retained[j], retained[i]];
       }
 
       player.hand = retained;
-      return pairsRemoved;
+      return { count: purgedRanks.length, purgedRanks: purgedRanks };
     }
 
     /* -------------------------------------------------------------
@@ -1260,7 +1259,9 @@
       gameMode: 'cards',
       isZbeul: false,
       status: 'auth',
-      requiredCard: null,
+      playDirection: 1, // 1 = sens horaire, -1 = sens anti-horaire
+      mistigriRevealedPlayerId: null,
+      mistigriRevealedUntil: 0,
       activePlayerIndex: 0,
       playerOrder: [],
       players: {},
@@ -1698,7 +1699,43 @@
       }
 
       // 2. Défausse IMMÉDIATE de la paire sur le coup
-      const pairsRemoved = purgePlayerPairs(drawer);
+      const purgeResult = purgePlayerPairs(drawer);
+      const pairsRemoved = purgeResult.count;
+
+      // EFFETS ZBEUL MISTIGRI
+      if (gameState.isZbeul && pairsRemoved > 0) {
+        purgeResult.purgedRanks.forEach(rank => {
+          // Inversion de sens sur les têtes (Roi, Dame, Valet)
+          if (['K', 'Q', 'V'].includes(rank)) {
+            gameState.playDirection = (gameState.playDirection || 1) * -1;
+            showToast(`INVERSION DE SENS !`);
+            audio.chip();
+          }
+
+          // Révélation du porteur du Mistigri sur les As (5 secondes minimum)
+          if (rank === 'A') {
+            const holder = gameState.playerOrder.find(id => {
+              const p = gameState.players[id];
+              return p && p.isAlive && p.hand && p.hand.some(c => c.isMistigri || c.rank === 'M');
+            });
+            if (holder) {
+              gameState.mistigriRevealedPlayerId = holder;
+              gameState.mistigriRevealedUntil = Date.now() + 5000;
+              showToast(`RADAR AS !`);
+              audio.playFaaah();
+
+              // Timer pour nettoyer et réactualiser l'affichage une fois les 5 secondes passées
+              setTimeout(() => {
+                if (Date.now() >= gameState.mistigriRevealedUntil) {
+                  gameState.mistigriRevealedPlayerId = null;
+                  gameState.mistigriRevealedUntil = 0;
+                  broadcastState();
+                }
+              }, 5100);
+            }
+          }
+        });
+      }
 
       // 3. Audio & animation de vol
       audio.cardSlide();
@@ -1750,22 +1787,32 @@
 
     function advanceToNextMistigriTurn() {
       const total = gameState.playerOrder.length;
-      let nextIdx = (gameState.activePlayerIndex + 1) % total;
+      const dir = gameState.playDirection || 1;
+      let nextIdx = (gameState.activePlayerIndex + dir + total) % total;
       let attempts = 0;
 
-      // Trouver le prochain joueur vivant QUI A ENCORE DES CARTES
       while (attempts < total) {
         const id = gameState.playerOrder[nextIdx];
         const p = gameState.players[id];
         if (p && p.isAlive && Array.isArray(p.hand) && p.hand.length > 0) {
           break;
         }
-        nextIdx = (nextIdx + 1) % total;
+        nextIdx = (nextIdx + dir + total) % total;
         attempts++;
       }
 
       gameState.activePlayerIndex = nextIdx;
       const activePlayer = gameState.players[gameState.playerOrder[nextIdx]];
+
+      // On ne coupe que si les 5 secondes sont écoulées ET que son tour est fini
+      if (gameState.mistigriRevealedPlayerId) {
+        const timeExpired = Date.now() >= (gameState.mistigriRevealedUntil || 0);
+        if (timeExpired && gameState.mistigriRevealedPlayerId !== activePlayer.id) {
+          gameState.mistigriRevealedPlayerId = null;
+          gameState.mistigriRevealedUntil = 0;
+        }
+      }
+
       const victimId = getMistigriVictimId(activePlayer.id);
       const victim = gameState.players[victimId];
 
@@ -1965,7 +2012,8 @@
 
       gameState.hasUsedItemThisTurn = false;
 
-      if (gameState.isZbeul) {
+      // On lance le draft uniquement pour les modes qui ont des items (Cartes et Dés)
+      if (gameState.isZbeul && (gameState.gameMode === 'cards' || gameState.gameMode === 'dice')) {
         triggerItemDraftPhase(() => proceedWithRoundStart(living));
       } else {
         proceedWithRoundStart(living);
@@ -2302,7 +2350,7 @@
       // Purge initiale des paires
       let totalPairsPurged = 0;
       living.forEach(id => {
-        totalPairsPurged += purgePlayerPairs(gameState.players[id]);
+        totalPairsPurged += purgePlayerPairs(gameState.players[id]).count;
       });
 
       // Déterminer le premier joueur avec des cartes
@@ -2327,9 +2375,11 @@
       let startIdx = order.indexOf(sourcePlayerId);
       if (startIdx === -1) return null;
 
-      // On cherche le joueur suivant (sens horaire) qui a encore des cartes et est vivant
+      const dir = gameState.playDirection || 1;
+
       for (let i = 1; i < total; i++) {
-        const nextId = order[(startIdx + i) % total];
+        const nextIdx = (startIdx + (i * dir) + total * 10) % total;
+        const nextId = order[nextIdx];
         const p = gameState.players[nextId];
         if (p && p.isAlive && Array.isArray(p.hand) && p.hand.length > 0) {
           return nextId;
@@ -4116,6 +4166,8 @@
       gameState.pfcDuel = null;
       gameState.immunityPending = null;
       gameState.pfcPromptPending = null;
+      gameState.playDirection = 1;
+      gameState.mistigriRevealedPlayerId = null;
 
       Object.values(gameState.players).forEach(p => {
         p.isAlive = true;
@@ -4348,7 +4400,7 @@
       if (!me || !me.isAlive) return;
 
       if (!me.hand || me.hand.length === 0) {
-        container.innerHTML = `<div class="font-mono text-green-400 text-xs py-3 font-bold text-center">Tu n'as plus aucune carte.</div>`;
+        container.innerHTML = `<div class="font-mono text-white text-xs py-3 font-bold text-center">Tu n'as plus aucune carte.</div>`;
         return;
       }
 
@@ -4384,8 +4436,8 @@
       const countTag = document.getElementById('inventory-count-tag');
       const stateNotice = document.getElementById('inventory-usage-state');
 
-      // Si le mode Zbeul n'est pas actif, ou si le joueur n'existe pas ou est éliminé : on masque la barre
-      if (!gameState.isZbeul || !me || !me.isAlive) {
+      // AJOUT : Si ce n'est pas Zbeul, ou si on joue en Mistigri, ou joueur mort/inexistant -> on masque
+      if (!gameState.isZbeul || gameState.gameMode === 'mistigri' || !me || !me.isAlive) {
         if (invBar) invBar.classList.add('hidden');
         return;
       }
@@ -4503,6 +4555,20 @@
       const activeId = gameState.playerOrder[gameState.activePlayerIndex];
       const isActiveTurn = activeId === player.id;
       const avIcon = getAvatarIcon(player.avatar);
+
+      const isRevealedMistigri = Boolean(
+        gameState.isZbeul && 
+        gameState.mistigriRevealedPlayerId === player.id &&
+        Date.now() < (gameState.mistigriRevealedUntil || Infinity)
+      );
+
+      const avatarBorderClass = !player.isAlive 
+        ? 'border-[#223126] bg-[#111713] opacity-35' 
+        : isRevealedMistigri
+          ? 'border-purple-500 bg-[#25132d] ring-4 ring-purple-600/80 shadow-[0_0_25px_rgba(168,85,247,0.9)] animate-pulse'
+          : isActiveTurn 
+            ? 'border-dore bg-[#19271d] ring-2 ring-dore/60 shadow-[0_0_18px_rgba(212,175,55,0.65)]' 
+            : 'border-[#384c3c] bg-[#111713]';
 
       let revolverPips = '';
       for (let i = 1; i <= 6; i++) {
@@ -4626,10 +4692,7 @@
       // Le bloc d'avatar conserve une dimension stricte et fixe (relative min-w-[70px])
       container.innerHTML = `
         <div class="relative flex flex-col items-center justify-center min-w-[70px] select-none">
-          <div class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 ${
-            !player.isAlive ? 'border-[#223126] bg-[#111713] opacity-35' :
-            isActiveTurn ? 'border-dore bg-[#19271d] ring-2 ring-dore/60 shadow-[0_0_18px_rgba(212,175,55,0.65)]' : 'border-[#384c3c] bg-[#111713]'
-          } flex items-center justify-center shadow-lg transition-all duration-300">
+          <div class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 ${avatarBorderClass} flex items-center justify-center shadow-lg transition-all duration-300">
             ${player.isAlive ? avIcon : '<i class="fa-solid fa-skull text-[#506253]"></i>'}
             ${player.skullScore ? `<span class="absolute -top-1 -right-1 text-[9px] text-yellow-400 font-bold bg-[#141b16] px-1 rounded-full border border-[#3b4e40]"><i class="fa-solid fa-trophy text-[7px] mr-0.5"></i>${player.skullScore}/2</span>` : ''}
           </div>
