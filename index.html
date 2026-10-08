@@ -1674,6 +1674,7 @@
         }
       } else if (msg.type === 'QUINTO_FORCE_PREV') {
         if (!gameState.isZbeul) return; // Ignorer hors mode Zbeul
+        if (gameState.playerOrder[gameState.activePlayerIndex] !== msg.id) return;
         const player = gameState.players[msg.id];
         const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
         
@@ -5774,11 +5775,6 @@
           btnBluffEarly.title = "Ce n'est pas ton tour.";
         }
 
-        // MASQUAGE STRICT HORS DE MON TOUR
-        if (btnForcePrev) {
-          btnForcePrev.classList.add('hidden');
-          btnForcePrev.disabled = true;
-        }
         if (btnSelfReroll) {
           btnSelfReroll.classList.add('hidden');
           btnSelfReroll.disabled = true;
