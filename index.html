@@ -1673,7 +1673,7 @@
           executeDiceReroll(msg.id);
         }
       } else if (msg.type === 'QUINTO_FORCE_PREV') {
-        if (!gameState.isZbeul) return; // Ignorer hors mode Zbeul
+        if (!gameState.isZbeul) return;
         if (gameState.playerOrder[gameState.activePlayerIndex] !== msg.id) return;
         const player = gameState.players[msg.id];
         const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
@@ -2065,6 +2065,7 @@
 
       // 2. Annuler la dernière annonce de la cible pour qu'il doive ré-annoncer
       gameState.quintoClaim = gameState.previousQuintoClaim || null;
+      gameState.forcedRerollByPlayerId = activatorId;
 
       // Marquer qui a forcé pour interdire l'accusation
       gameState.forcedRerollByPlayerId = activatorId;
@@ -5760,6 +5761,10 @@
         }
       } else {
         // 3. ÉTAPE : HORS DE MON TOUR (TOUT EST DÉSACTIVÉ)
+        if (btnForcePrev) {
+        btnForcePrev.classList.add('hidden');
+        btnForcePrev.disabled = true;
+      }
         if (stepRoll) stepRoll.classList.remove('hidden');
         if (stepChoice) stepChoice.classList.add('hidden');
         if (liePanel) liePanel.classList.add('hidden');
