@@ -2033,8 +2033,9 @@
           peer.on('connection', (conn) => {
             connections.push(conn);
             conn.on('data', (data) => {
-              if (data && data.id) {
-                conn.playerGameId = data.id; // Enregistre immédiatement l'ID joueur sur la connexion
+              if (data) {
+                // Récupère correctement l'ID, qu'il soit à la racine ou dans player
+                conn.playerGameId = data.id || (data.player && data.player.id) || conn.playerGameId;
               }
               handleClientMessage(data, conn);
             });
