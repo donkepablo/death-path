@@ -1274,6 +1274,14 @@
       }
     };
 
+    const MAX_PLAYERS = 4;
+
+    // Les pseudos sont injectés dans du innerHTML : on retire tout ce qui pourrait casser le HTML
+    function sanitizeName(raw, fallback = 'Joueur') {
+      const clean = String(raw == null ? '' : raw).replace(/[<>&"'`\\]/g, '').replace(/\s+/g, ' ').trim().slice(0, 16);
+      return clean || fallback;
+    }
+
     let myId = 'player_' + Math.random().toString(36).substring(2, 7);
     let myName = 'Joueur';
     let isHost = true;
@@ -1284,6 +1292,7 @@
     let currentActiveScreen = 'screen-auth';
     let selectedHandCardIds = [];
     let selectedSkullTileId = null;
+    let joinConfirmed = false; // client : true dès que l'hôte a répondu
 
     let gameState = {
       code: 'SOLO',
@@ -1377,8 +1386,11 @@
           if (!msg || msg.sender === myId) return;
           if (isHost && msg.target === 'HOST') {
             handleClientMessage(msg.action, null);
-          } else {
-            if (msg.type === 'SYNC_STATE') {
+          } else if (!isHost) {
+            if (msg.type === 'JOIN_REJECTED') {
+              if (msg.forId === myId) handleJoinRejected(msg.reason);
+            } else if (msg.type === 'SYNC_STATE') {
+              joinConfirmed = true;
               gameState = normalizeIncomingState(msg.state);
               if (msg.state.gameMode) {
                 gameState.gameMode = msg.state.gameMode;
@@ -1544,6 +1556,50 @@
     }
     }
 
+    // Hôte : refuse proprement un joueur (le client est prévenu et quitte la salle)
+    function rejectJoin(conn, playerId, reason) {
+      const payload = { type: 'JOIN_REJECTED', reason: reason, forId: playerId };
+      if (conn && conn.open) {
+        try { conn.send(payload); } catch(e) {}
+      }
+      if (broadcastChannel) {
+        try { broadcastChannel.postMessage({ ...payload, sender: myId }); } catch(e) {}
+      }
+      broadcastToast(reason);
+    }
+
+    // Client : quitte la salle et revient à l'écran d'accueil
+    function leaveRoomCleanup(notice) {
+      if (notice) showToast(notice);
+      if (broadcastChannel) {
+        try { broadcastChannel.close(); } catch(e) {}
+        broadcastChannel = null;
+      }
+      if (hostConn) { try { hostConn.close(); } catch(e) {} }
+      if (peer) { try { peer.destroy(); } catch(e) {} }
+      peer = null;
+      hostConn = null;
+      connections = [];
+      isHost = true;
+      joinConfirmed = false;
+      closeDenounceModal();
+      closeImmunityPromptModal();
+      closePfcPromptModal();
+      const draftModal = document.getElementById('modal-item-draft');
+      if (draftModal) draftModal.classList.add('hidden');
+      document.getElementById('room-badge')?.classList.add('hidden');
+      document.getElementById('room-badge')?.classList.remove('flex');
+      gameState.players = {};
+      gameState.playerOrder = [];
+      gameState.status = 'auth';
+      renderUI();
+    }
+
+    function handleJoinRejected(reason) {
+      if (isHost) return;
+      leaveRoomCleanup(reason || 'Impossible de rejoindre la table.');
+    }
+
     let _msgCounter = 0;
     function sendToHost(message) {
       if (message && typeof message === 'object' && !message._mid) {
@@ -1583,6 +1639,13 @@
       return false;
     }
 
+    // Un item ne peut être utilisé que par le joueur actif, en cours de manche, une fois par tour
+    function canUseItemNow(playerId) {
+      return gameState.status === 'in_round'
+        && gameState.playerOrder[gameState.activePlayerIndex] === playerId
+        && !gameState.hasUsedItemThisTurn;
+    }
+
     const _seenMsgIds = new Set();
     function handleClientMessage(msg, originConn) {
       if (!isHost || !msg) return;
@@ -1595,49 +1658,57 @@
       }
 
       if (msg.type === 'PLAYER_JOIN') {
+        const incoming = msg.player;
+        if (!incoming || !incoming.id) return;
+
+        const alreadySeated = Boolean(gameState.players[incoming.id]);
         const joinInProgress = !['lobby', 'auth'].includes(gameState.status);
-        const alreadySeated = Boolean(gameState.players[msg.player.id]);
 
-        if (originConn) originConn.playerGameId = msg.player.id;
+        if (originConn) originConn.playerGameId = incoming.id;
 
-        const existingPlayer = gameState.players[msg.player.id];
-        gameState.players[msg.player.id] = {
+        // Les refus se font AVANT toute modification de l'état (sinon le refusé reste assis à la table)
+        if (!alreadySeated) {
+          if (joinInProgress) { rejectJoin(originConn, incoming.id, 'Partie déjà en cours : impossible de rejoindre.'); return; }
+          if (Object.keys(gameState.players).length >= MAX_PLAYERS) { rejectJoin(originConn, incoming.id, `Table complète (max ${MAX_PLAYERS}).`); return; }
+        }
+
+        const safeName = sanitizeName(incoming.name);
+        const existingPlayer = gameState.players[incoming.id];
+        gameState.players[incoming.id] = {
           ...(existingPlayer || {}),
-          ...msg.player,
+          ...incoming,
+          name: safeName,
           // Conserver impérativement la main déjà distribuée
           hand: (existingPlayer && existingPlayer.hand && existingPlayer.hand.length > 0)
             ? existingPlayer.hand
-            : (msg.player.hand || []),
-          isReady: existingPlayer ? existingPlayer.isReady : msg.player.isReady,
+            : (incoming.hand || []),
+          isBot: false,
+          isReady: existingPlayer ? existingPlayer.isReady : Boolean(incoming.isReady),
           isAlive: existingPlayer ? existingPlayer.isAlive : true,
           cylinderRisk: existingPlayer ? existingPlayer.cylinderRisk : 1,
           items: existingPlayer ? existingPlayer.items : []
         };
-        if (!alreadySeated && joinInProgress) { rejectJoin('Partie déjà en cours : impossible de rejoindre.'); return; }
-        if (!alreadySeated && Object.keys(gameState.players).length >= 4) { rejectJoin('Table complète (max 4).'); return; }
 
-        if (originConn) originConn.playerGameId = msg.player.id;
-
-        if (!gameState.playerOrder.includes(msg.player.id)) {
-          gameState.playerOrder.push(msg.player.id);
+        if (!gameState.playerOrder.includes(incoming.id)) {
+          gameState.playerOrder.push(incoming.id);
         }
 
         // Un JOIN dupliqué (PeerJS + BroadcastChannel) ne doit jamais renvoyer la table au lobby en pleine partie
         if (!joinInProgress) gameState.status = 'lobby';
-        gameState.feltTicker = `${msg.player.name} s'installe à la table.`;
+        gameState.feltTicker = `${safeName} s'installe à la table.`;
 
         if (originConn && originConn.open) {
           try {
             originConn.send({
               type: 'SYNC_STATE',
-              state: buildSanitizedStateFor(msg.player.id)
+              state: buildSanitizedStateFor(incoming.id)
             });
           } catch(e) {}
         }
-        
+
         // Diffusion immédiate à tout le monde avec le mode actuel de l'hôte
         broadcastState();
-        showToast(`${msg.player.name} a rejoint la table.`);
+        if (!alreadySeated) showToast(`${safeName} a rejoint la table.`);
         return;
       }
 
@@ -1668,13 +1739,14 @@
         handleQuintoMirrorClaim(msg.id);
       } else if (msg.type === 'QUINTO_SELF_REROLL') {
         if (!gameState.isZbeul) return; // Ignorer hors mode Zbeul
+        if (gameState.status !== 'in_round' || gameState.playerOrder[gameState.activePlayerIndex] !== msg.id) return; // Seulement à son tour
         if (gameState.quintoHasRolled && !gameState.quintoRerollUsedThisTurn) {
           gameState.quintoRerollUsedThisTurn = true;
           executeDiceReroll(msg.id);
         }
       } else if (msg.type === 'QUINTO_FORCE_PREV') {
         if (!gameState.isZbeul) return;
-        if (gameState.playerOrder[gameState.activePlayerIndex] !== msg.id) return;
+        if (gameState.status !== 'in_round' || gameState.playerOrder[gameState.activePlayerIndex] !== msg.id) return;
         const player = gameState.players[msg.id];
         const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
         
@@ -1712,13 +1784,13 @@
         }
       } else if (msg.type === 'USE_ITEM_SWAP') {
         const player = gameState.players[msg.id];
-        if (player && consumePlayerItem(player, 'swap_hands')) {
+        if (canUseItemNow(msg.id) && player && consumePlayerItem(player, 'swap_hands')) {
           gameState.hasUsedItemThisTurn = true;
           executeHandSwap();
         }
       } else if (msg.type === 'USE_ITEM_CURSE10') {
         const player = gameState.players[msg.id];
-        if (player && consumePlayerItem(player, 'curse_10')) {
+        if (canUseItemNow(msg.id) && player && consumePlayerItem(player, 'curse_10')) {
           gameState.hasUsedItemThisTurn = true;
           executeCurse10(msg.targetId);
         }
@@ -1732,13 +1804,13 @@
         handlePlayerDeparture(msg.id);
       } else if (msg.type === 'USE_ITEM_REROLL') {
         const player = gameState.players[msg.id];
-        if (player && consumePlayerItem(player, 'reroll')) {
+        if (canUseItemNow(msg.id) && player && consumePlayerItem(player, 'reroll')) {
           gameState.hasUsedItemThisTurn = true;
           executeDiceReroll(msg.id);
         }
       } else if (msg.type === 'USE_ITEM_FORCE_PREV_REROLL') {
         const player = gameState.players[msg.id];
-        if (player && consumePlayerItem(player, 'force_prev_reroll')) {
+        if (canUseItemNow(msg.id) && player && consumePlayerItem(player, 'force_prev_reroll')) {
           gameState.hasUsedItemThisTurn = true;
           executeForcePrevReroll(msg.id);
         }
@@ -2032,6 +2104,10 @@
 
           peer.on('connection', (conn) => {
             connections.push(conn);
+            conn.on('close', () => {
+              connections = connections.filter(c => c !== conn);
+              if (conn.playerGameId) handlePlayerDeparture(conn.playerGameId);
+            });
             conn.on('data', (data) => {
               if (data) {
                 // Récupère correctement l'ID, qu'il soit à la racine ou dans player
@@ -2066,7 +2142,6 @@
 
       // 2. Annuler la dernière annonce de la cible pour qu'il doive ré-annoncer
       gameState.quintoClaim = gameState.previousQuintoClaim || null;
-      gameState.forcedRerollByPlayerId = activatorId;
 
       // Marquer qui a forcé pour interdire l'accusation
       gameState.forcedRerollByPlayerId = activatorId;
@@ -2076,7 +2151,7 @@
       gameState.hasUsedItemThisTurn = false;
 
       audio.diceShake();
-      gameState.feltTicker = `${activator.name} force ${targetPlayer.name} à re-secouer ses dés !`;
+      gameState.feltTicker = `${activator ? activator.name : 'Un joueur'} force ${targetPlayer.name} à re-secouer ses dés !`;
       broadcastToast(`${targetPlayer.name} doit rejouer !`);
 
       broadcastState();
@@ -2085,6 +2160,9 @@
 
     function initClientPeer(roomCode) {
       const cleanCode = roomCode.toUpperCase();
+      joinConfirmed = false;
+      gameState.players = {};
+      gameState.playerOrder = [];
       gameState.code = cleanCode;
       gameState.status = 'lobby';
       document.getElementById('badge-room-code').innerText = cleanCode;
@@ -2140,7 +2218,10 @@
             hostConn.on('data', (data) => {
               if (!data) return;
 
-              if (data.type === 'SYNC_STATE') {
+              if (data.type === 'JOIN_REJECTED') {
+                handleJoinRejected(data.reason);
+              } else if (data.type === 'SYNC_STATE') {
+                joinConfirmed = true;
                 gameState = normalizeIncomingState(data.state);
                 if (data.state.gameMode) {
                   gameState.gameMode = data.state.gameMode;
@@ -2156,17 +2237,8 @@
             });
 
             hostConn.on('close', () => {
-              broadcastToast("Déconnecté de l'hôte.");
               if (!isHost && gameState.status !== 'auth') {
-                closeDenounceModal();
-                closeImmunityPromptModal();
-                closePfcPromptModal();
-                const draftModal = document.getElementById('modal-item-draft');
-                if (draftModal) draftModal.classList.add('hidden');
-                gameState.status = 'auth';
-                gameState.players = {};
-                gameState.playerOrder = [];
-                renderUI();
+                leaveRoomCleanup("Déconnecté de l'hôte.");
               }
             });
 
@@ -2177,11 +2249,24 @@
 
           peer.on('error', (err) => {
             console.warn(err);
+            // Code inexistant : on laisse 2,5 s au BroadcastChannel (test multi-onglets) avant d'abandonner
+            if (err && err.type === 'peer-unavailable') {
+              setTimeout(() => {
+                if (!isHost && !joinConfirmed) handleJoinRejected('Table introuvable : vérifie le code.');
+              }, 2500);
+            }
           });
         } catch (e) {
           console.error(e);
         }
       }
+
+      // Filet de sécurité : si personne ne répond, on ne laisse pas le joueur seul dans une salle fantôme
+      setTimeout(() => {
+        if (!isHost && !joinConfirmed && gameState.status !== 'auth') {
+          handleJoinRejected("L'hôte ne répond pas : vérifie le code de la table.");
+        }
+      }, 12000);
 
       // Envoi immédiat par BroadcastChannel pour test en multi-fenêtres local
       if (broadcastChannel) {
@@ -2226,8 +2311,6 @@
     }
 
     function setupSkullRound(living) {
-      const previousWinnerId = gameState.skullHighBidderId;
-
       gameState.status = 'in_round';
       gameState.skullPhase = 'placement';
       gameState.skullHighBid = 0;
@@ -2241,6 +2324,12 @@
 
       const starterId = living[Math.floor(Math.random() * living.length)];
       gameState.activePlayerIndex = gameState.playerOrder.indexOf(starterId);
+
+      // Les joueurs éliminés ne gardent ni main ni pile sur la table
+      gameState.playerOrder.forEach(id => {
+        const dp = gameState.players[id];
+        if (dp && !dp.isAlive) { dp.hand = []; dp.skullPile = []; }
+      });
 
       // Distribution des 4 tuiles pour chaque joueur vivant
       living.forEach(id => {
@@ -2450,15 +2539,17 @@
             if (isSelfSkullPenalty) {
               // 1er tir
               triggerRevolverChamber(revealer, () => {
-                // Callback si le joueur survit au 1er tir
-                if (revealer.isAlive) {
-                  gameState.feltTicker = `${revealer.name} survit au 1er coup... 2e tir immédiat !`;
-                  broadcastState();
-                  setTimeout(() => {
-                    // 2e tir
-                    triggerRevolverChamber(revealer);
-                  }, 1200);
+                if (!revealer.isAlive) {
+                  // Mort dès le 1er tir : pas de 2e tir, on passe à la suite
+                  proceedAfterShot();
+                  return;
                 }
+                gameState.feltTicker = `${revealer.name} survit au 1er coup... 2e tir immédiat !`;
+                broadcastState();
+                setTimeout(() => {
+                  // 2e tir (suite gérée par proceedAfterShot)
+                  triggerRevolverChamber(revealer);
+                }, 1200);
               });
             } else {
               triggerRevolverChamber(revealer);
@@ -3757,16 +3848,28 @@
     /* -------------------------------------------------------------
        ROULETTE & EXECUTION
        ------------------------------------------------------------- */
+    // Fin d'un tir « classique » : partie terminée s'il reste ≤ 1 survivant, sinon manche suivante
+    function proceedAfterShot() {
+      if (!isHost) return;
+      closeDenounceModal();
+      broadcastEvent({ type: 'CLOSE_DENOUNCE_MODAL' });
+
+      const survivors = gameState.playerOrder.filter(id => gameState.players[id] && gameState.players[id].isAlive);
+      if (survivors.length <= 1) {
+        gameState.status = 'game_ended';
+        broadcastState();
+      } else {
+        startNewRound();
+      }
+    }
+
+    // customOnComplete est appelé une fois le tir résolu (que le joueur ait survécu ou non).
+    // Sans callback, la suite est gérée par proceedAfterShot().
     function triggerRevolverChamber(targetPlayer, customOnComplete = null) {
       const risk = targetPlayer.cylinderRisk || 1;
       const remainingChambers = Math.max(1, 7 - risk);
       const isFatal = (risk >= 6) ? true : (Math.random() < (1 / remainingChambers));
-
-      setTimeout(() => {
-        closeDenounceModal();
-        broadcastEvent({ type: 'CLOSE_DENOUNCE_MODAL' });
-        startNewRound();
-      }, 1800);
+      const hasCustom = typeof customOnComplete === 'function';
 
       broadcastEvent({
         type: 'CYLINDER_SPIN',
@@ -3781,38 +3884,16 @@
         if (!isHost) return; // Seul l'hôte gère la suite logique
 
         if (isFatal) {
-          triggerExecution(targetPlayer, `Le coup ${risk}/6 a fait feu`, () => {
-            if (typeof customOnComplete === 'function') {
-              customOnComplete();
-            } else {
-              const survivors = gameState.playerOrder.filter(id => gameState.players[id] && gameState.players[id].isAlive);
-              if (survivors.length <= 1) {
-                gameState.status = 'game_ended';
-                broadcastState();
-              } else {
-                startNewRound();
-              }
-            }
-          });
+          triggerExecution(targetPlayer, `Le coup ${risk}/6 a fait feu`, hasCustom ? customOnComplete : proceedAfterShot);
         } else {
           targetPlayer.cylinderRisk = risk + 1;
           gameState.feltTicker = `${targetPlayer.name} survit ! Risque augmenté à ${targetPlayer.cylinderRisk}/6.`;
           broadcastState();
 
-          if (typeof customOnComplete === 'function') {
+          if (hasCustom) {
             customOnComplete();
           } else {
-            setTimeout(() => {
-              closeDenounceModal();
-              broadcastEvent({ type: 'CLOSE_DENOUNCE_MODAL' });
-              
-              if (gameState.gameMode === 'skull') {
-                gameState.status = 'in_round';
-                startNewRound();
-              } else {
-                startNewRound();
-              }
-            }, 1800);
+            setTimeout(proceedAfterShot, 1200);
           }
         }
       });
@@ -3827,7 +3908,11 @@
       const ticker = document.getElementById('denounce-cylinder-ticker');
       const verdict = document.getElementById('denounce-verdict-banner');
 
-      if (!cylinderBox || !wheel || !desc || !ticker) return;
+      if (!cylinderBox || !wheel || !desc || !ticker) {
+        // Sans animation possible, on résout quand même le tir pour ne pas bloquer la partie
+        if (onComplete) setTimeout(onComplete, 500);
+        return;
+      }
 
       if (modal) modal.classList.remove('hidden');
       if (row) row.classList.add('hidden');
@@ -3897,15 +3982,8 @@
 
         if (typeof onDone === 'function') {
           onDone();
-          return;
-        }
-
-        const survivors = gameState.playerOrder.filter(id => gameState.players[id] && gameState.players[id].isAlive);
-        if (survivors.length <= 1) {
-          gameState.status = 'game_ended';
-          broadcastState();
         } else {
-          startNewRound();
+          proceedAfterShot();
         }
       }, 2800);
     }
@@ -5669,6 +5747,7 @@
           }
         } else {
           // 2. ÉTAPE : APRÈS AVOIR SECOUÉ
+          if (btnForcePrev) { btnForcePrev.classList.add('hidden'); btnForcePrev.disabled = true; }
           if (stepRoll) stepRoll.classList.add('hidden');
           if (stepChoice) stepChoice.classList.remove('hidden');
 
@@ -5790,44 +5869,6 @@
           btnSelfReroll.disabled = true;
         }
 
-        // Afficher uniquement si le mode Zbeul est activé
-        if (btnForcePrev) {
-          if (!gameState.isZbeul) {
-            btnForcePrev.classList.add('hidden');
-            btnForcePrev.disabled = true;
-          } else {
-            const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
-            const isBlockedByMirror = Boolean(gameState.isMirrorChainActive || wasPrecededByMirror);
-            const alreadyUsedRound = Boolean(me && me.hasForcedReroll);
-            const canForce = hasPrevClaim && !alreadyUsedRound && !isBlockedByMirror;
-
-            btnForcePrev.classList.toggle('hidden', !hasPrevClaim || alreadyUsedRound);
-            btnForcePrev.disabled = !canForce;
-            btnForcePrev.className = canForce
-              ? "w-full h-7 rounded border border-amber-600 bg-[#241a0d] hover:bg-[#342411] text-amber-300 font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-              : "w-full h-7 rounded border border-[#2b3a2e] bg-[#141b16] text-[#55695a] font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
-
-            if (isBlockedByMirror) {
-              btnForcePrev.title = "Action impossible après un Miroir.";
-            } else if (alreadyUsedRound) {
-              btnForcePrev.title = "Action déjà utilisée cette manche.";
-            }
-          }
-        }
-        // Afficher uniquement si le mode Zbeul est activé
-        if (btnSelfReroll) {
-          if (!gameState.isZbeul) {
-            btnSelfReroll.classList.add('hidden');
-            btnSelfReroll.disabled = true;
-          } else {
-            btnSelfReroll.classList.remove('hidden');
-            const canReroll = !gameState.quintoRerollUsedThisTurn;
-            btnSelfReroll.disabled = !canReroll;
-            btnSelfReroll.className = canReroll
-              ? "mt-1 w-full h-8 rounded border border-[#8f7734] bg-[#1a241d] hover:bg-[#233127] text-dore font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_8px_rgba(212,175,55,0.25)] active:scale-95"
-              : "mt-1 w-full h-8 rounded border border-[#233026] bg-[#111713] text-[#4f5f53] font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
-          }
-        }
       }
     }
 
@@ -5925,7 +5966,7 @@
     document.getElementById('btn-solo-bots').addEventListener('click', () => {
       audio.init();
       const input = document.getElementById('input-username');
-      myName = (input && input.value.trim()) || 'Joueur 1';
+      myName = sanitizeName(input && input.value, 'Joueur 1');
       isHost = true;
       gameState.code = 'SOLO';
 
@@ -5988,6 +6029,8 @@
 
     document.getElementById('btn-create-room').addEventListener('click', () => {
       audio.init();
+      const nameInput = document.getElementById('input-username');
+      myName = sanitizeName(nameInput && nameInput.value, `Joueur_${Math.floor(Math.random() * 900 + 100)}`);
       const myAvatar = (selectedAvatarId === 'custom' && customAvatarBase64) 
         ? customAvatarBase64 
         : (selectedAvatarId !== 'custom' ? selectedAvatarId : 'av_1');
@@ -6007,8 +6050,6 @@
           hasDraftedThisRound: false
         }
       };
-      const input = document.getElementById('input-username');
-      myName = (input && input.value.trim()) || `Joueur_${Math.floor(Math.random() * 900 + 100)}`;
       isHost = true;
       gameState.playerOrder = [myId];
       gameState.status = 'lobby';
@@ -6027,7 +6068,7 @@
         return;
       }
       const input = document.getElementById('input-username');
-      myName = (input && input.value.trim()) || `Joueur_${Math.floor(Math.random() * 900 + 100)}`;
+      myName = sanitizeName(input && input.value, `Joueur_${Math.floor(Math.random() * 900 + 100)}`);
       isHost = false;
 
       initClientPeer(code);
@@ -6036,14 +6077,14 @@
 
     document.getElementById('btn-add-bot').addEventListener('click', () => {
       if (!isHost) return;
-      if (Object.keys(gameState.players).length >= 4) {
-        broadcastToast("Table complète (max 4).");
+      if (Object.keys(gameState.players).length >= MAX_PLAYERS) {
+        broadcastToast(`Table complète (max ${MAX_PLAYERS}).`);
         return;
       }
+      if (gameState.status !== 'lobby') return;
       const existingNames = Object.values(gameState.players).map(p => p.name);
       const botName = getRandomPlayerName(existingNames);
       const botId = 'bot_' + Math.random().toString(36).substring(2, 6);
-      const randomAv = AVATAR_PRESETS[Math.floor(Math.random() * AVATAR_PRESETS.length)].id;
       const existingAvatars = Object.values(gameState.players).map(p => p.avatar);
       const botAvatar = getRandomPlayableAvatar(existingAvatars);
 
@@ -6065,26 +6106,15 @@
     });
 
     document.getElementById('btn-leave-room').addEventListener('click', () => {
-      if (broadcastChannel) {
-        try {
-          broadcastChannel.postMessage({ target: 'HOST', action: { type: 'PLAYER_LEAVE', id: myId }, sender: myId });
-          broadcastChannel.close();
-        } catch(e) {}
+      if (!isHost) {
+        if (broadcastChannel) {
+          try { broadcastChannel.postMessage({ target: 'HOST', action: { type: 'PLAYER_LEAVE', id: myId }, sender: myId }); } catch(e) {}
+        }
+        if (hostConn && hostConn.open) {
+          try { hostConn.send({ type: 'PLAYER_LEAVE', id: myId }); } catch(e) {}
+        }
       }
-      if (hostConn) {
-        try { hostConn.send({ type: 'PLAYER_LEAVE', id: myId }); hostConn.close(); } catch(e) {}
-      }
-      if (peer) {
-        try { peer.destroy(); } catch(e) {}
-      }
-      peer = null;
-      hostConn = null;
-      connections = [];
-      isHost = true;
-      gameState.players = {};
-      gameState.playerOrder = [];
-      gameState.status = 'auth';
-      showScreen('screen-auth');
+      leaveRoomCleanup();
     });
 
     document.getElementById('btn-toggle-ready').addEventListener('click', () => {
