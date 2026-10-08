@@ -2528,7 +2528,7 @@
           const isSelfSkullPenalty = gameState.isZbeul && (targetPlayerId === revealer.id);
 
           if (isSelfSkullPenalty) {
-            gameState.feltTicker = `AUTO-CRÂNE (ZBEUL) ! ${revealer.name} a retourné son propre crâne : DOUBLE TIR ! 💀💀`;
+            gameState.feltTicker = `AUTO-CRÂNE ZBEUL ! ${revealer.name} DOUBLE TIR ! 💀💀`;
             showToast(`${revealer.name} prend 2 tirs de barillet !`);
           } else {
             gameState.feltTicker = `CRÂNE DÉCOUVERT ! ${revealer.name} affronte le barillet !`;
