@@ -2226,20 +2226,20 @@
 
     function setupSkullRound(living) {
       const previousWinnerId = gameState.skullHighBidderId;
-      const starterId = (previousWinnerId && gameState.players[previousWinnerId]?.isAlive)
-        ? previousWinnerId
-        : living[Math.floor(Math.random() * living.length)];
 
       gameState.status = 'in_round';
       gameState.skullPhase = 'placement';
       gameState.skullHighBid = 0;
-      gameState.skullHighBidderId = null;
+      gameState.skullHighBidderId = null; // IMPORTANT : réinitialiser pour ne pas reprendre le mort
+      gameState.isRevealingAnimationRunning = false; // IMPORTANT : débloquer les clics
       gameState.skullPassers = [];
       gameState.skullRevealedCards = [];
       gameState.skullTargetCount = 0;
       gameState.tableCardsCount = 0;
-      gameState.isRevealingAnimationRunning = false;
       selectedSkullTileId = null;
+
+      const starterId = living[Math.floor(Math.random() * living.length)];
+      gameState.activePlayerIndex = gameState.playerOrder.indexOf(starterId);
 
       // Distribution des 4 tuiles pour chaque joueur vivant
       living.forEach(id => {
@@ -3761,6 +3761,12 @@
       const remainingChambers = Math.max(1, 7 - risk);
       const isFatal = (risk >= 6) ? true : (Math.random() < (1 / remainingChambers));
 
+      setTimeout(() => {
+        closeDenounceModal();
+        broadcastEvent({ type: 'CLOSE_DENOUNCE_MODAL' });
+        startNewRound();
+      }, 1800);
+
       broadcastEvent({
         type: 'CYLINDER_SPIN',
         targetPlayerName: targetPlayer.name,
@@ -3883,12 +3889,10 @@
       });
 
       triggerExecutionLocal(player.name, reason);
-      
-      // CRUCIAL : On diffuse immédiatement le nouvel état (joueur mort) à tout le monde
       broadcastState();
 
       setTimeout(() => {
-        if (!isHost) return; // Seul l'hôte gère la suite de la logique de partie
+        if (!isHost) return;
 
         if (typeof onDone === 'function') {
           onDone();
