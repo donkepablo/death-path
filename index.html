@@ -831,29 +831,52 @@
 
     <!-- RULES MODAL -->
     <div id="modal-rules" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
-      <div class="bg-[#161c18] border border-[#2b3a2e] rounded-xl max-w-sm w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="bg-[#161c18] border border-[#2b3a2e] rounded-xl max-w-md w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
         <div class="p-3 border-b border-[#212b23] flex items-center justify-between">
           <span class="text-dore font-title text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-book-open"></i> RÈGLES DU JEU
+            <i class="fa-solid fa-book-open"></i> Règles officielles
           </span>
           <button id="btn-close-rules" type="button" class="text-[#889b8d] hover:text-white p-1">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
 
-        <div class="p-4 overflow-y-auto space-y-2.5 text-xs font-mono text-[#dbe3dc] leading-relaxed">
+        <div class="p-4 overflow-y-auto space-y-3 text-xs font-mono text-[#dbe3dc] leading-relaxed">
+          
+          <!-- Principe général -->
           <div class="p-2.5 rounded border border-[#233126] bg-[#101411] space-y-1">
-            <span class="font-title font-bold text-dore text-xs">Mode Cartes</span>
-            <p>À chaque manche, une figure exigée est tirée au sort. Posez 1 à 3 cartes face cachée ou dénoncez le joueur précédent. Les Jokers remplacent tout. Le 10 entraîne une élimination fatale directe en cas de bluff démasqué.</p>
+            <span class="font-title font-bold text-dore text-xs uppercase tracking-wide">Principe du jeu et élimination</span>
+            <p>Tous les modes reposent sur le bluff et la survie. Chaque échec confronte le joueur au barillet de roulette russe (probabilité croissante de 1/6 à 6/6). Une détonation entraîne l'élimination définitive.</p>
           </div>
-          <div class="p-2.5 rounded border border-[#233126] bg-[#101411] space-y-1">
-            <span class="font-title font-bold text-dore text-xs">Mode Dés</span>
-            <p>Lancez deux dés en secret. Annoncez strictement supérieur ou accusez le précédent joueur. En cas de mensonge, le barillet tourne !</p>
+
+          <!-- Mode Cartes -->
+          <div class="p-2.5 rounded border border-[#233126] bg-[#101411] space-y-1.5">
+            <span class="font-title font-bold text-dore text-xs uppercase tracking-wide">1. Mode Cartes</span>
+            <p><strong>Règles classiques :</strong> Une figure exigée (As, Roi, Dame ou Valet) est tirée au sort. À son tour, le joueur pose de une à trois cartes face cachée en affirmant qu'il s'agit de la figure demandée, ou accuse le joueur précédent de mensonge. Les Jokers remplacent n'importe quelle carte. Le premier joueur sans carte valide la manche.</p>
+            <p><strong>Variante هيلا :</strong> Une carte Crâne est mélangée au paquet. Poser cette carte et se faire démasquer entraîne une élimination fatale immédiate. Lorsqu'un joueur pose trois cartes, l'adversaire suivant ne peut pas contester le bluff mais doit retourner l'une des trois cartes au hasard. Une carte incorrecte inflige deux tirs de barillet au menteur.</p>
           </div>
-          <div class="p-2.5 rounded border border-red-800/70 bg-[#160d0d] space-y-1">
-            <span class="font-title font-bold text-red-400 text-xs">Mode هيلا</span>
-            <p class="text-stone-300">Ajout d'items pour déstabiliser les adversaires.</p>
+
+          <!-- Mode Dés -->
+          <div class="p-2.5 rounded border border-[#233126] bg-[#101411] space-y-1.5">
+            <span class="font-title font-bold text-dore text-xs uppercase tracking-wide">2. Mode Dés</span>
+            <p><strong>Règles classiques :</strong> Chaque joueur lance deux dés sous son gobelet. Les combinaisons sont classées par valeur (31 le plus faible jusqu'à 65, puis les paires de 11 à 66, et enfin le 21 comme combinaison suprême). Le joueur annonce une valeur égale ou supérieure à la précédente, ou accuse le joueur précédent de mentir. En cas d'égalité parfaite avec l'annonce précédente, l'action Miroir renvoie la main à l'envoyeur.</p>
+            <p><strong>Variante هيلا :</strong> Chaque joueur dispose de deux relances personnelles et peut forcer deux fois un adversaire précédent à relancer ses dés par partie. Une accusation subie permet de déclencher un duel Pierre-Feuille-Ciseaux à usage unique pour tenter de renvoyer le tir. Si une annonce de 21 est contestée, tous les adversaires de la table subissent un tir de barillet.</p>
           </div>
+
+          <!-- Mode Skull -->
+          <div class="p-2.5 rounded border border-[#233126] bg-[#101411] space-y-1.5">
+            <span class="font-title font-bold text-dore text-xs uppercase tracking-wide">3. Mode Skull</span>
+            <p><strong>Règles classiques :</strong> Chaque joueur possède trois fleurs et un crâne. Les joueurs posent tour à tour des tuiles face cachée jusqu'à ce qu'une enchère soit lancée. Le plus offrant doit retourner le nombre annoncé de tuiles sans révéler de crâne, en commençant obligatoirement par ses propres cartes. Deux réussites accordent la victoire.</p>
+            <p><strong>Variante هيلا :</strong> Le barillet sanctionne les échecs. Si le joueur ayant remporté l'enchère révèle son propre crâne, il subit deux tirs consécutifs de barillet.</p>
+          </div>
+
+          <!-- Mode Mistigri -->
+          <div class="p-2.5 rounded border border-[#233126] bg-[#101411] space-y-1.5">
+            <span class="font-title font-bold text-dore text-xs uppercase tracking-wide">4. Mode Mistigri</span>
+            <p><strong>Règles classiques :</strong> Les paires de même valeur et de même couleur sont automatiquement défaussées. Les joueurs piochent à tour de rôle une carte chez leur voisin. Le joueur conservant le Mistigri unique en fin de manche fait face au barillet.</p>
+            <p><strong>Variante هيلا :</strong> Défausser des paires de figures inverse le sens du jeu. Défausser une paire d'As active un radar révélant temporairement le porteur du Mistigri. Défausser la valeur numérique tirée en début de manche provoque une redistribution aléatoire intégrale des mains.</p>
+          </div>
+
         </div>
       </div>
     </div>
