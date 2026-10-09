@@ -263,7 +263,7 @@
 
     <!-- SCREEN 1: AUTH -->
     <section id="screen-auth" class="screen-view active w-full max-w-sm flex flex-col gap-4 my-auto p-4 z-20">
-      <div class="text-center space-y-1">
+      <div class="text-center space-y-1 relative -top-4 sm:-top-6">
         <div class="text-2xl text-dore mb-1 tracking-widest font-title font-bold">♠</div>
         <h2 class="text-4xl font-title font-bold tracking-[0.12em] text-[#f7f6f2] uppercase">PROUT BLUFF</h2>
       </div>
@@ -404,8 +404,8 @@
       </div>
 
       <!-- CENTRE : LE TAPIS DE JEU RESTE DANS UNE ZONE FIGÉE SANS EXPANSION -->
-      <div class="relative w-full flex-1 max-w-5xl flex items-center justify-center px-2 sm:px-4 py-1 min-h-0 overflow-hidden">
-        <div class="table-wood-rim w-full h-full max-h-[460px] p-2 sm:p-3 flex items-center justify-center flex-shrink-0">
+      <div class="relative w-full flex-1 max-w-5xl flex items-center justify-center px-2 sm:px-4 pt-1 pb-3 sm:pb-4 min-h-0 overflow-hidden mb-2">
+        <div class="table-wood-rim w-full h-full max-h-[430px] sm:max-h-[460px] p-2 sm:p-3 flex items-center justify-center flex-shrink-0 shadow-2xl">
           <div class="table-brass-rim w-full h-full flex items-center justify-center">
             <div id="poker-felt" class="table-felt w-full h-full flex flex-col items-center justify-between p-3 relative overflow-hidden">
               <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04] font-title text-8xl text-white">
@@ -572,7 +572,7 @@
       </div>
 
       <!-- HAND / DICE CONSOLE -->
-      <div class="w-full min-h-[155px] pb-1 pt-1 px-4 bg-[#141a16]/95 border-t border-[#243327] flex flex-col items-center justify-end gap-1 z-30 shadow-2xl flex-shrink-0 overflow-visible">
+      <div class="w-full pb-2 pt-0 px-2 sm:px-4 flex flex-col items-center justify-end gap-1.5 z-30 flex-shrink-0 overflow-visible pointer-events-auto mt-1 sm:mt-2">
         
         <!-- BARRE TITRE & BARILLET (MASQUÉE) -->
         <div class="hidden">
@@ -581,8 +581,8 @@
           <span id="my-revolver-status"></span>
         </div>
 
-        <!-- ZONE CENTRALE DE LA CONSOLE : HAUTEUR FIXÉE À 100px -->
-        <div class="w-full max-w-2xl min-h-[58px] flex items-end justify-center flex-shrink-0 relative">
+        <!-- ZONE CENTRALE DE LA CONSOLE -->
+        <div class="w-full max-w-2xl min-h-[96px] sm:min-h-[118px] md:min-h-[130px] flex items-end justify-center flex-shrink-0 relative">
           <!-- Inventaire Zbeul (positionné sans déplacer les cartes) -->
           <div id="my-inventory-bar" class="hidden absolute -top-5 left-0 right-0 items-center justify-between bg-[#0c100e]/90 border border-[#233126] rounded px-2 py-0.5 text-[10px] font-mono z-20">
             <div class="flex items-center gap-1.5 overflow-x-auto py-0.5">
@@ -3193,9 +3193,11 @@
       if (!seatEl) return;
 
       const sRect = seatEl.getBoundingClientRect();
+      const targetEl = document.getElementById('table-felt-center');
+      const tRect = targetEl ? targetEl.getBoundingClientRect() : sRect;
 
       const thrown = document.createElement('div');
-      thrown.className = 'thrown-card-anim w-9 h-12 sm:w-11 sm:h-14 rounded-md border-2 border-[#8f7734] bg-[#142318] p-1 flex flex-col items-center justify-between shadow-2xl z-[999]';
+      thrown.className = 'thrown-card-anim w-9 h-12 sm:w-11 sm:h-14 rounded-md border-2 border-[#8f7734] bg-[#142318] p-1 flex flex-col items-center justify-between shadow-2xl z-[999] pointer-events-none';
       thrown.innerHTML = `
         <div class="w-full flex justify-between text-[7px] text-dore opacity-80 pointer-events-none">
           <i class="fa-solid fa-fan"></i><i class="fa-solid fa-skull"></i>
@@ -3206,9 +3208,17 @@
         </div>
       `;
 
-      // Départ : un peu en avant du siège
-      const startX = sRect.left + sRect.width / 2 - 18;
-      const startY = sRect.top + sRect.height / 2 - 24;
+      // Départ : depuis la main du joueur (bas) ou depuis son siège
+      let startX, startY;
+      if (playerId === myId) {
+        const myHand = document.getElementById('skull-hand-tiles');
+        const hRect = myHand ? myHand.getBoundingClientRect() : sRect;
+        startX = hRect.left + hRect.width / 2 - 20;
+        startY = hRect.top + 10;
+      } else {
+        startX = sRect.left + sRect.width / 2 - 20;
+        startY = sRect.top + sRect.height / 2 - 25;
+      }
 
       thrown.style.left = `${startX}px`;
       thrown.style.top = `${startY}px`;
@@ -3216,10 +3226,12 @@
       thrown.style.opacity = '1';
       document.body.appendChild(thrown);
 
-      // Trajectoire vers la pile de tuiles posée devant le joueur
+      // Trajectoire : se dirige vers l'espace de jeu devant le siège (direction centre)
       requestAnimationFrame(() => {
-        const destX = startX + (Math.random() * 12 - 6);
-        const destY = startY + (sRect.top < window.innerHeight / 2 ? 28 : -28);
+        const dirX = (tRect.left + tRect.width / 2) - startX;
+        const dirY = (tRect.top + tRect.height / 2) - startY;
+        const destX = startX + dirX * 0.35 + (Math.random() * 10 - 5);
+        const destY = startY + dirY * 0.35;
 
         thrown.style.left = `${destX}px`;
         thrown.style.top = `${destY}px`;
@@ -3227,8 +3239,8 @@
 
         setTimeout(() => {
           thrown.style.opacity = '0';
-          setTimeout(() => thrown.remove(), 200);
-        }, 360);
+          setTimeout(() => thrown.remove(), 180);
+        }, 340);
       });
     }
 
@@ -3314,12 +3326,13 @@
     }
 
     function animateSkullRevealVisual(revealerName, targetPlayerId, tile) {
-      // Trouve le bon siège source cohérent pour chaque joueur
-      const sourceEl = getSeatElementForPlayer(targetPlayerId);
+      const seatEl = getSeatElementForPlayer(targetPlayerId);
       const targetEl = document.getElementById('table-felt-center');
       if (!targetEl) return;
 
-      const sRect = sourceEl ? sourceEl.getBoundingClientRect() : targetEl.getBoundingClientRect();
+      // Cherche la pile physique sur le tapis du joueur visé
+      const pileEl = seatEl ? seatEl.querySelector('[onclick*="handlePileClick"]') : null;
+      const sRect = pileEl ? pileEl.getBoundingClientRect() : (seatEl ? seatEl.getBoundingClientRect() : targetEl.getBoundingClientRect());
       const tRect = targetEl.getBoundingClientRect();
 
       const isSkull = tile.type === 'skull';
@@ -3328,7 +3341,7 @@
         : 'border-emerald-600 shadow-[0_0_24px_rgba(5,150,105,0.65)] ring-2 ring-emerald-500/50';
 
       const disc = document.createElement('div');
-      disc.className = 'thrown-card-anim w-12 h-16 sm:w-14 sm:h-20 rounded-xl border-2 border-[#8f7734] bg-[#142318] p-1.5 flex flex-col items-center justify-between shadow-2xl z-[999]';
+      disc.className = 'thrown-card-anim w-12 h-16 sm:w-14 sm:h-20 rounded-xl border-2 border-[#8f7734] bg-[#142318] p-1.5 flex flex-col items-center justify-between shadow-2xl z-[999] pointer-events-none';
       disc.innerHTML = `
         <div class="w-full flex justify-between text-[7px] text-dore">
           <i class="fa-solid fa-fan"></i><i class="fa-solid fa-skull"></i>
@@ -3339,15 +3352,18 @@
         </div>
       `;
 
-      // Départ centré sur le siège d'origine
-      disc.style.left = `${sRect.left + sRect.width / 2}px`;
-      disc.style.top = `${sRect.top + sRect.height / 2}px`;
-      disc.style.transform = 'translate(-50%, -50%) scale(0.8) rotate(-6deg)';
+      // Départ pile au centre de la pile ciblée
+      const startX = sRect.left + sRect.width / 2;
+      const startY = sRect.top + sRect.height / 2;
+
+      disc.style.left = `${startX}px`;
+      disc.style.top = `${startY}px`;
+      disc.style.transform = 'translate(-50%, -50%) scale(0.85) rotate(-6deg)';
       document.body.appendChild(disc);
 
       audio.cardSlide();
 
-      // Cible : plein centre du feutre
+      // Cible : centre du feutre
       const centerX = tRect.left + tRect.width / 2;
       const centerY = tRect.top + tRect.height / 2;
 
@@ -3363,7 +3379,7 @@
           setTimeout(() => {
             audio.chip();
 
-            disc.className = `thrown-card-anim w-12 h-16 sm:w-14 sm:h-20 rounded-xl border-2 bg-[#faf8f5] p-1.5 flex items-center justify-center select-none z-[999] ${haloColor}`;
+            disc.className = `thrown-card-anim w-12 h-16 sm:w-14 sm:h-20 rounded-xl border-2 bg-[#faf8f5] p-1.5 flex items-center justify-center select-none z-[999] pointer-events-none ${haloColor}`;
             disc.innerHTML = `
               <i class="fa-solid ${tile.icon} text-2xl ${isSkull ? 'text-rose-700 animate-bounce' : 'text-emerald-700'}"></i>
             `;
@@ -5205,7 +5221,7 @@
       me.hand.forEach(c => {
         const card = document.createElement('div');
         const isM = c.isMistigri;
-        card.className = `w-14 h-20 sm:w-16 sm:h-24 rounded-lg border-2 flex flex-col justify-between p-1.5 shadow-md bg-[#faf8f5] select-none ${
+        card.className = `w-14 h-20 sm:w-16 sm:h-24 md:w-18 md:h-28 rounded-lg border-2 flex flex-col justify-between p-1.5 shadow-md bg-[#faf8f5] select-none transition-transform hover:-translate-y-1 ${
           isM ? 'border-purple-600 ring-2 ring-purple-500/50 shadow-[0_0_14px_rgba(168,85,247,0.65)]' : 'border-[#d2cbbe]'
         }`;
 
@@ -5637,18 +5653,18 @@
             const isSkull = tile.type === 'skull';
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = `w-14 h-20 rounded-xl border-2 flex flex-col items-center justify-between p-1.5 transition-all shadow-lg cursor-pointer ${
+            btn.className = `w-14 h-20 sm:w-16 sm:h-24 md:w-18 md:h-28 rounded-xl border-2 flex flex-col items-center justify-between p-1.5 transition-all shadow-lg cursor-pointer ${
               isSel 
-                ? 'border-dore bg-[#faf8f5] scale-105 shadow-[0_0_15px_rgba(212,175,55,0.7)] -translate-y-1.5' 
+                ? 'border-dore bg-[#faf8f5] scale-105 shadow-[0_0_15px_rgba(212,175,55,0.7)] -translate-y-2' 
                 : 'border-[#d2cbbe] bg-[#faf8f5] hover:border-dore hover:-translate-y-0.5'
             }`;
             
             btn.innerHTML = `
-              <i class="fa-solid ${tile.icon} text-lg mt-0.5"></i>
-              <span class="text-[9px] font-mono font-bold uppercase tracking-wider ${isSkull ? 'text-rose-800' : 'text-emerald-800'}">${tile.name}</span>
-              <span class="text-[8px] font-mono font-bold text-stone-400">SKULL</span>
+              <i class="fa-solid ${tile.icon} text-xl sm:text-2xl mt-1"></i>
+              <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider ${isSkull ? 'text-rose-800' : 'text-emerald-800'}">${tile.name}</span>
+              <span class="text-[8px] sm:text-[9px] font-mono font-bold text-stone-400">SKULL</span>
             `;
-            
+
             btn.onclick = () => {
               if (isMyTurn && gameState.skullPhase === 'placement') {
                 selectedSkullTileId = tile.id;
@@ -5790,19 +5806,19 @@
         const card = document.createElement('div');
         // Fond noir et bordure adaptée si carte crâne
         const cardBgClass = isSkullCard ? 'bg-[#111311] border-stone-600' : 'bg-[#faf8f5] border-[#d2cbbe]';
-        card.className = `playing-card w-14 h-20 sm:w-16 sm:h-24 p-1 flex flex-col justify-between cursor-pointer overflow-hidden ${cardBgClass} ${
-          isSelected ? 'border-dore shadow-2xl' : ''
+        card.className = `playing-card w-14 h-22 sm:w-18 sm:h-28 md:w-20 md:h-32 p-1.5 flex flex-col justify-between cursor-pointer overflow-hidden ${cardBgClass} ${
+          isSelected ? 'border-dore shadow-2xl -translate-y-3' : ''
         }`;
 
         card.innerHTML = `
           <div class="card-inner-frame" style="${isSkullCard ? 'border-color: rgba(255,255,255,0.2);' : ''}"></div>
-          <div class="w-full flex justify-between items-center text-[10px] sm:text-xs font-card font-bold ${def.color} px-0.5">
+          <div class="w-full flex justify-between items-center text-[10px] sm:text-xs md:text-sm font-card font-bold ${def.color} px-0.5">
             <span>${def.letter}</span><span>${def.suit}</span>
           </div>
-          <div class="flex flex-col items-center justify-center my-auto font-card font-black text-2xl sm:text-3xl ${def.color}">
+          <div class="flex flex-col items-center justify-center my-auto font-card font-black text-2xl sm:text-4xl md:text-5xl ${def.color}">
             ${def.letter}
           </div>
-          <div class="w-full flex justify-between items-center text-[10px] sm:text-xs font-card font-bold ${def.color} rotate-180 px-0.5">
+          <div class="w-full flex justify-between items-center text-[10px] sm:text-xs md:text-sm font-card font-bold ${def.color} rotate-180 px-0.5">
             <span>${def.letter}</span><span>${def.suit}</span>
           </div>
         `;
