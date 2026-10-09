@@ -572,7 +572,7 @@
       </div>
 
       <!-- HAND / DICE CONSOLE -->
-      <div class="w-full min-h-[170px] pb-1.5 pt-1 px-4 bg-[#141a16]/95 border-t border-[#243327] flex flex-col items-center justify-between z-30 shadow-2xl flex-shrink-0 overflow-visible">
+      <div class="w-full min-h-[155px] pb-1 pt-1 px-4 bg-[#141a16]/95 border-t border-[#243327] flex flex-col items-center justify-end gap-1 z-30 shadow-2xl flex-shrink-0 overflow-visible">
         
         <!-- BARRE TITRE & BARILLET (MASQUÉE) -->
         <div class="hidden">
@@ -582,7 +582,7 @@
         </div>
 
         <!-- ZONE CENTRALE DE LA CONSOLE : HAUTEUR FIXÉE À 100px -->
-        <div class="w-full max-w-2xl min-h-[58px] flex items-center justify-center flex-shrink-0 relative">
+        <div class="w-full max-w-2xl min-h-[58px] flex items-end justify-center flex-shrink-0 relative">
           <!-- Inventaire Zbeul (positionné sans déplacer les cartes) -->
           <div id="my-inventory-bar" class="hidden absolute -top-5 left-0 right-0 items-center justify-between bg-[#0c100e]/90 border border-[#233126] rounded px-2 py-0.5 text-[10px] font-mono z-20">
             <div class="flex items-center gap-1.5 overflow-x-auto py-0.5">
@@ -615,7 +615,7 @@
         </div>
 
         <!-- ZONE INFÉRIEURE : BOUTONS D'ACTIONS (HAUTEUR STRICTEMENT FIGÉE À 42px) -->
-        <div class="w-full max-w-xs min-h-[42px] flex items-center justify-center flex-shrink-0 mb-1 mt-1">
+        <div class="w-full max-w-xs min-h-[55px] flex items-center justify-center flex-shrink-0 m-0">
           
           <!-- Actions Cartes -->
           <div id="cards-action-controls" class="hidden w-full grid-cols-2 gap-2">
@@ -5637,10 +5637,10 @@
             const isSkull = tile.type === 'skull';
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = `w-14 h-20 rounded-xl border-2 flex flex-col items-center justify-between p-2 transition-all shadow-lg cursor-pointer ${
+            btn.className = `w-14 h-20 rounded-xl border-2 flex flex-col items-center justify-between p-1.5 transition-all shadow-lg cursor-pointer ${
               isSel 
-                ? 'border-dore bg-[#faf8f5] scale-105 shadow-[0_0_15px_rgba(212,175,55,0.7)] -translate-y-2' 
-                : 'border-[#d2cbbe] bg-[#faf8f5] hover:border-dore hover:-translate-y-1'
+                ? 'border-dore bg-[#faf8f5] scale-105 shadow-[0_0_15px_rgba(212,175,55,0.7)] -translate-y-1.5' 
+                : 'border-[#d2cbbe] bg-[#faf8f5] hover:border-dore hover:-translate-y-0.5'
             }`;
             
             btn.innerHTML = `
