@@ -1555,8 +1555,17 @@
         resetPfcRoundLocal();
       }
       else if (evt.type === 'CARDS_THROWN_ANIM') {
-      audio.cardSlide();
-      throwCardsVisualEffect(evt.playerId, evt.count);
+        // Uniquement si on est bien en mode cartes
+        if (gameState.gameMode === 'cards') {
+          audio.cardSlide();
+          throwCardsVisualEffect(evt.playerId, evt.count);
+        }
+      }
+      else if (evt.type === 'SKULL_TILE_THROWN_ANIM') {
+        if (gameState.gameMode === 'skull') {
+          audio.cardSlide();
+          throwSkullTileVisualEffect(evt.playerId);
+        }
       }
       else if (evt.type === 'CLOSE_DENOUNCE_MODAL') {
         closeDenounceModal();
@@ -2425,7 +2434,14 @@
       const tile = player.hand.splice(idx, 1)[0];
       player.skullPile.push(tile);
 
-      audio.cardSlide(); // Son immédiat sans animation volante
+      audio.cardSlide();
+      
+      // Déclenche l'animation visuelle chez l'hôte et la diffuse à tous les clients
+      throwSkullTileVisualEffect(playerId);
+      broadcastEvent({
+        type: 'SKULL_TILE_THROWN_ANIM',
+        playerId: playerId
+      });
 
       gameState.feltTicker = `${player.name} a posé une tuile face cachée.`;
       advanceSkullPlacementTurn();
@@ -3130,15 +3146,13 @@
     }
 
     function throwCardsVisualEffect(playerId, cardCount) {
-      let source = null;
-      if (playerId === myId) {
-        source = document.getElementById('my-hand-container');
-      } else {
-        const others = gameState.playerOrder.filter(id => id !== myId);
-        const idx = others.indexOf(playerId);
-        const seatId = idx === 0 ? 'seat-left' : (idx === 1 ? 'seat-top' : 'seat-right');
-        source = document.getElementById(seatId);
-      }
+      if (gameState.gameMode !== 'cards') return;
+
+      // Utilise le siège réel et dynamique calculé selon l'écran de chaque joueur
+      const source = (playerId === myId)
+        ? (document.getElementById('my-hand-container') || document.getElementById('seat-bottom'))
+        : getSeatElementForPlayer(playerId);
+
       const target = document.getElementById('table-felt-center');
       if (!source || !target) return;
 
@@ -3173,54 +3187,49 @@
     }
 
     function throwSkullTileVisualEffect(playerId) {
-      let source = null;
-      let target = null;
+      if (gameState.gameMode !== 'skull') return;
 
-      if (playerId === myId) {
-        source = document.getElementById('skull-hand-tiles') || document.getElementById('seat-bottom');
-        target = document.getElementById('seat-bottom');
-      } else {
-        const others = gameState.playerOrder.filter(id => id !== myId);
-        const idx = others.indexOf(playerId);
-        const seatId = idx === 0 ? 'seat-left' : (idx === 1 ? 'seat-top' : 'seat-right');
-        source = document.getElementById(seatId);
-        target = document.getElementById(seatId);
-      }
-      if (!source || !target) return;
+      const seatEl = getSeatElementForPlayer(playerId);
+      if (!seatEl) return;
 
-      const sRect = source.getBoundingClientRect();
-      const tRect = target.getBoundingClientRect();
+      const sRect = seatEl.getBoundingClientRect();
 
       const thrown = document.createElement('div');
-      thrown.className = 'thrown-card-anim w-11 h-15 rounded-lg border-2 border-[#8f7734] bg-[#142318] p-1 flex flex-col items-center justify-between shadow-2xl';
+      thrown.className = 'thrown-card-anim w-9 h-12 sm:w-11 sm:h-14 rounded-md border-2 border-[#8f7734] bg-[#142318] p-1 flex flex-col items-center justify-between shadow-2xl z-[999]';
       thrown.innerHTML = `
         <div class="w-full flex justify-between text-[7px] text-dore opacity-80 pointer-events-none">
           <i class="fa-solid fa-fan"></i><i class="fa-solid fa-skull"></i>
         </div>
-        <i class="fa-solid fa-layer-group text-lg text-dore/70 my-auto pointer-events-none"></i>
+        <i class="fa-solid fa-layer-group text-sm text-dore/70 my-auto pointer-events-none"></i>
         <div class="w-full flex justify-between text-[7px] text-dore opacity-80 rotate-180 pointer-events-none">
           <i class="fa-solid fa-fan"></i><i class="fa-solid fa-skull"></i>
         </div>
       `;
 
-      thrown.style.left = `${sRect.left + sRect.width / 2 - 22}px`;
-      thrown.style.top = `${sRect.top + sRect.height / 2 - 30}px`;
-      thrown.style.transform = 'scale(0.9) rotate(-6deg)';
+      // Départ : un peu en avant du siège
+      const startX = sRect.left + sRect.width / 2 - 18;
+      const startY = sRect.top + sRect.height / 2 - 24;
+
+      thrown.style.left = `${startX}px`;
+      thrown.style.top = `${startY}px`;
+      thrown.style.transform = 'scale(0.85) rotate(-6deg)';
       thrown.style.opacity = '1';
       document.body.appendChild(thrown);
 
-      audio.cardSlide();
+      // Trajectoire vers la pile de tuiles posée devant le joueur
+      requestAnimationFrame(() => {
+        const destX = startX + (Math.random() * 12 - 6);
+        const destY = startY + (sRect.top < window.innerHeight / 2 ? 28 : -28);
 
-      setTimeout(() => {
-        thrown.style.left = `${tRect.left + tRect.width / 2 - 22}px`;
-        thrown.style.top = `${tRect.top + tRect.height / 2 - 30}px`;
-        thrown.style.transform = `scale(1) rotate(${Math.floor(Math.random() * 8 - 4)}deg)`;
+        thrown.style.left = `${destX}px`;
+        thrown.style.top = `${destY}px`;
+        thrown.style.transform = `scale(1) rotate(${Math.floor(Math.random() * 10 - 5)}deg)`;
 
         setTimeout(() => {
           thrown.style.opacity = '0';
-          setTimeout(() => thrown.remove(), 160);
-        }, 320);
-      }, 30);
+          setTimeout(() => thrown.remove(), 200);
+        }, 360);
+      });
     }
 
     function animateMistigriDrawVisual(fromPlayerId, toPlayerId, isStolenCardMistigri = false) {
