@@ -233,7 +233,7 @@
     <div class="flex items-center gap-2">
       <span class="text-dore font-title text-lg font-bold">♠</span>
       <h1 class="text-xs sm:text-sm font-title font-bold tracking-[0.2em] text-[#f7f6f2] uppercase">PROUT BLUFF</h1>
-      <span id="header-zbeul-tag" class="text-[9px] font-mono text-dore px-1.5 py-0.5 rounded border border-dore/40 uppercase hidden">ZBEUL</span>
+      <span id="header-zbeul-tag" class="text-[9px] font-mono text-dore px-1.5 py-0.5 rounded border border-dore/40 uppercase hidden">هيلا</span>
     </div>
 
     <div class="flex items-center gap-2">
@@ -301,7 +301,7 @@
             <div id="wrapper-mode-zbeul" class="w-full">
               <button type="button" id="btn-mode-zbeul" class="w-full h-9 rounded border border-[#2b3a2e] bg-[#121613] text-[#788a7c] text-xs font-title font-bold flex items-center justify-center gap-2 transition-colors">
                 <i class="fa-solid fa-fire text-sm"></i>
-                <span>Zbeul</span>
+                <span>Mode هيلا</span>
               </button>
             </div>
           </div>
@@ -514,15 +514,29 @@
 
         <!-- MODALE PROMPT PFC (ZBEUL) -->
         <div id="modal-pfc-prompt" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4">
-          <div class="max-w-xs w-full bg-[#161c18] border-2 border-dore rounded-xl p-5 shadow-2xl flex flex-col items-center gap-3 text-center">
+          <div class="max-w-xs w-full bg-[#161c18] border-2 border-dore rounded-xl p-5 shadow-2xl flex flex-col items-center gap-2.5 text-center">
             <div class="w-12 h-12 rounded-full border border-dore bg-[#223326] flex items-center justify-center text-dore text-2xl shadow-[0_0_20px_rgba(212,175,55,0.4)]">
               <i class="fa-solid fa-hand-back-fist"></i>
             </div>
-            <div class="font-title text-sm font-bold text-[#f7f6f2] uppercase tracking-wider">On t'accuse.</div>
-            <div class="font-mono text-xs text-[#a4b8aa]">Déclencher le Pierre - Feuille - Ciseaux ?</div>
-            <div class="grid grid-cols-2 gap-2 w-full mt-2">
-              <button id="btn-refuse-pfc" class="py-2.5 rounded-lg border border-[#3b4e40] bg-[#101411] hover:bg-[#18201a] text-xs font-title uppercase tracking-wider font-bold text-stone-300 active:scale-95 transition-all">Garder</button>
-              <button id="btn-accept-pfc" class="py-2.5 rounded-lg border border-dore bg-[#273a2c] hover:bg-[#334c3a] text-xs font-title uppercase tracking-wider font-bold text-dore active:scale-95 transition-all shadow-md">Activer</button>
+            
+            <div>
+              <div class="font-title text-sm font-bold text-[#f7f6f2] uppercase tracking-wider">On t'accuse !</div>
+              <div class="font-mono text-xs text-[#a4b8aa] mt-1.5">Tenter le Pierre - Feuille - Ciseaux ?</div>
+            </div>
+
+            <!-- Avertissement usage unique -->
+            <div id="pfc-prompt-notice" class="w-full py-1.5 px-2 rounded border-[#3b4e40] bg-[#101411] text-[10px] font-mono flex items-center justify-center gap-1.5">
+              <i class="fa-solid text-amber-400"></i>
+              <span>1 seule utilisation pour toute la partie.</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 w-full mt-1">
+              <button id="btn-refuse-pfc" class="py-2 rounded-lg border border-[#3b4e40] bg-[#101411] hover:bg-[#18201a] text-xs font-title uppercase tracking-wider font-bold text-stone-300 active:scale-95 transition-all">
+                Plus tard
+              </button>
+              <button id="btn-accept-pfc" class="py-2 rounded-lg border border-dore bg-[#273a2c] hover:bg-[#334c3a] text-xs font-title uppercase tracking-wider font-bold text-dore active:scale-95 transition-all shadow-md">
+                Activer
+              </button>
             </div>
           </div>
         </div>
@@ -560,17 +574,11 @@
       <!-- HAND / DICE CONSOLE -->
       <div class="w-full min-h-[185px] pb-3 pt-1.5 px-4 bg-[#141a16]/95 border-t border-[#243327] flex flex-col items-center justify-between z-30 shadow-2xl flex-shrink-0 overflow-visible">
         
-        <!-- BARRE TITRE & BARILLET (h-5 fixe) -->
-        <div class="w-full max-w-2xl h-5 flex items-center justify-between text-xs font-mono flex-shrink-0">
-          <div class="flex items-center gap-2">
-            <span id="hand-console-title" class="text-dore font-title text-[11px] font-bold uppercase tracking-wider">Ta main</span>
-            <span id="hand-console-count" class="text-[#7f9284]">(<span id="my-card-count">0</span>)</span>
-          </div>
-
-          <div class="flex items-center gap-2 text-[11px]">
-            <span class="text-[#7f9284] uppercase tracking-widest text-[9px]">Barillet:</span>
-            <span id="my-revolver-status" class="text-dore font-bold font-mono">1/6</span>
-          </div>
+        <!-- BARRE TITRE & BARILLET (MASQUÉE) -->
+        <div class="hidden">
+          <span id="hand-console-title"></span>
+          <span id="hand-console-count"><span id="my-card-count"></span></span>
+          <span id="my-revolver-status"></span>
         </div>
 
         <!-- ZONE CENTRALE DE LA CONSOLE : HAUTEUR FIXÉE À 100px -->
@@ -624,7 +632,7 @@
           <!-- Actions Dés (Secouer / Menteur / Vérité / Mentir) ancrées dans la barre basse -->
           <div id="quinto-buttons-wrapper" class="hidden w-full flex-col justify-center" style="display: none !important;">
             <!-- Étape 1 : Avant de secouer (Secouer / Renvoyer / Menteur) -->
-            <div id="quinto-step-roll" class="w-full flex flex-col gap-1.5">
+            <div id="quinto-step-roll" class="w-full flex flex-col gap-2">
               <div class="grid grid-cols-2 gap-2 w-full">
                 <button id="btn-quinto-roll" disabled class="h-9 rounded border border-[#2b3a2e] bg-[#171f1a] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5">
                   <i class="fa-solid fa-dice text-sm"></i>
@@ -661,7 +669,7 @@
               </div>
 
               <!-- Bouton relance aligné sur la DA -->
-              <button id="btn-quinto-self-reroll" class="mt-1 w-full h-8 rounded border border-[#485d4d] bg-[#161e18] hover:bg-[#202b23] hover:border-dore text-[#dbe3dc] hover:text-dore font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-md">
+              <button id="btn-quinto-self-reroll" class="mt-1 w-full h-8 rounded border border-[#485d4d] bg-[#161e18] hover:bg-[#202b23] hover:border-dore text-[#dbe3dc] hover:text-dore font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-2 active:scale-95 shadow-md">
                 <i class="fa-solid fa-arrows-rotate text-dore text-xs"></i>
                 <span>Relancer mes dés</span>
               </button>
@@ -843,7 +851,7 @@
             <p>Lancez deux dés en secret. Annoncez strictement supérieur ou accusez le précédent joueur. En cas de mensonge, le barillet tourne !</p>
           </div>
           <div class="p-2.5 rounded border border-red-800/70 bg-[#160d0d] space-y-1">
-            <span class="font-title font-bold text-red-400 text-xs">Mode Zbeul</span>
+            <span class="font-title font-bold text-red-400 text-xs">Mode هيلا</span>
             <p class="text-stone-300">Ajout d'items pour déstabiliser les adversaires.</p>
           </div>
         </div>
@@ -1034,7 +1042,7 @@
       'Q': { rank: 'Q', title: 'DAME', letter: 'Q', suit: '♦', color: 'text-rougeCarte' },
       'V': { rank: 'V', title: 'VALET', letter: 'V', suit: '♣', color: 'text-noir' },
       'JOKER': { rank: 'JOKER', title: 'JOKER', letter: 'J', suit: '★', color: 'text-dore' },
-      '10': { rank: '10', title: '10', letter: '10', suit: '💀', color: 'text-rougeCarte' }
+      '10': { rank: '10', title: 'CRÂNE', letter: '<i class="fa-solid fa-skull"></i>', suit: '<i class="fa-solid fa-skull"></i>', color: 'text-white', isBlackCard: true }
     };
 
     const ZBEUL_ITEMS = {
@@ -1146,21 +1154,29 @@
       const deck = [];
       let uid = 1;
 
-      // 6 cartes de la figure demandée
-      for (let i = 0; i < 6; i++) deck.push({ id: `c_${uid++}`, rank: targetRank, isJoker: false, isRat: false });
+      // En mode Zbeul : 8 cartes de la figure demandée + 1 carte Crâne piège
+      // En mode Classique : 9 cartes de la figure demandée et AUCUNE carte piège
+      const targetCount = gameState.isZbeul ? 8 : 9;
+      for (let i = 0; i < targetCount; i++) {
+        deck.push({ id: `c_${uid++}`, rank: targetRank, isJoker: false, isRat: false });
+      }
 
-      // 4 cartes pour chacune des 3 autres figures (12 cartes)
+      // 4 cartes pour chacune des 3 autres figures (12 cartes au total)
       CARD_RANKS.filter(r => r !== targetRank).forEach(other => {
         for (let i = 0; i < 4; i++) deck.push({ id: `c_${uid++}`, rank: other, isJoker: false, isRat: false });
       });
 
       // 4 Jokers
-      for (let i = 0; i < 4; i++) deck.push({ id: `c_${uid++}`, rank: 'JOKER', isJoker: true, isRat: false });
+      for (let i = 0; i < 4; i++) {
+        deck.push({ id: `c_${uid++}`, rank: 'JOKER', isJoker: true, isRat: false });
+      }
 
-      // 2 cartes 10
-      for (let i = 0; i < 2; i++) deck.push({ id: `c_${uid++}`, rank: '10', isJoker: false, isRat: true });
+      // 1 carte Crâne piège UNIQUEMENT si le mode Zbeul est activé
+      if (gameState.isZbeul) {
+        deck.push({ id: `c_${uid++}`, rank: '10', isJoker: false, isRat: true });
+      }
 
-      // Total : 6 + 12 + 4 + 2 = 24 cartes (largement suffisant pour 4 x 5 = 20)
+      // Mélange complet (Fisher-Yates)
       for (let i = deck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [deck[i], deck[j]] = [deck[j], deck[i]];
@@ -1741,8 +1757,16 @@
         } else if (msg.type === 'QUINTO_MIRROR_CLAIM') {
         handleQuintoMirrorClaim(msg.id);
       } else if (msg.type === 'QUINTO_SELF_REROLL') {
-        if (!gameState.isZbeul) return; // Ignorer hors mode Zbeul
-        if (gameState.status !== 'in_round' || gameState.playerOrder[gameState.activePlayerIndex] !== msg.id) return; // Seulement à son tour
+        if (!gameState.isZbeul) return;
+        if (gameState.status !== 'in_round' || gameState.playerOrder[gameState.activePlayerIndex] !== msg.id) return;
+        const player = gameState.players[msg.id];
+        const count = typeof player?.selfRerollsLeft === 'number' ? player.selfRerollsLeft : 0;
+        
+        if (count <= 0) {
+          broadcastToast("Tu as déjà utilisé tes 2 relances de dés pour cette partie !");
+          return;
+        }
+
         if (gameState.quintoHasRolled && !gameState.quintoRerollUsedThisTurn) {
           gameState.quintoRerollUsedThisTurn = true;
           executeDiceReroll(msg.id);
@@ -1753,8 +1777,9 @@
         const player = gameState.players[msg.id];
         const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
         
-        if (player && player.hasForcedReroll) {
-          broadcastToast("Tu as déjà utilisé ton forçage pour cette manche !");
+        const count = typeof player?.forcePrevsLeft === 'number' ? player.forcePrevsLeft : 0;
+        if (count <= 0) {
+          broadcastToast("Tu as déjà utilisé tes 2 forçages dans cette partie !");
           return;
         }
 
@@ -2074,13 +2099,15 @@
       const player = gameState.players[playerId];
       if (!player || !player.isAlive) return;
 
+      player.selfRerollsLeft = Math.max(0, (player.selfRerollsLeft ?? 2) - 1);
+
       const d1 = Math.floor(Math.random() * 6) + 1;
       const d2 = Math.floor(Math.random() * 6) + 1;
       gameState.quintoRealDice = [d1, d2];
       gameState.quintoHasRolled = true;
 
       audio.diceShake();
-      gameState.feltTicker = `${player.name} utilise sa Relance et rebrasse ses dés !`;
+      gameState.feltTicker = `${player.name} rebrasse ses dés ! (${player.selfRerollsLeft} relance(s) restante(s))`;
       broadcastToast(`${player.name} a relancé ses dés !`);
       broadcastState();
     }
@@ -2137,9 +2164,9 @@
       const activator = gameState.players[activatorId];
       if (!targetPlayer || !targetPlayer.isAlive) return;
 
-      // Consomme définitivement le droit de forcer pour la manche
+      // Décrémente les utilisations restantes
       if (activator) {
-        activator.hasForcedReroll = true;
+        activator.forcePrevsLeft = Math.max(0, (activator.forcePrevsLeft ?? 2) - 1);
       }
 
       // 1. Remettre les dés de la cible à zéro
@@ -2150,8 +2177,6 @@
 
       // 2. Annuler la dernière annonce de la cible pour qu'il doive ré-annoncer
       gameState.quintoClaim = gameState.previousQuintoClaim || null;
-
-      // Marquer qui a forcé pour interdire l'accusation
       gameState.forcedRerollByPlayerId = activatorId;
 
       // 3. Replacer l'index du tour sur la cible
@@ -2159,7 +2184,7 @@
       gameState.hasUsedItemThisTurn = false;
 
       audio.diceShake();
-      gameState.feltTicker = `${activator ? activator.name : 'Un joueur'} force ${targetPlayer.name} à re-secouer ses dés !`;
+      gameState.feltTicker = `${activator ? activator.name : 'Un joueur'} force ${targetPlayer.name} à re-secouer ses dés ! (${activator ? activator.forcePrevsLeft : 0} restant(s))`;
       broadcastToast(`${targetPlayer.name} doit rejouer !`);
 
       broadcastState();
@@ -2532,7 +2557,7 @@
           const isSelfSkullPenalty = gameState.isZbeul && (targetPlayerId === revealer.id);
 
           if (isSelfSkullPenalty) {
-            gameState.feltTicker = `AUTO-CRÂNE ZBEUL ! ${revealer.name} DOUBLE TIR ! 💀💀`;
+            gameState.feltTicker = `AUTO-CRÂNE هيلا ! ${revealer.name} DOUBLE TIR ! 💀💀`;
             showToast(`${revealer.name} prend 2 tirs de barillet !`);
           } else {
             gameState.feltTicker = `CRÂNE DÉCOUVERT ! ${revealer.name} affronte le barillet !`;
@@ -2903,7 +2928,7 @@
       modal.classList.remove('hidden');
       if (statusEl) {
         statusEl.className = "font-mono text-xs text-dore animate-pulse";
-        statusEl.innerText = gameState.gameMode === 'mistigri' ? "Tirage de la carte Zbeul..." : "Tirage de la figure...";
+        statusEl.innerText = gameState.gameMode === 'mistigri' ? "Tirage de la carte هيلا..." : "Tirage de la figure...";
       }
 
       audio.chip();
@@ -3176,27 +3201,14 @@
     }
 
     function animateMistigriDrawVisual(fromPlayerId, toPlayerId, isStolenCardMistigri = false) {
-      // Récupérer le conteneur source (victime)
-      let sourceEl = null;
-      if (fromPlayerId === myId) {
-        sourceEl = document.getElementById('my-hand-container');
-      } else {
-        const others = gameState.playerOrder.filter(id => id !== myId);
-        const idx = others.indexOf(fromPlayerId);
-        const seatId = idx === 0 ? 'seat-left' : (idx === 1 ? 'seat-top' : 'seat-right');
-        sourceEl = document.getElementById(seatId);
-      }
+      // Récupérer le conteneur source (victime) et cible (voleur) avec le positionnement relatif cohérent
+      const sourceEl = (fromPlayerId === myId) 
+        ? (document.getElementById('my-hand-container') || document.getElementById('seat-bottom'))
+        : getSeatElementForPlayer(fromPlayerId);
 
-      // Récupérer le conteneur cible (voleur)
-      let targetEl = null;
-      if (toPlayerId === myId) {
-        targetEl = document.getElementById('my-hand-container');
-      } else {
-        const others = gameState.playerOrder.filter(id => id !== myId);
-        const idx = others.indexOf(toPlayerId);
-        const seatId = idx === 0 ? 'seat-left' : (idx === 1 ? 'seat-top' : 'seat-right');
-        targetEl = document.getElementById(seatId);
-      }
+      const targetEl = (toPlayerId === myId)
+        ? (document.getElementById('my-hand-container') || document.getElementById('seat-bottom'))
+        : getSeatElementForPlayer(toPlayerId);
 
       if (!sourceEl || !targetEl) return;
 
@@ -3218,7 +3230,7 @@
         ? '<i class="fa-solid fa-cat text-purple-700 text-xl animate-bounce"></i>'
         : '<span class="font-bold font-card text-xs">♠</span>';
 
-      // Position de départ
+      // Position de départ centrée sur le joueur d'origine
       const startX = sRect.left + sRect.width / 2 - 24;
       const startY = sRect.top + sRect.height / 2 - 32;
       card.style.left = `${startX}px`;
@@ -3226,7 +3238,7 @@
       card.style.transform = 'scale(0.8) rotate(-10deg)';
       document.body.appendChild(card);
 
-      // Déplacement vers la destination
+      // Déplacement vers le joueur qui pioche
       requestAnimationFrame(() => {
         const destX = tRect.left + tRect.width / 2 - 24;
         const destY = tRect.top + tRect.height / 2 - 32;
@@ -3243,16 +3255,35 @@
       });
     }
 
-    function animateSkullRevealVisual(revealerName, targetPlayerId, tile) {
-      let sourceEl = null;
-      if (targetPlayerId === myId) {
-        sourceEl = document.getElementById('seat-bottom');
-      } else {
-        const others = gameState.playerOrder.filter(id => id !== myId);
-        const idx = others.indexOf(targetPlayerId);
-        const seatId = idx === 0 ? 'seat-left' : (idx === 1 ? 'seat-top' : 'seat-right');
-        sourceEl = document.getElementById(seatId);
+    function getSeatElementForPlayer(playerId) {
+      if (playerId === myId) {
+        return document.getElementById('seat-bottom');
       }
+      const order = gameState.playerOrder;
+      const myIndex = order.indexOf(myId);
+      const targetIndex = order.indexOf(playerId);
+      if (myIndex === -1 || targetIndex === -1) return document.getElementById('table-felt-center');
+
+      const total = order.length;
+      // Position relative par rapport au joueur local (sens horaire)
+      const diff = (targetIndex - myIndex + total) % total;
+
+      if (total === 2) {
+        return document.getElementById('seat-top');
+      } else if (total === 3) {
+        if (diff === 1) return document.getElementById('seat-left');
+        if (diff === 2) return document.getElementById('seat-right');
+      } else if (total === 4) {
+        if (diff === 1) return document.getElementById('seat-left');
+        if (diff === 2) return document.getElementById('seat-top');
+        if (diff === 3) return document.getElementById('seat-right');
+      }
+      return document.getElementById('seat-top');
+    }
+
+    function animateSkullRevealVisual(revealerName, targetPlayerId, tile) {
+      // Trouve le bon siège source cohérent pour chaque joueur
+      const sourceEl = getSeatElementForPlayer(targetPlayerId);
       const targetEl = document.getElementById('table-felt-center');
       if (!targetEl) return;
 
@@ -3379,7 +3410,7 @@
       const author = gameState.players[exemptPlayerId];
       const authorName = author ? author.name : 'L\'auteur du 21';
 
-      gameState.feltTicker = `21 QUINTO ZBEUL ! ${authorName} est épargné, tous les autres prennent une balle !`;
+      gameState.feltTicker = `21 QUINTO هيلا ! ${authorName} est épargné, tous les autres prennent une balle !`;
       broadcastToast(`21 QUINTO ! Roulette pour les adversaires !`);
       broadcastState();
 
@@ -3417,7 +3448,7 @@
           return;
         }
 
-        gameState.feltTicker = `21 ZBEUL ! Au tour de ${currentVictim.name} d'affronter le barillet...`;
+        gameState.feltTicker = `21 هيلا ! Au tour de ${currentVictim.name} d'affronter le barillet...`;
         broadcastState();
 
         triggerRevolverChamber(currentVictim, () => {
@@ -3528,7 +3559,7 @@
       gameState.feltTicker = `${accuser.name} accuse ${accused.name} de mentir !`;
       broadcastState();
       audio.playFaaah();
-      setTimeout(() => resolveQuintoDuel(accuser, accused), 1000);
+      setTimeout(() => resolveQuintoDuel(accuser, accused), 3000);
     }
 
     function resolveQuintoDuel(accuser, accused) {
@@ -3537,8 +3568,8 @@
       // CAS PARTICULIER : 21 QUINTO ZBEUL
       if (gameState.isZbeul && claim.score === 21) {
         gameState.status = 'resolving_bluff';
-        gameState.feltTicker = "21 QUINTO ZBEUL ! Hécatombe";
-        broadcastToast("21 QUINTO ZBEUL !");
+        gameState.feltTicker = "21 QUINTO هيلا ! Hécatombe";
+        broadcastToast("21 QUINTO هيلا !");
         broadcastState();
 
         // Récupérer tous les joueurs vivants SAUF l'auteur du 21
@@ -3576,7 +3607,7 @@
             return;
           }
 
-          gameState.feltTicker = `21 QUINTO ZBEUL ! Au tour de ${currentVictim.name} d'affronter le barillet...`;
+          gameState.feltTicker = `21 QUINTO هيلا ! Au tour de ${currentVictim.name} d'affronter le barillet...`;
           broadcastState();
 
           triggerRevolverChamber(currentVictim, () => {
@@ -3614,7 +3645,7 @@
         // EN ZBEUL : SI LE CLAIM ÉTAIT 21, TOUT LE MONDE SAUF L'AUTEUR PREND UNE BALLE
         // (Peu importe que ce soit un mensonge ou la vérité !)
         if (isQuinto21Zbeul) {
-          gameState.feltTicker = `21 QUINTO ZBEUL ! ${accused.name} est épargné : tous les autres affrontent le barillet !`;
+          gameState.feltTicker = `21 QUINTO هيلا ! ${accused.name} est épargné : tous les autres affrontent le barillet !`;
           broadcastState();
           setTimeout(() => {
             trigger21ZbeulMassacre(accused.id);
@@ -3646,7 +3677,7 @@
 
       row.innerHTML = `
         <div class="flex flex-col items-center gap-2 my-2">
-          <span class="text-[10px] font-mono text-[#8a9d8f] uppercase tracking-wider">Dés réels sous le gobelet :</span>
+          <span class="text-[10px] font-mono text-[#8a9d8f] uppercase tracking-wider">Dés réels :</span>
           <div class="flex gap-3">
             <span id="quinto-reveal-d1" class="w-14 h-14 bg-[#18201a] text-dore border border-[#304435] font-bold text-2xl rounded-xl flex items-center justify-center shadow-2xl">?</span>
             <span id="quinto-reveal-d2" class="w-14 h-14 bg-[#18201a] text-dore border border-[#304435] font-bold text-2xl rounded-xl flex items-center justify-center shadow-2xl">?</span>
@@ -3741,7 +3772,7 @@
 
       let verdictText = '';
       if (is10) {
-        verdictText = `CARTE 10 ! ${accused.name} a menti et est éliminé immédiatement !`;
+        verdictText = `CARTE CRÂNE ! ${accused.name} a menti et est éliminé immédiatement !`;
       } else if (isCorrect) {
         verdictText = `Bonne carte (${targetCard.rank}) ! ${accuser.name} prend le barillet.`;
       } else {
@@ -3762,7 +3793,7 @@
         // Mort instantanée avec le 10
         setTimeout(() => {
           closeDenounceModal();
-          triggerExecution(accused, "A posé la carte 10.");
+          triggerExecution(accused, "A posé un Crâne.");
         }, 1800);
       } else if (isCorrect) {
         // L'accuseur s'est trompé : 1 tir de barillet pour l'accuseur
@@ -3918,9 +3949,12 @@
             clearInterval(rollInterval);
             audio.cardSlide();
 
-            item.el.className = 'w-16 h-24 sm:w-20 sm:h-28 playing-card p-1.5 flex flex-col justify-between border-2 border-dore shadow-2xl overflow-hidden blur-0 opacity-100 scale-100 transition-all duration-150';
+            const isSkullCard = (realCard.rank === '10' || realCard.isRat);
+            const cardBg = isSkullCard ? 'bg-[#111311] border-red-700' : 'bg-[#faf8f5] border-dore';
+
+            item.el.className = `w-16 h-24 sm:w-20 sm:h-28 playing-card p-1.5 flex flex-col justify-between border-2 ${cardBg} shadow-2xl overflow-hidden blur-0 opacity-100 scale-100 transition-all duration-150`;
             item.el.innerHTML = `
-              <div class="card-inner-frame"></div>
+              <div class="card-inner-frame" style="${isSkullCard ? 'border-color: rgba(255,255,255,0.2);' : ''}"></div>
               <div class="w-full flex justify-between items-center text-[9px] font-card font-bold ${realDef.color} px-0.5">
                 <span>${realDef.letter}</span><span>${realDef.suit}</span>
               </div>
@@ -4294,6 +4328,15 @@
       if (!modal) return;
       modal.classList.remove('hidden');
 
+      const notice = document.getElementById('pfc-prompt-notice');
+      if (notice) {
+        if (gameState.gameMode === 'dice') {
+          notice.innerHTML = `<i class="fa-solid text-amber-400"></i> <span>Utilisable qu'une seule fois !</span>`;
+        } else {
+          notice.innerHTML = `<i class="fa-solid fa-shield-halved text-dore"></i> <span>Consomme ton item Pierre-Feuille-Ciseaux</span>`;
+        }
+      }
+
       // Nettoyage au cas où un minuteur résiduel tourne
       if (pfcPromptTimer) {
         clearInterval(pfcPromptTimer);
@@ -4353,7 +4396,7 @@
 
           // Si c'est un 21 en Zbeul : toute la table prend une balle sauf l'auteur du 21
           if (isQuinto21Zbeul) {
-            gameState.feltTicker = `21 ZBEUL APRÈS PFC ! ${accused.name} est épargné : hécatombe pour le reste de la table !`;
+            gameState.feltTicker = `21 هيلا APRÈS PFC ! ${accused.name} est épargné : hécatombe pour le reste de la table !`;
             broadcastState();
             setTimeout(() => {
               trigger21ZbeulMassacre(accused.id);
@@ -4671,39 +4714,70 @@
       const totalTiles = getTotalSkullPlacedTiles();
       const allPlacedAtLeastOne = living.every(id => (gameState.players[id]?.skullPile?.length || 0) >= 1);
 
-      // Délai pour simuler la réflexion du bot
       setTimeout(() => {
         if (gameState.status !== 'in_round' || gameState.gameMode !== 'skull') return;
 
+        // --- 1. PHASE DE PLACEMENT / OUVERTURE DU DÉFI ---
         if (gameState.skullPhase === 'placement') {
-          if (bot.hand && bot.hand.length > 0) {
+          const hasTilesInHand = Array.isArray(bot.hand) && bot.hand.length > 0;
+          const myPileHasSkull = Array.isArray(bot.skullPile) && bot.skullPile.some(t => t.type === 'skull');
+
+          // Conditions pour que le bot décide d'ouvrir un défi :
+          // - Tout le monde a posé au moins une tuile sur la table
+          // - Soit il n'a plus de tuile en main (obligatoire)
+          // - Soit il bluffe / prend l'initiative s'il y a déjà pas mal de tuiles posées
+          let wantToBid = false;
+          if (allPlacedAtLeastOne && totalTiles >= living.length) {
+            if (!hasTilesInHand) {
+              wantToBid = true; // Plus de tuile : défi obligatoire
+            } else {
+              // Probabilité d'ouvrir un défi selon le nombre de tuiles sur la table
+              // S'il n'a pas son crâne dans sa pile, il est plus enclin à lancer un défi
+              const bidChance = (!myPileHasSkull ? 0.35 : 0.15) + (totalTiles * 0.05);
+              wantToBid = Math.random() < bidChance;
+            }
+          }
+
+          if (wantToBid && allPlacedAtLeastOne && totalTiles > 0) {
+            // Le bot ouvre le défi (enchère initiale à 1 ou 2)
+            const startingBid = (totalTiles >= 4 && Math.random() < 0.4) ? 2 : 1;
+            handleSkullSubmitBid(bot.id, Math.min(startingBid, totalTiles));
+          } else if (hasTilesInHand) {
+            // Sinon, il continue de poser une tuile
             const chosenTile = bot.hand[Math.floor(Math.random() * bot.hand.length)];
             handleSkullPlayTile(bot.id, chosenTile.id);
           } else if (allPlacedAtLeastOne && totalTiles > 0) {
+            // Filet de sécurité si la main est vide
             handleSkullSubmitBid(bot.id, 1);
           }
+
+        // --- 2. PHASE D'ENCHÈRES ---
         } else if (gameState.skullPhase === 'bidding') {
           const currentBid = gameState.skullHighBid;
-          const myPileHasSkull = bot.skullPile && bot.skullPile.some(t => t.type === 'skull');
-          let maxSafeBid = myPileHasSkull ? Math.floor(totalTiles * 0.4) : Math.floor(totalTiles * 0.7);
+          const myPileHasSkull = Array.isArray(bot.skullPile) && bot.skullPile.some(t => t.type === 'skull');
+          
+          // Estimation de l'enchère maximale sans trop de risque
+          let maxSafeBid = myPileHasSkull ? Math.floor(totalTiles * 0.45) : Math.floor(totalTiles * 0.75);
           maxSafeBid = Math.max(1, maxSafeBid);
 
-          if (currentBid < maxSafeBid && currentBid < totalTiles && Math.random() < 0.6) {
+          if (currentBid < maxSafeBid && currentBid < totalTiles && Math.random() < 0.65) {
             handleSkullSubmitBid(bot.id, currentBid + 1);
           } else {
             handleSkullPassBid(bot.id);
           }
+
+        // --- 3. PHASE DE RÉVÉLATION ---
         } else if (gameState.skullPhase === 'revealing') {
           if (bot.id !== gameState.skullHighBidderId) return;
 
-          // 1. Le bot retourne d'abord ses propres tuiles non révélées
-          const ownUnrevealed = bot.skullPile.filter(t => !t.revealed);
+          // 1. Révéler ses propres tuiles d'abord (règle obligatoire de Skull)
+          const ownUnrevealed = (bot.skullPile || []).filter(t => !t.revealed);
           if (ownUnrevealed.length > 0) {
             handleSkullRevealTile(bot.id, bot.id);
             return;
           }
 
-          // 2. Sinon, il pioche chez une cible adverse aléatoire ayant encore des tuiles cachées
+          // 2. Piocher chez les adversaires ayant encore des tuiles cachées
           const availableTargets = living.filter(id => {
             const p = gameState.players[id];
             return p && p.skullPile && p.skullPile.some(t => !t.revealed);
@@ -4753,6 +4827,14 @@
           gameState.playerOrder = gameState.playerOrder.filter(x => x !== pid);
         }
       });
+
+      // Remélange aléatoire des places pour la prochaine partie
+      for (let i = gameState.playerOrder.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [gameState.playerOrder[i], gameState.playerOrder[j]] = [gameState.playerOrder[j], gameState.playerOrder[i]];
+      }
+
+      gameState.status = 'lobby';
       gameState.status = 'lobby';
       gameState.tableCardsCount = 0;
       gameState.lastClaim = null;
@@ -4778,7 +4860,9 @@
         p.items = [];
         p.immunityCount = 0;
         p.hasDraftedThisRound = false;
-        p.hasDicePfc = Boolean(gameState.isZbeul && gameState.gameMode === 'dice'); // <-- Ici
+        p.hasDicePfc = Boolean(gameState.isZbeul && gameState.gameMode === 'dice');
+        p.selfRerollsLeft = 2;
+        p.forcePrevsLeft = 2;
         p.hasForcedReroll = false;
         p.isReady = p.isBot;
         p.skullPile = [];
@@ -5114,15 +5198,11 @@
 
     function renderInventoryConsole(me) {
       const invBar = document.getElementById('my-inventory-bar');
-      const invContainer = document.getElementById('my-inventory-items-container');
-      const countTag = document.getElementById('inventory-count-tag');
-      const stateNotice = document.getElementById('inventory-usage-state');
-
-      // Masquer si non-Zbeul, ou pour les modes sans items (Mistigri, Skull), ou si le joueur n'est pas vivant
-      if (!gameState.isZbeul || gameState.gameMode !== 'dice' || !me || !me.isAlive) {
-        if (invBar) invBar.classList.add('hidden');
-        return;
+      if (invBar) {
+        invBar.classList.add('hidden');
+        invBar.style.setProperty('display', 'none', 'important');
       }
+      return;
 
       if (invBar) {
         invBar.classList.remove('hidden');
@@ -5670,17 +5750,20 @@
       (me.hand || []).forEach(c => {
         const isSelected = selectedHandCardIds.includes(c.id);
         const def = CARD_DEFINITIONS[c.rank] || CARD_DEFINITIONS[c.isJoker ? 'JOKER' : '10'];
+        const isSkullCard = (c.rank === '10' || c.isRat);
 
         const slot = document.createElement('div');
         slot.className = `hand-card-slot ${isSelected ? 'selected' : ''}`;
 
         const card = document.createElement('div');
-        card.className = `playing-card w-14 h-20 sm:w-16 sm:h-24 p-1 flex flex-col justify-between cursor-pointer overflow-hidden ${
-          isSelected ? 'border-dore shadow-2xl' : 'border-[#d2cbbe]'
+        // Fond noir et bordure adaptée si carte crâne
+        const cardBgClass = isSkullCard ? 'bg-[#111311] border-stone-600' : 'bg-[#faf8f5] border-[#d2cbbe]';
+        card.className = `playing-card w-14 h-20 sm:w-16 sm:h-24 p-1 flex flex-col justify-between cursor-pointer overflow-hidden ${cardBgClass} ${
+          isSelected ? 'border-dore shadow-2xl' : ''
         }`;
 
         card.innerHTML = `
-          <div class="card-inner-frame"></div>
+          <div class="card-inner-frame" style="${isSkullCard ? 'border-color: rgba(255,255,255,0.2);' : ''}"></div>
           <div class="w-full flex justify-between items-center text-[10px] sm:text-xs font-card font-bold ${def.color} px-0.5">
             <span>${def.letter}</span><span>${def.suit}</span>
           </div>
@@ -5758,6 +5841,7 @@
     function renderQuintoPlayerConsole(me) {
       if (gameState.gameMode !== 'dice') return; // GARDE-FOU OBLIGATOIRE
 
+      document.getElementById('my-inventory-bar')?.classList.add('hidden');
       document.getElementById('my-hand-container')?.classList.add('hidden');
       document.getElementById('cards-action-controls')?.classList.add('hidden');
       document.getElementById('skull-action-controls')?.classList.add('hidden');
@@ -5863,36 +5947,39 @@
           }
 
           if (btnForcePrev) {
-            const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
-            const isBlockedByMirror = Boolean(gameState.isMirrorChainActive || wasPrecededByMirror);
-            const alreadyUsedRound = Boolean(me && me.hasForcedReroll);
-            
-            // CONDITION ABSOLUE : Mode Zbeul actif + C'est mon tour + Je n'ai pas encore secoué + Il y a une annonce précédente + Non bloqué par miroir/utilisation
-            const canForce = Boolean(
-              gameState.isZbeul &&
-              isMyTurn &&
-              !gameState.quintoHasRolled &&
-              hasPrevClaim &&
-              !alreadyUsedRound &&
-              !isBlockedByMirror
-            );
-
-            // Masquer complètement si ce n'est pas mon tour ou si le mode Zbeul est désactivé, ou s'il n'y a pas d'annonce précédente
-            const shouldHide = !gameState.isZbeul || !isMyTurn || !hasPrevClaim || alreadyUsedRound;
-
-            btnForcePrev.classList.toggle('hidden', shouldHide);
-            btnForcePrev.disabled = !canForce;
-            
-            btnForcePrev.className = canForce
-              ? "w-full h-7 rounded border border-amber-600 bg-[#241a0d] hover:bg-[#342411] text-amber-300 font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-              : "w-full h-7 rounded border border-[#2b3a2e] bg-[#141b16] text-[#55695a] font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
-
-            if (isBlockedByMirror) {
-              btnForcePrev.title = "Action impossible après un Miroir.";
-            } else if (alreadyUsedRound) {
-              btnForcePrev.title = "Action déjà utilisée cette manche.";
+            if (!gameState.isZbeul) {
+              btnForcePrev.classList.add('hidden');
+              btnForcePrev.disabled = true;
             } else {
-              btnForcePrev.title = "";
+              const wasPrecededByMirror = Boolean(gameState.previousQuintoClaim && gameState.previousQuintoClaim.isMirror);
+              const isBlockedByMirror = Boolean(gameState.isMirrorChainActive || wasPrecededByMirror);
+              const remaining = typeof me?.forcePrevsLeft === 'number' ? me.forcePrevsLeft : 2;
+              
+              const canForce = Boolean(
+                isMyTurn &&
+                !gameState.quintoHasRolled &&
+                hasPrevClaim &&
+                remaining > 0 &&
+                !isBlockedByMirror
+              );
+
+              const shouldHide = !isMyTurn || !hasPrevClaim || remaining <= 0;
+
+              btnForcePrev.classList.toggle('hidden', shouldHide);
+              btnForcePrev.disabled = !canForce;
+              btnForcePrev.innerHTML = `<i class="fa-solid fa-rotate-left"></i><span>Forcer à relancer (${remaining}/2)</span>`;
+              
+              btnForcePrev.className = canForce
+                ? "w-full h-7 rounded border border-amber-600 bg-[#241a0d] hover:bg-[#342411] text-amber-300 font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                : "w-full h-7 rounded border border-[#2b3a2e] bg-[#141b16] text-[#55695a] font-title text-[10px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
+
+              if (isBlockedByMirror) {
+                btnForcePrev.title = "Action impossible après un Miroir.";
+              } else if (remaining <= 0) {
+                btnForcePrev.title = "Tu as épuisé tes 2 forçages pour la partie.";
+              } else {
+                btnForcePrev.title = "";
+              }
             }
           }
         } else {
@@ -5985,11 +6072,14 @@
               btnSelfReroll.disabled = true;
             } else {
               btnSelfReroll.classList.remove('hidden');
-              const canReroll = !gameState.quintoRerollUsedThisTurn;
+              const remaining = typeof me?.selfRerollsLeft === 'number' ? me.selfRerollsLeft : 2;
+              const canReroll = !gameState.quintoRerollUsedThisTurn && remaining > 0;
+              
               btnSelfReroll.disabled = !canReroll;
+              btnSelfReroll.innerHTML = `<i class="fa-solid fa-arrows-rotate text-dore text-xs"></i><span>Relancer mes dés (${remaining}/2)</span>`;
               btnSelfReroll.className = canReroll
-                ? "mt-1 w-full h-8 rounded border border-[#8f7734] bg-[#1a241d] hover:bg-[#233127] text-dore font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_8px_rgba(212,175,55,0.25)] active:scale-95"
-                : "mt-1 w-full h-8 rounded border border-[#233026] bg-[#111713] text-[#4f5f53] font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
+                ? "mt-2 w-full h-8 rounded border border-[#8f7734] bg-[#1a241d] hover:bg-[#233127] text-dore font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_8px_rgba(212,175,55,0.25)] active:scale-95"
+                : "mt-2 w-full h-8 rounded border border-[#233026] bg-[#111713] text-[#4f5f53] font-title text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 cursor-not-allowed opacity-40";
             }
           }
         }
@@ -6330,11 +6420,20 @@
     document.getElementById('btn-start-game').addEventListener('click', () => {
       if (!isHost) return;
       audio.init();
+
+      // Mélange aléatoire des places
+      for (let i = gameState.playerOrder.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [gameState.playerOrder[i], gameState.playerOrder[j]] = [gameState.playerOrder[j], gameState.playerOrder[i]];
+      }
+
       gameState.activePlayerIndex = 0;
 
-      // Initialise le PFC unique par partie pour le mode Dés Zbeul
+      // Initialisation pour toute la partie en Mode Zbeul Dés
       Object.values(gameState.players).forEach(p => {
         p.hasDicePfc = Boolean(gameState.isZbeul && gameState.gameMode === 'dice');
+        p.selfRerollsLeft = 2; // <-- 2 relances max par partie
+        p.forcePrevsLeft = 2;  // <-- 2 forçages max par partie
       });
 
       startNewRound();
