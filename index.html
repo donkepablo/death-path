@@ -2697,6 +2697,18 @@
             gameState.players[id].hasForcedReroll = false;
           }
         });
+
+        living.forEach(id => {
+        const p = gameState.players[id];
+        if (!p) return;
+        p.hand = [];
+        p.hasSecuredHand = false; // Remis à neuf
+        for (let i = 0; i < 5; i++) {
+          if (deck.length > 0) {
+            p.hand.push(deck.pop());
+          }
+        }
+      });
         
         const active = gameState.players[luckyFirstId];
         gameState.feltTicker = `${active.name} doit secouer...`;
@@ -3036,7 +3048,40 @@
       const total = gameState.playerOrder.length;
       if (total === 0) return;
 
-      // En mode cartes, si une dernière annonce est en suspens, on DOIT passer la main au joueur suivant
+      if (isCards) {
+        // Liste des joueurs vivants ayant encore des cartes
+        const livingWithCards = gameState.playerOrder.filter(id => {
+          const p = gameState.players[id];
+          return p && p.isAlive && Array.isArray(p.hand) && p.hand.length > 0;
+        });
+
+        // S'il n'y a plus aucun joueur avec des cartes (tout le monde a réussi à vider sa main)
+        if (livingWithCards.length === 0) {
+          gameState.feltTicker = "Toutes les mains sont vides. Nouvelle manche.";
+          broadcastState();
+          setTimeout(() => { if (isHost) startNewRound(); }, 2000);
+          return;
+        }
+
+        // S'il ne reste qu'un seul joueur avec des cartes et que personne ne peut plus être accusé
+        const lastClaimOwner = gameState.lastClaim ? gameState.players[gameState.lastClaim.playerId] : null;
+        const canStillAccusePrev = Boolean(lastClaimOwner && lastClaimOwner.isAlive && lastClaimOwner.id !== livingWithCards[0]);
+
+        if (livingWithCards.length === 1 && !canStillAccusePrev) {
+          const lastPlayer = gameState.players[livingWithCards[0]];
+          gameState.feltTicker = `${lastPlayer ? lastPlayer.name : 'Le dernier joueur'} est le seul avec des cartes ! Direction le barillet.`;
+          broadcastToast(`${lastPlayer ? lastPlayer.name : 'Dernier joueur'} prend le barillet !`);
+          gameState.status = 'resolving_bluff';
+          broadcastState();
+          setTimeout(() => {
+            if (lastPlayer && isHost) triggerRevolverChamber(lastPlayer);
+          }, 2000);
+          return;
+        }
+      }
+
+      // Recherche du prochain joueur éligible :
+      // En mode cartes, il doit être vivant ET avoir des cartes (sauf s'il doit répondre à la dernière annonce)
       let nextIdx = (gameState.activePlayerIndex + 1) % total;
       let attempts = 0;
 
@@ -3045,7 +3090,14 @@
         const p = gameState.players[nextId];
 
         if (p && p.isAlive) {
-          break; // Le joueur vivant prend la parole (même si le précédent a 0 carte)
+          if (!isCards) {
+            break;
+          } else {
+            // Le joueur peut jouer s'il a encore des cartes
+            if (Array.isArray(p.hand) && p.hand.length > 0) {
+              break;
+            }
+          }
         }
 
         nextIdx = (nextIdx + 1) % total;
@@ -3084,6 +3136,18 @@
 
       if (played.length !== cardIds.length) return;
 
+      // Si le joueur précédent n'avait plus de cartes et que le joueur actuel pose (ne l'a pas accusé) :
+      // Le joueur précédent est définitivement sauvé pour cette manche !
+      if (gameState.lastClaim) {
+        const prevPlayer = gameState.players[gameState.lastClaim.playerId];
+        if (prevPlayer && prevPlayer.isAlive && Array.isArray(prevPlayer.hand) && prevPlayer.hand.length === 0) {
+          if (!prevPlayer.hasSecuredHand) {
+            prevPlayer.hasSecuredHand = true;
+            broadcastToast(`${prevPlayer.name} est officiellement sauvé !`);
+          }
+        }
+      }
+
       player.hand = remaining;
       gameState.tableCardsCount += played.length;
       gameState.lastClaim = {
@@ -3094,40 +3158,23 @@
         cardObjects: played
       };
 
-      // 1. Si le joueur précédent avait posé sa dernière carte et que le joueur actuel choisit de poser au lieu d'accuser :
-      // Alors le joueur précédent est officiellement validé et sauvé !
-      if (gameState.lastClaim) {
-        const prevPlayer = gameState.players[gameState.lastClaim.playerId];
-        if (prevPlayer && prevPlayer.isAlive && Array.isArray(prevPlayer.hand) && prevPlayer.hand.length === 0) {
-          gameState.feltTicker = `${prevPlayer.name} n'a pas été accusé et remporte la manche ! 🏆`;
-          broadcastToast(`${prevPlayer.name} valide sa victoire !`);
-          broadcastState();
-          setTimeout(() => {
-            if (isHost) startNewRound();
-          }, 2000);
-          return;
-        }
-      }
-
-      // 2. Annonce du coup sans clore la manche si la main est vide
       if (player.hand.length === 0) {
-        gameState.feltTicker = `${player.name} pose ses dernières cartes ! Le joueur suivant peut accuser ou laisser passer.`;
-        broadcastToast(`${player.name} a posé ses dernières cartes !`);
+        gameState.feltTicker = `${player.name} pose ses dernières cartes ! Le joueur suivant peut accuser.`;
+        broadcastToast(`${player.name} n'a plus de cartes !`);
       } else {
         gameState.feltTicker = `${player.name} a posé ${played.length} carte(s).`;
       }
 
       audio.cardSlide();
 
-      // Côté hôte (dans handlePlayCards) :
       broadcastEvent({
         type: 'CARDS_THROWN_ANIM',
         playerId: playerId,
         count: played.length
       });
       throwCardsVisualEffect(playerId, played.length);
+
       advanceToNextLiving();
-      
     }
 
     function throwCardsVisualEffect(playerId, cardCount) {
