@@ -3036,22 +3036,16 @@
       const total = gameState.playerOrder.length;
       if (total === 0) return;
 
+      // En mode cartes, si une dernière annonce est en suspens, on DOIT passer la main au joueur suivant
       let nextIdx = (gameState.activePlayerIndex + 1) % total;
       let attempts = 0;
 
-      // Recherche du prochain joueur vivant et éligible
       while (attempts < total) {
         const nextId = gameState.playerOrder[nextIdx];
         const p = gameState.players[nextId];
 
         if (p && p.isAlive) {
-          if (!isCards) {
-            break;
-          } else {
-            // En mode cartes, le joueur suivant doit pouvoir jouer s'il est vivant
-            // (même si le joueur précédent vient de vider sa main, afin de pouvoir l'accuser)
-            break;
-          }
+          break; // Le joueur vivant prend la parole (même si le précédent a 0 carte)
         }
 
         nextIdx = (nextIdx + 1) % total;
@@ -3062,12 +3056,6 @@
       gameState.activePlayerIndex = nextIdx;
       gameState.quintoHasRolled = false;
       gameState.hasUsedItemThisTurn = false;
-
-      // Si le tour passe à un autre joueur que celui qui a exigé la relance, on lève l'interdiction
-      const currentActiveId = gameState.playerOrder[nextIdx];
-      if (gameState.forcedRerollByPlayerId && gameState.forcedRerollByPlayerId !== currentActiveId) {
-        gameState.forcedRerollByPlayerId = null;
-      }
 
       const nextActive = gameState.players[gameState.playerOrder[nextIdx]];
       gameState.feltTicker = `Tour de ${nextActive ? nextActive.name : '...' }...`;
@@ -3106,19 +3094,25 @@
         cardObjects: played
       };
 
-      // Si le joueur précédent n'avait plus de cartes et n'a pas été accusé
+      // 1. Si le joueur précédent avait posé sa dernière carte et que le joueur actuel choisit de poser au lieu d'accuser :
+      // Alors le joueur précédent est officiellement validé et sauvé !
       if (gameState.lastClaim) {
         const prevPlayer = gameState.players[gameState.lastClaim.playerId];
-        if (prevPlayer && prevPlayer.hand && prevPlayer.hand.length === 0) {
+        if (prevPlayer && prevPlayer.isAlive && Array.isArray(prevPlayer.hand) && prevPlayer.hand.length === 0) {
+          gameState.feltTicker = `${prevPlayer.name} n'a pas été accusé et remporte la manche ! 🏆`;
           broadcastToast(`${prevPlayer.name} valide sa victoire !`);
-          setTimeout(startNewRound, 1500);
+          broadcastState();
+          setTimeout(() => {
+            if (isHost) startNewRound();
+          }, 2000);
           return;
         }
       }
 
+      // 2. Annonce du coup sans clore la manche si la main est vide
       if (player.hand.length === 0) {
-        gameState.feltTicker = `${player.name} a posé toutes ses cartes et gagne la manche ! 🎉`;
-        broadcastToast(`${player.name} s'est sauvé !`);
+        gameState.feltTicker = `${player.name} pose ses dernières cartes ! Le joueur suivant peut accuser ou laisser passer.`;
+        broadcastToast(`${player.name} a posé ses dernières cartes !`);
       } else {
         gameState.feltTicker = `${player.name} a posé ${played.length} carte(s).`;
       }
