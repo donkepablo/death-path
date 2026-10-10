@@ -3033,25 +3033,6 @@
 
     function advanceToNextLiving() {
       const isCards = gameState.gameMode === 'cards';
-
-      // En mode cartes, vérifier s'il reste assez de joueurs avec des cartes
-      if (isCards) {
-        const activeWithCards = gameState.playerOrder.filter(id => {
-          const p = gameState.players[id];
-          return p && p.isAlive && Array.isArray(p.hand) && p.hand.length > 0;
-        });
-
-        if (activeWithCards.length <= 1) {
-          if (activeWithCards.length === 1) {
-            const lastPlayer = gameState.players[activeWithCards[0]];
-            gameState.feltTicker = `${lastPlayer ? lastPlayer.name : 'Dernier joueur'} n'a pas pu écouler ses cartes !`;
-          }
-          broadcastState();
-          setTimeout(startNewRound, 2200);
-          return;
-        }
-      }
-
       const total = gameState.playerOrder.length;
       if (total === 0) return;
 
@@ -3065,10 +3046,10 @@
 
         if (p && p.isAlive) {
           if (!isCards) {
-            // En mode DÉS : tout joueur vivant doit jouer, peu importe sa main de cartes
             break;
-          } else if (Array.isArray(p.hand) && p.hand.length > 0) {
-            // En mode CARTES : le joueur doit avoir au moins une carte en main
+          } else {
+            // En mode cartes, le joueur suivant doit pouvoir jouer s'il est vivant
+            // (même si le joueur précédent vient de vider sa main, afin de pouvoir l'accuser)
             break;
           }
         }
@@ -3088,7 +3069,7 @@
         gameState.forcedRerollByPlayerId = null;
       }
 
-      const nextActive = gameState.players[gameState.playerOrder[gameState.activePlayerIndex]];
+      const nextActive = gameState.players[gameState.playerOrder[nextIdx]];
       gameState.feltTicker = `Tour de ${nextActive ? nextActive.name : '...' }...`;
 
       broadcastState();
@@ -3124,6 +3105,16 @@
         cardRank: gameState.requiredCard,
         cardObjects: played
       };
+
+      // Si le joueur précédent n'avait plus de cartes et n'a pas été accusé
+      if (gameState.lastClaim) {
+        const prevPlayer = gameState.players[gameState.lastClaim.playerId];
+        if (prevPlayer && prevPlayer.hand && prevPlayer.hand.length === 0) {
+          broadcastToast(`${prevPlayer.name} valide sa victoire !`);
+          setTimeout(startNewRound, 1500);
+          return;
+        }
+      }
 
       if (player.hand.length === 0) {
         gameState.feltTicker = `${player.name} a posé toutes ses cartes et gagne la manche ! 🎉`;
