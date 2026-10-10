@@ -39,7 +39,7 @@
 
   <style>
     body {
-      background-color: #0f1110;
+      background-color: #354838;
       background-image:
         radial-gradient(ellipse 70% 60% at 50% 40%, rgba(35, 75, 45, 0.18) 0%, rgba(15, 17, 16, 0.95) 75%),
         repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 4px);
@@ -308,8 +308,8 @@
         </div>
 
         <div>
-          <label class="block text-[10px] font-mono tracking-widest text-[#95a89b] uppercase mb-1.5">Choisis ton avatar</label>
-          <div id="avatar-selector-grid" class="grid grid-cols-5 gap-2"></div>
+          <label class="block text-[10px] font-mono tracking-widest text-[#95a89b] uppercase mb-1">Choisis ton avatar</label>
+          <div id="avatar-selector-grid" class="grid grid-cols-5 gap-4 w-full"></div>
         </div>
 
         <button id="btn-solo-bots" class="w-full py-2.5 bg-[#1e2a21] hover:bg-[#28382d] border border-[#364b3c] hover:border-[#8f7734] rounded-lg text-[#faf8f5] font-title text-xs tracking-wider uppercase font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md">
@@ -397,7 +397,7 @@
           Silence à la table.
         </div>
 
-        <div class="flex items-center gap-1.5 font-mono text-xs">
+        <div id="header-center-stat-container" class="flex items-center gap-1.5 font-mono text-xs">
           <span id="center-stat-label" class="text-[#7f9184] text-[10px] uppercase">Nombre de cartes au centre :</span>
           <span id="game-cards-in-play" class="text-dore font-bold">0</span>
         </div>
@@ -1117,14 +1117,14 @@
         const isSel = av.id === selectedAvatarId;
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = `p-2.5 rounded-lg border flex items-center justify-center transition-all overflow-hidden ${
-          isSel ? 'border-dore bg-[#223326] text-dore' : 'border-[#29392c] bg-[#111713] text-[#7b8f80] hover:border-[#3d5442]'
+        btn.className = `w-full aspect-square p-1 rounded-lg border flex items-center justify-center transition-all overflow-hidden ${
+          isSel ? 'border-dore bg-[#223326] text-dore shadow-sm' : 'border-[#29392c] bg-[#111713] text-[#7b8f80] hover:border-[#3d5442]'
         }`;
 
         if (av.isCustom && customAvatarBase64) {
-          btn.innerHTML = `<img src="${customAvatarBase64}" class="w-7 h-7 rounded-full object-cover" />`;
+          btn.innerHTML = `<img src="${customAvatarBase64}" class="w-full h-full rounded-full object-cover p-1" />`;
         } else {
-          btn.innerHTML = `<i class="${av.icon} text-xl"></i>`;
+          btn.innerHTML = `<i class="${av.icon} text-base sm:text-lg"></i>`;
         }
 
         btn.onclick = () => {
@@ -2894,6 +2894,17 @@
       };
 
       checkIfDraftComplete();
+    }
+
+    function removeBot(botId) {
+      if (!isHost || gameState.status !== 'lobby') return;
+      const bot = gameState.players[botId];
+      if (!bot || !bot.isBot) return;
+
+      delete gameState.players[botId];
+      gameState.playerOrder = gameState.playerOrder.filter(id => id !== botId);
+      
+      broadcastState();
     }
 
     function renderItemDraftModal(availableItems) {
@@ -4977,6 +4988,7 @@
 
       const grid = document.getElementById('lobby-players-grid');
       grid.innerHTML = '';
+      // Remplace le contenu de la boucle list.forEach(p => { ... }) par ceci :
       list.forEach(p => {
         const isSelf = p.id === myId;
         const avIcon = getAvatarIcon(p.avatar);
@@ -4984,6 +4996,14 @@
         row.className = `p-2 rounded border flex items-center justify-between text-xs ${
           p.isReady ? 'border-[#445b49] bg-[#1a251e] text-[#f7f6f2]' : 'border-[#233126] bg-[#101411] text-[#637568]'
         }`;
+
+        // Petite croix discrète si c'est un bot et que l'utilisateur local est l'hôte
+        const removeBotBtn = (isHost && p.isBot)
+          ? `<button onclick="removeBot('${p.id}')" title="Retirer ce bot" class="text-[#7d9182] hover:text-red-400 hover:bg-[#202922] p-1 rounded transition-colors ml-1.5 flex items-center justify-center">
+              <i class="fa-solid fa-xmark text-[11px]"></i>
+            </button>`
+          : '';
+
         row.innerHTML = `
           <div class="flex items-center gap-2">
             <span class="w-6 h-6 rounded-full border border-[#354839] bg-[#161f18] flex items-center justify-center text-xs overflow-hidden ${p.isReady ? 'text-dore' : 'text-[#637568]'}">
@@ -4992,9 +5012,12 @@
             <span class="font-title font-bold text-xs">${p.name} ${isSelf ? '<span class="text-[8px] opacity-60 text-[#7d9182] font-mono">(Toi)</span>' : ''}</span>
             ${p.isBot ? '<span class="text-[8px] font-mono border border-[#2b3a2e] px-1 rounded text-[#7d9182]">Bot</span>' : ''}
           </div>
-          <span class="text-[10px] font-mono uppercase tracking-widest font-bold ${p.isReady ? 'text-dore' : 'text-[#637568]'}">
-            ${p.isReady ? 'Prêt' : 'En attente'}
-          </span>
+          <div class="flex items-center gap-1">
+            <span class="text-[10px] font-mono uppercase tracking-widest font-bold ${p.isReady ? 'text-dore' : 'text-[#637568]'}">
+              ${p.isReady ? 'Prêt' : 'En attente'}
+            </span>
+            ${removeBotBtn}
+          </div>
         `;
         grid.appendChild(row);
       });
@@ -5168,16 +5191,29 @@
         centerSkull.classList.add('hidden');
       }
 
-      const statLabelEl = document.getElementById('center-stat-label');
-      if (statLabelEl) {
-        if (isDice) {
-          statLabelEl.innerText = "NOMBRE EN JEU :";
-        } else if (isSkull) {
-          statLabelEl.innerText = "TUILES AU CENTRE :";
-        } else {
-          statLabelEl.innerText = "NOMBRE DE CARTES AU CENTRE :";
+      const statContainer = document.getElementById('header-center-stat-container');
+        if (statContainer) {
+          if (isMistigri) {
+            // Masqué totalement en Mistigri
+            statContainer.classList.add('hidden');
+            statContainer.classList.remove('flex');
+          } else {
+            // Réaffiché pour les modes Cartes, Dés et Skull
+            statContainer.classList.remove('hidden');
+            statContainer.classList.add('flex');
+          }
         }
-      }
+
+      const statLabelEl = document.getElementById('center-stat-label');
+        if (statLabelEl) {
+          if (isDice) {
+            statLabelEl.innerText = "NOMBRE EN JEU :";
+          } else if (isSkull) {
+            statLabelEl.innerText = "TUILES AU CENTRE :";
+          } else {
+            statLabelEl.innerText = "NOMBRE DE CARTES AU CENTRE :";
+          }
+        }
 
       const cardsInPlayEl = document.getElementById('game-cards-in-play');
       if (cardsInPlayEl) {
