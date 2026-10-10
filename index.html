@@ -867,7 +867,7 @@
           <div class="p-2.5 rounded border border-[#233126] bg-[#101411] space-y-1.5">
             <span class="font-title font-bold text-dore text-xs uppercase tracking-wide">3. Mode Skull</span>
             <p><strong>Règles classiques :</strong> Chaque joueur possède trois fleurs et un crâne. Les joueurs posent tour à tour des tuiles face cachée jusqu'à ce qu'une enchère soit lancée. Le plus offrant doit retourner le nombre annoncé de tuiles sans révéler de crâne, en commençant obligatoirement par ses propres cartes. Deux réussites accordent la victoire.</p>
-            <p><strong>Variante هيلا :</strong> Le barillet sanctionne les échecs. Si le joueur ayant remporté l'enchère révèle son propre crâne, il subit deux tirs consécutifs de barillet.</p>
+            <p><strong>Variante هيلا :</strong> Le barillet sanctionne les échecs. Si le joueur ayant remporté l'enchère révèle son propre crâne, il subit deux tirs consécutifs. Une tuile est confiée secrètement à un joueur : elle compte comme une fleur, mais lie le destin de son propriétaire à celui du défi (succès partagé = 1 point pour les deux, échec = roulette russe pour les deux).</p>
           </div>
 
           <!-- Mode Mistigri -->
@@ -2375,8 +2375,8 @@
       gameState.status = 'in_round';
       gameState.skullPhase = 'placement';
       gameState.skullHighBid = 0;
-      gameState.skullHighBidderId = null; // IMPORTANT : réinitialiser pour ne pas reprendre le mort
-      gameState.isRevealingAnimationRunning = false; // IMPORTANT : débloquer les clics
+      gameState.skullHighBidderId = null;
+      gameState.isRevealingAnimationRunning = false;
       gameState.skullPassers = [];
       gameState.skullRevealedCards = [];
       gameState.skullTargetCount = 0;
@@ -2386,27 +2386,35 @@
       const starterId = living[Math.floor(Math.random() * living.length)];
       gameState.activePlayerIndex = gameState.playerOrder.indexOf(starterId);
 
-      // Les joueurs éliminés ne gardent ni main ni pile sur la table
       gameState.playerOrder.forEach(id => {
         const dp = gameState.players[id];
         if (dp && !dp.isAlive) { dp.hand = []; dp.skullPile = []; }
       });
 
-      // Distribution des 4 tuiles pour chaque joueur vivant
+      // Tirage au sort d'un joueur unique pour recevoir le Vautour en mode Zbeul
+      const corbeauBearerId = (gameState.isZbeul && living.length > 0)
+        ? living[Math.floor(Math.random() * living.length)]
+        : null;
+
       living.forEach(id => {
         const p = gameState.players[id];
         if (!p) return;
+
+        const isCorbeauBearer = (id === corbeauBearerId);
+
         p.hand = [
           { id: `sk_${id}_1`, type: 'flower', name: 'Fleur', icon: 'fa-spa text-emerald-700' },
           { id: `sk_${id}_2`, type: 'flower', name: 'Fleur', icon: 'fa-spa text-emerald-700' },
-          { id: `sk_${id}_3`, type: 'flower', name: 'Fleur', icon: 'fa-spa text-emerald-700' },
+          // 3e tuile : Corbeau si tiré au sort en mode Zbeul, sinon 3e Fleur classique
+          isCorbeauBearer
+            ? { id: `sk_${id}_3`, type: 'corbeau', name: 'Corbo', icon: 'fa-crow text-noir', ownerId: id }
+            : { id: `sk_${id}_3`, type: 'flower', name: 'Fleur', icon: 'fa-spa text-emerald-700' },
           { id: `sk_${id}_4`, type: 'skull', name: 'Crâne', icon: 'fa-skull text-rose-700' }
         ];
         p.skullPile = [];
         if (typeof p.skullScore !== 'number') p.skullScore = 0;
       });
 
-      gameState.activePlayerIndex = gameState.playerOrder.indexOf(starterId);
       const starter = gameState.players[starterId];
       gameState.feltTicker = `Nouvelle manche : ${starter ? starter.name : '...'} commence en posant une tuile.`;
 
@@ -2587,15 +2595,23 @@
         tileToReveal.revealed = true;
         gameState.skullRevealedCards.push({ player: target.name, tile: tileToReveal });
 
-        // 1. CRÂNE RÉVÉLÉ : Échec immédiat
+        // Détection du Corbeau adverse
+        const revealedCorbeau = gameState.skullRevealedCards.find(r => 
+          r.tile.type === 'corbeau' && r.tile.ownerId && r.tile.ownerId !== revealer.id
+        );
+        const corbeauOwner = revealedCorbeau ? gameState.players[revealedCorbeau.tile.ownerId] : null;
+
+        // 1. CRÂNE RÉVÉLÉ : ÉCHEC DU DÉFI
         if (tileToReveal.type === 'skull') {
           audio.playFaaah();
           gameState.status = 'resolving_bluff';
 
-          // En Zbeul, si le vainqueur de l'enchère tombe sur son propre crâne : double peine
           const isSelfSkullPenalty = gameState.isZbeul && (targetPlayerId === revealer.id);
 
-          if (isSelfSkullPenalty) {
+          if (corbeauOwner && corbeauOwner.isAlive) {
+            gameState.feltTicker = `CRÂNE ! ${revealer.name} échoue... et ${corbeauOwner.name} (Corbeau) prend aussi une balle !`;
+            broadcastToast(`Corbeau maudit : ${corbeauOwner.name} passe aussi au barillet !`);
+          } else if (isSelfSkullPenalty) {
             gameState.feltTicker = `AUTO-CRÂNE هيلا ! ${revealer.name} DOUBLE TIR ! 💀💀`;
             showToast(`${revealer.name} prend 2 tirs de barillet !`);
           } else {
@@ -2605,49 +2621,75 @@
 
           setTimeout(() => {
             if (isSelfSkullPenalty) {
-              // 1er tir
               triggerRevolverChamber(revealer, () => {
                 if (!revealer.isAlive) {
-                  // Mort dès le 1er tir : pas de 2e tir, on passe à la suite
-                  proceedAfterShot();
+                  if (corbeauOwner && corbeauOwner.isAlive) {
+                    setTimeout(() => triggerRevolverChamber(corbeauOwner), 1200);
+                  } else {
+                    proceedAfterShot();
+                  }
                   return;
                 }
                 gameState.feltTicker = `${revealer.name} survit au 1er coup... 2e tir immédiat !`;
                 broadcastState();
                 setTimeout(() => {
-                  // 2e tir (suite gérée par proceedAfterShot)
-                  triggerRevolverChamber(revealer);
+                  triggerRevolverChamber(revealer, () => {
+                    if (corbeauOwner && corbeauOwner.isAlive) {
+                      setTimeout(() => triggerRevolverChamber(corbeauOwner), 1200);
+                    } else {
+                      proceedAfterShot();
+                    }
+                  });
                 }, 1200);
               });
             } else {
-              triggerRevolverChamber(revealer);
+              triggerRevolverChamber(revealer, () => {
+                if (corbeauOwner && corbeauOwner.isAlive) {
+                  setTimeout(() => {
+                    gameState.feltTicker = `Au tour de ${corbeauOwner.name} (Corbeau) d'affronter le barillet...`;
+                    broadcastState();
+                    triggerRevolverChamber(corbeauOwner);
+                  }, 1200);
+                } else {
+                  proceedAfterShot();
+                }
+              });
             }
           }, 1500);
           return;
         }
 
+        // 2. TUILE VALIDÉE (Corbeau ou Fleur)
         const currentCount = gameState.skullRevealedCards.length;
         const targetCount = gameState.skullTargetCount;
-        gameState.feltTicker = `Fleur révélée (${currentCount}/${targetCount})`;
+        gameState.feltTicker = (tileToReveal.type === 'corbeau')
+          ? `Corbeau révélé ! (${currentCount}/${targetCount})`
+          : `Fleur révélée (${currentCount}/${targetCount})`;
 
-        // 2. CONTRAT REMPLI (Toutes les fleurs requises ont été retournées)
+        // 3. CONTRAT REMPLI (SUCCÈS DU DÉFI)
         if (currentCount >= targetCount) {
           revealer.skullScore = (revealer.skullScore || 0) + 1;
+
+          if (corbeauOwner && corbeauOwner.isAlive) {
+            corbeauOwner.skullScore = (corbeauOwner.skullScore || 0) + 1;
+            broadcastToast(`CORBEAU ! ${corbeauOwner.name} marque aussi 1 point !`);
+          }
+
           audio.chip();
 
-          if (revealer.skullScore >= 2) {
-            // Victoire finale (2/2 points)
+          const anyWinner = [revealer, corbeauOwner].find(p => p && p.skullScore >= 2);
+
+          if (anyWinner) {
             gameState.status = 'game_ended';
-            gameState.feltTicker = `${revealer.name} valide son 2e point et remporte la partie ! 🏆`;
+            gameState.feltTicker = `${anyWinner.name} valide 2 points et remporte la partie ! 🏆`;
             broadcastState();
           } else {
-            // Manche remportée : pause avec message
             gameState.status = 'skull_round_won';
-            gameState.feltTicker = `DÉFI RÉUSSI ! ${revealer.name} marque 1 point (${revealer.skullScore}/2). Manche 2 dans un instant...`;
-            broadcastToast(`${revealer.name} marque 1 point (${revealer.skullScore}/2) !`);
+            gameState.feltTicker = (corbeauOwner && corbeauOwner.isAlive)
+              ? `DÉFI RÉUSSI ! ${revealer.name} et ${corbeauOwner.name} (Corbeau) marquent 1 point !`
+              : `DÉFI RÉUSSI ! ${revealer.name} marque 1 point (${revealer.skullScore}/2).`;
             broadcastState();
 
-            // L'hôte est le seul à orchestrer le passage à la manche suivante :
             if (isHost) {
               setTimeout(() => {
                 if (gameState.status === 'skull_round_won') {
@@ -2659,7 +2701,6 @@
           return;
         }
 
-        // Si le contrat nécessite encore d'autres cartes
         broadcastState();
         checkBotTurnWithDelay();
       }, 1800);
@@ -3378,10 +3419,15 @@
       const sRect = pileEl ? pileEl.getBoundingClientRect() : (seatEl ? seatEl.getBoundingClientRect() : targetEl.getBoundingClientRect());
       const tRect = targetEl.getBoundingClientRect();
 
+      // Dans animateSkullRevealVisual :
       const isSkull = tile.type === 'skull';
+      const isCorbeau = tile.type === 'corbeau';
+
       const haloColor = isSkull 
         ? 'border-rose-700 shadow-[0_0_24px_rgba(190,18,60,0.7)] ring-2 ring-rose-600/50' 
-        : 'border-emerald-600 shadow-[0_0_24px_rgba(5,150,105,0.65)] ring-2 ring-emerald-500/50';
+        : isCorbeau
+          ? 'border-stone-900 shadow-[0_0_20px_rgba(0,0,0,0.85)] ring-2 ring-stone-800/80'
+          : 'border-emerald-600 shadow-[0_0_24px_rgba(5,150,105,0.65)] ring-2 ring-emerald-500/50';
 
       const disc = document.createElement('div');
       disc.className = 'thrown-card-anim w-12 h-16 sm:w-14 sm:h-20 rounded-xl border-2 border-[#8f7734] bg-[#142318] p-1.5 flex flex-col items-center justify-between shadow-2xl z-[999] pointer-events-none';
@@ -3422,9 +3468,9 @@
           setTimeout(() => {
             audio.chip();
 
-            disc.className = `thrown-card-anim w-12 h-16 sm:w-14 sm:h-20 rounded-xl border-2 bg-[#faf8f5] p-1.5 flex items-center justify-center select-none z-[999] pointer-events-none ${haloColor}`;
+            disc.className = `thrown-card-anim w-12 h-16 sm:w-14 sm:h-20 rounded-xl border-2 bg-white p-1.5 flex items-center justify-center select-none z-[999] pointer-events-none ${haloColor}`;
             disc.innerHTML = `
-              <i class="fa-solid ${tile.icon} text-2xl ${isSkull ? 'text-rose-700 animate-bounce' : 'text-emerald-700'}"></i>
+              <i class="fa-solid ${tile.icon} text-2xl ${isSkull ? 'text-rose-700 animate-bounce' : isCorbeau ? 'text-noir animate-pulse' : 'text-emerald-700'}"></i>
             `;
 
             disc.style.transition = 'transform 0.22s ease-out';
@@ -5581,12 +5627,17 @@
 
             const rot = (i - (pile.length - 1) / 2) * 6;
             const isSkull = tile.type === 'skull';
-            const tileIconClass = isSkull ? 'fa-solid fa-skull text-rose-700' : 'fa-solid fa-spa text-emerald-700';
+            const isCorbeau = tile.type === 'corbeau';
+            const tileIconClass = isSkull 
+              ? 'fa-solid fa-skull text-rose-700' 
+              : isCorbeau
+                ? 'fa-solid fa-crow text-noir'
+                : 'fa-solid fa-spa text-emerald-700';
 
             return `
               <div class="absolute w-[36px] h-[50px] rounded-md border flex-shrink-0 transition-transform ${
                 isRevealed
-                  ? (isSkull ? 'bg-[#faf8f5] border-rose-700 shadow-[0_0_10px_rgba(190,18,60,0.5)]' : 'bg-[#faf8f5] border-emerald-600 shadow-[0_0_10px_rgba(5,150,105,0.4)]')
+  ? (isSkull ? 'bg-white border-rose-700 shadow-[0_0_10px_rgba(190,18,60,0.5)]' : isCorbeau ? 'bg-white border-stone-900 shadow-[0_0_10px_rgba(0,0,0,0.6)]' : 'bg-white border-emerald-600 shadow-[0_0_10px_rgba(5,150,105,0.4)]')
                   : (canClick && isTop 
                       ? 'bg-[#18271c] border-dore text-dore shadow-[0_0_8px_rgba(212,175,55,0.4)] cursor-pointer hover:border-white transition-colors' 
                       : 'bg-[#142318] border-[#8f7734] text-dore/80 shadow-md pointer-events-none')
@@ -5719,17 +5770,26 @@
           me.hand.forEach(tile => {
             const isSel = selectedSkullTileId === tile.id;
             const isSkull = tile.type === 'skull';
+            const isCorbeau = tile.type === 'corbeau';
+            
+            // Texte en noir pour le Corbeau, rose pour le crâne, vert pour la fleur
+            const labelColorClass = isSkull 
+              ? 'text-rose-800' 
+              : isCorbeau 
+                ? 'text-noir' 
+                : 'text-emerald-800';
+            
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = `w-14 h-20 sm:w-16 sm:h-24 md:w-18 md:h-28 rounded-xl border-2 flex flex-col items-center justify-between p-1.5 transition-all shadow-lg cursor-pointer ${
-              isSel 
-                ? 'border-dore bg-[#faf8f5] scale-105 shadow-[0_0_15px_rgba(212,175,55,0.7)] -translate-y-2' 
-                : 'border-[#d2cbbe] bg-[#faf8f5] hover:border-dore hover:-translate-y-0.5'
+            btn.className = `w-14 h-20 sm:w-16 sm:h-24 rounded-xl border-2 flex flex-col items-center justify-between p-2 shadow-md transition-all bg-white ${
+              isSel
+                ? 'border-dore -translate-y-2 shadow-[0_0_14px_rgba(212,175,55,0.7)]'
+                : 'border-[#d2cbbe] hover:border-dore'
             }`;
-            
+
             btn.innerHTML = `
               <i class="fa-solid ${tile.icon} text-xl sm:text-2xl mt-1"></i>
-              <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider ${isSkull ? 'text-rose-800' : 'text-emerald-800'}">${tile.name}</span>
+              <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider ${labelColorClass}">${tile.name}</span>
               <span class="text-[8px] sm:text-[9px] font-mono font-bold text-stone-400">SKULL</span>
             `;
 
@@ -5827,17 +5887,25 @@
     function renderCardPlayerConsole(me) {
       if (gameState.gameMode !== 'cards') return;
       document.getElementById('my-inventory-bar')?.classList.add('hidden');
-      document.getElementById('my-hand-container')?.classList.remove('hidden');
+      
+      // Réactivation impérative du conteneur de cartes
+      const handContainer = document.getElementById('my-hand-container');
+      if (handContainer) {
+        handContainer.classList.remove('hidden');
+        handContainer.classList.add('flex');
+        handContainer.style.removeProperty('display');
+      }
+
       const cardsActions = document.getElementById('cards-action-controls');
-        if (cardsActions) {
-          cardsActions.classList.remove('hidden');
-          cardsActions.style.removeProperty('display');
-          cardsActions.classList.add('grid');
-        }
+      if (cardsActions) {
+        cardsActions.classList.remove('hidden');
+        cardsActions.style.removeProperty('display');
+        cardsActions.classList.add('grid');
+      }
       document.getElementById('quinto-action-controls')?.classList.add('hidden');
       document.getElementById('quinto-buttons-wrapper')?.classList.add('hidden');
 
-      // AJOUT : masquer les boutons Skull
+      // Masquer les blocs Skull
       document.getElementById('skull-action-controls')?.classList.add('hidden');
       document.getElementById('skull-placement-actions')?.classList.add('hidden');
       document.getElementById('skull-bidding-panel')?.classList.add('hidden');
@@ -5872,7 +5940,6 @@
         slot.className = `hand-card-slot ${isSelected ? 'selected' : ''}`;
 
         const card = document.createElement('div');
-        // Fond noir et bordure adaptée si carte crâne
         const cardBgClass = isSkullCard ? 'bg-[#111311] border-stone-600' : 'bg-[#faf8f5] border-[#d2cbbe]';
         card.className = `playing-card w-14 h-22 sm:w-18 sm:h-28 md:w-20 md:h-32 p-1.5 flex flex-col justify-between cursor-pointer overflow-hidden ${cardBgClass} ${
           isSelected ? 'border-dore shadow-2xl -translate-y-3' : ''
@@ -5918,18 +5985,15 @@
 
       if (isMyTurn && hasPreviousClaim) {
         if (isThreeCardsZbeul) {
-          // Sur 3 cartes en Zbeul : accusation bloquée, possibilité de retourner 1 carte
           btnCall.disabled = false;
           btnCall.innerHTML = `<i class="fa-solid fa-eye text-xs"></i><span>Retourner (1)</span>`;
           btnCall.className = "py-2 rounded border border-orange-500 bg-[#291e13] hover:bg-[#3d2c1c] text-orange-400 font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-lg";
           btnCall.onclick = () => {
             audio.chip();
-            // Choix aléatoire d'une des 3 cartes posées
             const randomIndex = Math.floor(Math.random() * 3);
             sendToHost({ type: 'FLIP_ONE_CARD', id: myId, cardIndex: randomIndex });
           };
         } else {
-          // Comportement normal si < 3 cartes ou hors Zbeul
           btnCall.disabled = false;
           btnCall.innerHTML = `<i class="fa-solid fa-bullhorn text-xs"></i><span>Menteur !</span>`;
           btnCall.className = "py-2 rounded border border-dore bg-[#1e2a21] hover:bg-[#28382d] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-lg animate-pulse";
@@ -5941,15 +6005,6 @@
       } else {
         btnCall.disabled = true;
         btnCall.innerHTML = `<i class="fa-solid fa-bullhorn text-xs"></i><span>Menteur !</span>`;
-        btnCall.className = "py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5";
-      }
-      
-      const canCall = isMyTurn && gameState.lastClaim && gameState.lastClaim.playerId !== myId && gameState.status === 'in_round';
-      if (canCall) {
-        btnCall.disabled = false;
-        btnCall.className = "py-2 rounded border border-dore bg-[#1e2a21] hover:bg-[#28382d] text-dore font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-lg animate-pulse";
-      } else {
-        btnCall.disabled = true;
         btnCall.className = "py-2 rounded border border-[#2b3a2e] bg-[#171f1a] text-[#56685a] cursor-not-allowed font-title text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5";
       }
     }
